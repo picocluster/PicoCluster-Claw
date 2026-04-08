@@ -1,0 +1,17 @@
+FROM node:24-slim
+
+RUN npm install -g openclaw
+
+# Create non-root user
+RUN useradd -m -s /bin/bash openclaw
+USER openclaw
+WORKDIR /home/openclaw
+
+# Config will be mounted as volume or set via environment
+RUN mkdir -p /home/openclaw/.openclaw
+
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+
+EXPOSE 18789
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

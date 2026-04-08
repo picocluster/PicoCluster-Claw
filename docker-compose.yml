@@ -1,0 +1,50 @@
+version: '3.8'
+
+# PicoClaw Docker Compose — runs on picoclaw (RPi5)
+# Start: docker compose up -d
+# Stop:  docker compose down
+# Logs:  docker compose logs -f
+# Update: docker compose build --pull && docker compose up -d
+
+services:
+  threadweaver:
+    build: ./threadweaver
+    container_name: threadweaver
+    restart: always
+    ports:
+      - "5173:5173"
+      - "8000:8000"
+    environment:
+      - LLM_PROVIDER=local
+      - LOCAL_BASE_URL=http://picocrush:8080/v1
+      - LOCAL_MODEL=${DEFAULT_MODEL:-Llama-3.2-3B-Instruct-Q4_K_M.gguf}
+    extra_hosts:
+      - "picocrush:${CRUSH_IP:-10.1.10.221}"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://127.0.0.1:8000/api/settings"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  openclaw:
+    build: ./openclaw
+    container_name: openclaw
+    restart: always
+    ports:
+      - "18789:18789"
+    environment:
+      - OPENCLAW_TOKEN=${OPENCLAW_TOKEN:-picocluster-token}
+      - LOCAL_BASE_URL=http://picocrush:8080/v1
+      - LOCAL_MODEL=${DEFAULT_MODEL:-Llama-3.2-3B-Instruct-Q4_K_M.gguf}
+    extra_hosts:
+      - "picocrush:${CRUSH_IP:-10.1.10.221}"
+    volumes:
+      - openclaw-data:/home/openclaw/.openclaw
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://127.0.0.1:18789/__openclaw__/canvas/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  openclaw-data:
