@@ -1,3 +1,7 @@
 localhost:18790 {
 	reverse_proxy 127.0.0.1:18789
 }
+
+localhost:5174 {
+	reverse_proxy 127.0.0.1:5173
+}

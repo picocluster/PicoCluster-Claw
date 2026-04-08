@@ -60,10 +60,18 @@ This installs and configures:
 | Interface | URL | Purpose |
 |-----------|-----|---------|
 | **ThreadWeaver** | `http://picoclaw:5173` | Chat UI with branching conversations, search, notebooks |
-| **OpenClaw WebChat** | `http://picoclaw:18789` | AI agent with browser automation and tools |
+| **OpenClaw Dashboard** | `https://localhost:18790` * | AI agent with browser automation and tools |
 | **OpenClaw TUI** | `ssh picocluster@picoclaw` then `openclaw tui` | Terminal-based agent chat |
 | **Blinkt! LEDs** | Physical (picoclaw) | Boot animation + runtime status indicator |
 | **llama-server API** | `http://picocrush:8080/v1` | OpenAI-compatible inference endpoint |
+
+\* OpenClaw's dashboard requires HTTPS. Set up an SSH tunnel first:
+```bash
+ssh -L 18790:localhost:18790 -L 5174:localhost:5174 picocluster@picoclaw
+```
+Then open `https://localhost:18790` (token: `picocluster-token`).
+
+See [docs/access-guide.md](docs/access-guide.md) for all access methods including Tailscale, Telegram, and mobile.
 
 ## Repository Structure
 
