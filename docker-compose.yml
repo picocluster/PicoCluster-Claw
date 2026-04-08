@@ -1,5 +1,3 @@
-version: '3.8'
-
 # PicoClaw Docker Compose — runs on picoclaw (RPi5)
 # Start: docker compose up -d
 # Stop:  docker compose down
