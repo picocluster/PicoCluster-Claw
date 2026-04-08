@@ -6,7 +6,8 @@
 
 services:
   threadweaver:
-    build: ./threadweaver
+    build:
+      context: https://github.com/nosqltips/ThreadWeaver.git
     container_name: threadweaver
     restart: always
     ports:
