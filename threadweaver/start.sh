@@ -1,5 +1,4 @@
 #!/bin/bash
-# Start ThreadWeaver backend and frontend
 set -e
 
 # Write .env from environment variables
@@ -9,9 +8,9 @@ LOCAL_BASE_URL=${LOCAL_BASE_URL:-http://picocrush:8080/v1}
 LOCAL_MODEL=${LOCAL_MODEL:-Llama-3.2-3B-Instruct-Q4_K_M.gguf}
 EOF
 
-# Start backend
+# Start backend using venv
 cd /app/backend
-python3 server.py &
+/app/venv/bin/python server.py &
 BACKEND_PID=$!
 
 sleep 2
@@ -21,6 +20,5 @@ cd /app/frontend
 npx vite --host 0.0.0.0 --port 5173 &
 FRONTEND_PID=$!
 
-# Wait for either to exit
 wait -n $BACKEND_PID $FRONTEND_PID
 kill $BACKEND_PID $FRONTEND_PID 2>/dev/null
