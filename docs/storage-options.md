@@ -1,128 +1,89 @@
-# PicoCluster Storage Options — RPi5 + Orin Nano
+# PicoClaw Storage Recommendations
 
-> **Pricing updated April 2026.** NVMe prices have risen significantly due to AI-driven NAND shortages.
+## Recommended Configuration
 
-## Current NVMe Pricing (April 2026)
+| Node | Boot Device | Storage | Size |
+|------|------------|---------|------|
+| **picoclaw** (RPi5) | MicroSD | OS + Docker + OpenClaw + ThreadWeaver | **128GB** |
+| **picocrush** (Orin Nano) | MicroSD | OS (JetPack) | **128GB** |
+| **picocrush** (Orin Nano) | NVMe M.2 | Models + llama.cpp | **256GB** |
 
-| Capacity | Approx. Price | Notes |
-|----------|-------------:|-------|
-| 256GB    | ~$75         | M.2 2280, Gen3/Gen4 |
-| 512GB    | ~$125        | |
-| 1TB      | ~$200        | |
-
----
-
-## Storage Requirements by Node
-
-### RPi5 (OpenClaw orchestrator)
-- OS (Raspberry Pi OS Lite 64-bit): ~4GB
-- Node.js + OpenClaw + deps: ~2-4GB
-- Browser automation stack (Playwright/Chromium): ~1-2GB
-- Logs, cache, workspace: ~5-10GB
-- **Total footprint:** ~12-20GB
-
-### Orin Nano (llama.cpp inference)
-- OS lives on eMMC (57GB onboard, non-replaceable) — adequate
-- NVMe is for model storage + llama.cpp build
-- Default model set (~11GB):
-  - Llama 3.2 3B Q4_K_M: 1.9GB
-  - Llama 3.1 8B Q4_K_M: 4.7GB
-  - Phi-3.5 Mini Q4_K_M: 2.3GB
-  - Qwen 2.5 3B Q4_K_M: 2.0GB
-- Optional models:
-  - Moondream2 (vision): 1.9GB
-  - Llama 3.2 Vision 11B Q4_K_M: 6.2GB
+Filesystem: **ext4** (default for both Raspbian and JetPack)
 
 ---
 
-## Recommended Configurations
+## picoclaw (RPi5) — Storage Breakdown
 
-### Low Cost (Recommended)
+| Component | Size |
+|-----------|------|
+| Raspbian Desktop (stripped + hardened) | ~3.4GB |
+| Docker engine | ~500MB |
+| OpenClaw container | ~1.2GB |
+| ThreadWeaver container | ~800MB |
+| Node.js 24 | ~230MB |
+| Blinkt! LED daemon | ~1MB |
+| System overhead + logs | ~500MB |
+| **Total used** | **~6.6GB** |
+| **Free on 128GB card** | **~115GB** |
 
-| Node | Storage | Est. Cost | Notes |
-|------|---------|----------:|-------|
-| RPi5 | 64GB microSD | ~$12 | Samsung PRO Endurance or SanDisk MAX Endurance |
-| Orin Nano | 256GB NVMe | ~$75 | OS on eMMC, models + llama.cpp on NVMe |
-| **Per pair** | | **~$87** | |
-| **5-pair cluster** | | **~$435** | |
+### Why MicroSD is sufficient
+- Workload is mostly reads (Docker image layers, serving web UI)
+- No heavy writes (logs are capped, no database)
+- High-endurance microSD cards (Samsung PRO Endurance, SanDisk MAX Endurance) handle the write load
+- M.2 NVMe via HAT adds cost and case height for speed that isn't noticeable in this use case
 
-Why this works:
-- RPi5 workload is ~15GB and mostly read-heavy (OpenClaw orchestration, not constant writes)
-- High-endurance microSD cards are rated for continuous writes and cost a fraction of NVMe + HAT
-- 256GB NVMe on Orin fits 20+ quantized models comfortably
-- Saves ~$50-60 per node vs NVMe on RPi5
-
-### Mid-Range
-
-| Node | Storage | Est. Cost | Notes |
-|------|---------|----------:|-------|
-| RPi5 | 128GB microSD | ~$20 | Extra headroom for logs and workspace |
-| Orin Nano | 512GB NVMe | ~$125 | Room for large models and future additions |
-| **Per pair** | | **~$145** | |
-| **5-pair cluster** | | **~$725** | |
-
-### Performance (NVMe on both)
-
-| Node | Storage | Est. Cost | Notes |
-|------|---------|----------:|-------|
-| RPi5 | 256GB NVMe + M.2 HAT | ~$100 | NVMe (~$75) + HAT (~$25) |
-| Orin Nano | 512GB NVMe | ~$125 | Future-proof model storage |
-| **Per pair** | | **~$225** | |
-| **5-pair cluster** | | **~$1,125** | |
-
-Only justified if the RPi5 is doing heavy write workloads (large datasets, constant logging, database). For OpenClaw agent orchestration, microSD is sufficient.
+### When to consider M.2 NVMe on RPi5
+- Heavy logging or data collection workloads
+- Running additional databases or storage-intensive services
+- Production deployments where SD card wear is a concern over years
 
 ---
 
-## RPi5 Storage Details
+## picocrush (Orin Nano) — Storage Breakdown
 
-### microSD (Recommended for cost)
+The Orin Nano uses **two storage devices**:
 
-| Capacity | Card | Est. Cost | Notes |
-|----------|------|----------:|-------|
-| 64GB | Samsung PRO Endurance | ~$12 | Write-optimized, rated for continuous writes |
-| 128GB | Samsung PRO Endurance | ~$20 | Extra headroom |
-| 128GB | SanDisk MAX Endurance | ~$20 | Alternative, similar endurance rating |
+### MicroSD (Boot + OS)
 
-- Pros: No extra hardware, lowest cost, fits any case
-- Cons: Slower than NVMe (~100 MB/s vs ~800 MB/s), wear risk under heavy writes
-- Verdict: **Best value for OpenClaw appliance.** The workload is read-heavy; endurance-rated cards handle it fine.
+| Component | Size |
+|-----------|------|
+| JetPack Desktop (stripped + hardened) | ~18GB |
+| System utilities + security tools | ~1GB |
+| System overhead + logs | ~500MB |
+| **Total used** | **~20GB** |
+| **Free on 128GB card** | **~100GB** |
 
-### NVMe via M.2 HAT (Performance option)
+### NVMe M.2 (Models + Build)
 
-| Component | Est. Cost |
-|-----------|----------:|
-| 256GB NVMe (2280) | ~$75 |
-| M.2 HAT (Pimoroni NVMe Base / Pineboards HatDrive) | ~$15-25 |
-| **Total** | **~$90-100** |
+| Component | Size |
+|-----------|------|
+| llama.cpp build (CUDA) | ~500MB |
+| **Default model set:** | |
+| Llama 3.2 3B Q4_K_M | 1.9GB |
+| Llama 3.1 8B Q4_K_M | 4.7GB |
+| Phi-3.5 Mini Q4_K_M | 2.3GB |
+| Qwen 2.5 3B Q4_K_M | 2.0GB |
+| **Total used** | **~11.4GB** |
+| **Free on 256GB NVMe** | **~230GB** |
 
-- Pros: Fast (~800+ MB/s), reliable, clean cable-free mounting
-- Cons: 5-8x the cost of microSD, adds height to RPi5 stack, check case clearance
-- Verdict: Only if write-heavy workloads justify the cost.
+### NVMe sizing guide
 
-> **Case note:** Check PicoCluster acrylic case clearance before ordering a HAT. 2242 form factor is shorter and fits more cases; top-mount HATs with 2280 drives may conflict with case lids.
+| NVMe Size | Fits | Use Case |
+|-----------|------|----------|
+| 256GB | ~20 Q4 models | Standard deployment |
+| 512GB | ~40+ Q4 models | Multi-model testing, larger quantizations |
+| 1TB | Extensive model library | Research, dataset storage |
 
----
-
-## Orin Nano Storage Details
-
-The Orin Nano Dev Kit has:
-- **eMMC:** 57GB onboard (not removable) — OS lives here, adequate
-- **M.2 slot:** M-key, 2280, PCIe Gen3 x4 — models go here
-
-The eMMC handles the OS + llama.cpp binary + systemd config. The NVMe is purely for model storage.
-
-| Capacity | Est. Cost | Fits | Notes |
-|----------|----------:|------|-------|
-| 256GB | ~$75 | ~20+ Q4 models | **Recommended — covers current and near-future needs** |
-| 512GB | ~$125 | ~40+ Q4 models | Future-proof, room for large vision models |
-| 1TB | ~$200 | Overkill for one node | Only if also storing datasets or scratch space |
-
-> **Gen3 note:** The Orin Nano M.2 slot is PCIe Gen3 x4 (~3.5 GB/s max). Gen4 drives work but run at Gen3 speeds. No need to pay Gen4 premium unless using the same drives elsewhere.
+### Orin Nano M.2 slot
+- M-key, 2280 form factor
+- PCIe Gen3 x4 (~3.5 GB/s max)
+- Gen4 drives work but run at Gen3 speeds — no need to pay Gen4 premium
 
 ---
 
-## LLM Model Storage Reference
+## LLM Model Reference
+
+Only one model runs at a time on the 8GB Orin Nano (GPU VRAM limit). Use `model-switch` to swap between them.
 
 | Model | Size (Q4_K_M) | Context | Gen Speed | Use Case |
 |-------|--------------|---------|----------:|----------|
@@ -134,5 +95,24 @@ The eMMC handles the OS + llama.cpp binary + systemd config. The NVMe is purely 
 | Moondream2 | 1.9GB | 2K | ~15 t/s | Vision (lightweight) |
 | Llama 3.2 Vision 11B | 6.2GB | 128K | ~7 t/s | Best vision + language; tight fit |
 
-Default set (4 models): ~11GB
-Full set (all 7): ~20GB
+### Adding new models
+```bash
+# On picocrush:
+sudo update-picocrush.sh add-model https://huggingface.co/.../model.gguf
+sudo model-switch new-model.gguf
+```
+
+---
+
+## Boot Device Notes
+
+### MicroSD recommendations
+- Use **high-endurance** cards rated for continuous writes
+- Samsung PRO Endurance or SanDisk MAX Endurance recommended
+- Avoid consumer cards (Samsung EVO, SanDisk Ultra) — lower write endurance
+- A1/A2 application performance class preferred for random I/O
+
+### NVMe recommendations (Orin Nano)
+- Any M.2 2280 NVMe drive works
+- Gen3 is sufficient (Orin slot is Gen3 x4)
+- Gen4 drives work but run at Gen3 speeds
