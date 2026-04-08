@@ -137,16 +137,17 @@ class IdleEngine:
     """Manages the idle state with scanner, color drift, fade, and fireworks."""
 
     def __init__(self):
-        self.scanner_pos = 0.0
+        self.scanner_pos = 0
         self.scanner_dir = 1
-        self.scanner_speed = 0.08
+        self.scanner_speed = 0  # ticks between moves
+        self.tick = 0
+        self.move_every = 3  # move one pixel every N frames (20fps / 3.3 = ~6 moves/sec)
         self.color_idx = 0.0
         self.color_speed = 0.003
         self.brightness_base = 0.15
         self.fade_target = 0.15
         self.fade_current = 0.15
         self.next_fade_time = time.time() + random.uniform(15, 40)
-        self.next_firework_time = time.time() + random.uniform(8, 20)
         self.firework_pixels = {}  # {pixel_idx: (r, g, b, brightness, decay_step)}
 
     def get_color(self):
@@ -181,53 +182,50 @@ class IdleEngine:
         diff = self.fade_target - self.fade_current
         self.fade_current += diff * 0.03
 
-        # Scanner movement (Larson scanner / Cylon eye)
-        self.scanner_pos += self.scanner_speed * self.scanner_dir
-        if self.scanner_pos >= NUM_LEDS - 1:
-            self.scanner_pos = NUM_LEDS - 1
-            self.scanner_dir = -1
-        elif self.scanner_pos <= 0:
-            self.scanner_pos = 0
-            self.scanner_dir = 1
+        # Scanner movement — integer positions, crisp
+        self.tick += 1
+        if self.tick >= self.move_every:
+            self.tick = 0
+            self.scanner_pos += self.scanner_dir
+            if self.scanner_pos >= NUM_LEDS - 1:
+                self.scanner_pos = NUM_LEDS - 1
+                self.scanner_dir = -1
+            elif self.scanner_pos <= 0:
+                self.scanner_pos = 0
+                self.scanner_dir = 1
 
-        # Random firework
-        if now >= self.next_firework_time:
-            pixel = random.randint(0, NUM_LEDS - 1)
-            fr = random.randint(180, 255)
-            fg = random.randint(100, 255)
-            fb = random.randint(100, 255)
-            self.firework_pixels[pixel] = (fr, fg, fb, 0.5, 0)
-            self.next_firework_time = now + random.uniform(5, 15)
-
-        # Render
+        # Render — use RGB scaling for smooth falloff (APA102 brightness has only 31 steps)
         r, g, b = self.get_color()
+        master = self.fade_current / 0.15  # normalized 0-1 for fade to black
 
         for i in range(NUM_LEDS):
-            # Scanner glow — bright at center, fading trail
-            dist = abs(i - self.scanner_pos)
-            if dist < 0.5:
-                br = self.fade_current
-            elif dist < 1.5:
-                br = self.fade_current * 0.5
-            elif dist < 2.5:
-                br = self.fade_current * 0.15
-            else:
-                br = self.fade_current * 0.03
-
-            # Check for firework on this pixel
+            # Check for firework on this pixel first
             if i in self.firework_pixels:
-                fr, fg, fb, fbr, step = self.firework_pixels[i]
-                fbr *= 0.92  # decay
-                step += 1
-                if fbr < 0.01 or step > 30:
+                fr, fg, fb, fbr, fstep = self.firework_pixels[i]
+                fbr *= 0.88  # decay
+                fstep += 1
+                if fbr < 0.02 or fstep > 25:
                     del self.firework_pixels[i]
                 else:
-                    self.firework_pixels[i] = (fr, fg, fb, fbr, step)
-                    # Firework overrides scanner
-                    leds.set_pixel(i, fr, fg, fb, fbr)
+                    self.firework_pixels[i] = (fr, fg, fb, fbr, fstep)
+                    leds.set_pixel(i, int(fr * fbr), int(fg * fbr), int(fb * fbr), 0.3)
                     continue
 
-            leds.set_pixel(i, r, g, b, max(0, br))
+            # Scanner glow — one bright pixel, one dim neighbor
+            dist = abs(i - self.scanner_pos)
+            if dist == 0:
+                intensity = 1.0
+            elif dist == 1:
+                intensity = 0.12
+            else:
+                intensity = 0.0
+
+            intensity *= master
+
+            if intensity < 0.005:
+                leds.set_pixel(i, 0, 0, 0, 0)
+            else:
+                leds.set_pixel(i, int(r * intensity), int(g * intensity), int(b * intensity), 0.2)
 
         leds.show()
 
@@ -319,7 +317,7 @@ def runtime_loop(leds):
             idle.update(leds)
 
         step += 1
-        time.sleep(0.05)  # 20fps for smooth animations
+        time.sleep(0.055)  # ~18fps, scanner moves at ~6 positions/sec
 
 
 def main():
