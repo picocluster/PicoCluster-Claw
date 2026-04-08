@@ -9,6 +9,11 @@ RUN cd /usr/local/lib/node_modules/openclaw && npm install --no-save \
     @buape/carbon \
     @larksuiteoapi/node-sdk \
     @slack/web-api @slack/bolt @slack/socket-mode \
+    grammy \
+    discord.js \
+    whatsapp-web.js \
+    matrix-js-sdk \
+    irc-framework \
     2>/dev/null || true
 
 # Create non-root user
