@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  threadweaver:
+    build: .
+    container_name: threadweaver
+    restart: always
+    ports:
+      - "8000:8000"
+      - "5173:5173"
+    environment:
+      - LLM_PROVIDER=local
+      - LOCAL_BASE_URL=http://picocrush:8080/v1
+      - LOCAL_MODEL=Llama-3.2-3B-Instruct-Q4_K_M.gguf
+    extra_hosts:
+      - "picocrush:10.1.10.221"
