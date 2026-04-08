@@ -1,6 +1,9 @@
 FROM node:24-slim
 
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 RUN npm install -g openclaw
+# Install missing bundled channel plugin dependency
+RUN cd /usr/local/lib/node_modules/openclaw && npm install @buape/carbon 2>/dev/null || true
 
 # Create non-root user
 RUN useradd -m -s /bin/bash openclaw
