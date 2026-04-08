@@ -1,0 +1,14 @@
+[Unit]
+Description=PicoClaw LED status indicator
+After=network.target
+Wants=openclaw.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/picoclcaw/leds/picoclaw_status.py
+Restart=always
+RestartSec=5
+User=root
+
+[Install]
+WantedBy=multi-user.target
