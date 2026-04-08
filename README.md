@@ -6,10 +6,11 @@ A self-hosted AI agent appliance built on [PicoCluster](https://picocluster.com)
 
 ```
 picoclaw (RPi5 8GB)              picocrush (Orin Nano Super 8GB)
-├── OpenClaw gateway             ├── llama-server (llama.cpp)
-├── Browser automation           ├── GPU-accelerated inference
-├── WebChat dashboard            ├── Multiple GGUF models
-└── Agent orchestration          └── OpenAI-compatible API
+├── ThreadWeaver :5173           ├── llama-server (llama.cpp)
+├── OpenClaw gateway :18789      ├── GPU-accelerated inference
+├── Browser automation           ├── Multiple GGUF models
+├── Blinkt! LED status           ├── OpenAI-compatible API :8080
+└── Agent orchestration          └── CUDA / cuDNN / TensorRT
         │                                    │
         └──── HTTP (port 8080) ──────────────┘
 ```
@@ -54,11 +55,15 @@ This installs and configures:
 - **picocrush:** llama.cpp with CUDA, downloads models, starts llama-server
 - **picoclaw:** Node.js, OpenClaw, WebChat gateway
 
-### 4. Access your agent
+### 4. Access your AI
 
-- **WebChat:** Open `http://picoclaw:18789` in your browser (token: `picocluster-token`)
-- **Terminal:** `ssh picocluster@picoclaw` then `openclaw tui`
-- **API:** `curl http://picoclaw:18789/v1/chat/completions`
+| Interface | URL | Purpose |
+|-----------|-----|---------|
+| **ThreadWeaver** | `http://picoclaw:5173` | Chat UI with branching conversations, search, notebooks |
+| **OpenClaw WebChat** | `http://picoclaw:18789` | AI agent with browser automation and tools |
+| **OpenClaw TUI** | `ssh picocluster@picoclaw` then `openclaw tui` | Terminal-based agent chat |
+| **Blinkt! LEDs** | Physical (picoclaw) | Boot animation + runtime status indicator |
+| **llama-server API** | `http://picocrush:8080/v1` | OpenAI-compatible inference endpoint |
 
 ## Repository Structure
 
@@ -73,6 +78,17 @@ PicoClaw/
 │   │   └── rpi5_openclaw/          #   OpenClaw gateway (picoclaw)
 │   ├── site.yml                    #   Full provisioning playbook
 │   └── validate.yml                #   Smoke tests
+├── leds/                           # Blinkt! LED status indicators
+│   ├── apa102.py                   #   Unified APA102 driver (gpiod v1/v2)
+│   ├── picoclaw_status.py          #   Boot animation + runtime status (RPi5)
+│   ├── picocrush_status.py         #   Status daemon (Orin, reference only)
+│   ├── install-leds.sh             #   LED daemon installer
+│   └── picoclaw-leds.service       #   systemd service
+├── threadweaver/                   # ThreadWeaver chat UI
+│   ├── install-threadweaver.sh     #   Native install (git + venv + npm)
+│   ├── patch-llama-server.py       #   Patch for llama-server model discovery
+│   ├── Dockerfile                  #   Docker build (for larger storage)
+│   └── docker-compose.yml          #   Docker compose config
 ├── scripts/
 │   ├── imaging/                    # Image capture and management
 │   │   ├── jetson-shrink.sh        #   Shrink dd-captured Orin images
@@ -134,8 +150,24 @@ See [docs/picoclcaw-deployment-plan.md](docs/picoclcaw-deployment-plan.md) for t
 
 Apache 2.0
 
+## Services Overview
+
+| Service | Node | Port | Description |
+|---------|------|------|-------------|
+| **ThreadWeaver** | picoclaw | 5173 | LLM chat UI with branching conversations |
+| **OpenClaw Gateway** | picoclaw | 18789 | AI agent orchestrator + WebChat |
+| **OpenClaw Browser** | picoclaw | 18791 | Browser automation (internal) |
+| **Blinkt! LEDs** | picoclaw | GPIO | Boot animation + status indicator |
+| **llama-server** | picocrush | 8080 | GPU-accelerated LLM inference |
+
+Default credentials:
+- SSH: `picocluster` / `picocluster`
+- OpenClaw token: `picocluster-token`
+- llama-server: no auth (firewall-restricted to picoclaw)
+
 ## Links
 
 - [PicoCluster](https://picocluster.com)
 - [OpenClaw](https://github.com/openclaw/openclaw)
+- [ThreadWeaver](https://github.com/nosqltips/ThreadWeaver)
 - [llama.cpp](https://github.com/ggerganov/llama.cpp)
