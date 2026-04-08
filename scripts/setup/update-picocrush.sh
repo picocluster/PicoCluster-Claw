@@ -16,7 +16,7 @@ COMPONENT="${1:-all}"
 
 log() { echo "[$(date '+%H:%M:%S')] $*"; }
 
-DEFAULT_MODELS=("llama3.2:3b" "llama3.1:8b" "phi3.5:3.8b" "qwen2.5:3b")
+DEFAULT_MODELS=("llama3.2:3b" "llama3.1:8b" "phi3.5:3.8b" "qwen2.5:3b" "gemma3:4b" "deepseek-r1:7b" "starcoder2:3b" "llava:7b" "moondream:1.8b")
 
 update_ollama() {
   log "Updating Ollama..."

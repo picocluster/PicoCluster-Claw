@@ -18,6 +18,11 @@ MODELS=(
   "llama3.1:8b"
   "phi3.5:3.8b"
   "qwen2.5:3b"
+  "gemma3:4b"
+  "deepseek-r1:7b"
+  "starcoder2:3b"
+  "llava:7b"
+  "moondream:1.8b"
 )
 
 if (( EUID != 0 )); then

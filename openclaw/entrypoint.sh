@@ -34,7 +34,12 @@ cat > "$CONFIG" <<EOF
           {"id": "llama3.2:3b", "name": "Llama 3.2 3B"},
           {"id": "llama3.1:8b", "name": "Llama 3.1 8B"},
           {"id": "phi3.5:3.8b", "name": "Phi 3.5 Mini"},
-          {"id": "qwen2.5:3b", "name": "Qwen 2.5 3B"}
+          {"id": "qwen2.5:3b", "name": "Qwen 2.5 3B"},
+          {"id": "gemma3:4b", "name": "Gemma 3 4B"},
+          {"id": "deepseek-r1:7b", "name": "DeepSeek R1 7B"},
+          {"id": "starcoder2:3b", "name": "StarCoder2 3B"},
+          {"id": "llava:7b", "name": "LLaVA 7B (Vision)"},
+          {"id": "moondream:1.8b", "name": "Moondream 1.8B (Vision)"}
         ]
       }
     }
