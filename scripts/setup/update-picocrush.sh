@@ -1,10 +1,10 @@
 #!/bin/bash
 # update-picocrush.sh — Update PicoClaw software on Orin Nano
 # Usage: sudo bash update-picocrush.sh [component]
-#        sudo bash update-picocrush.sh             # Update all
-#        sudo bash update-picocrush.sh llama        # Rebuild llama.cpp only
-#        sudo bash update-picocrush.sh models       # Download any missing models
-#        sudo bash update-picocrush.sh add-model URL # Add a new model from URL
+#        sudo bash update-picocrush.sh             # Update Ollama + pull models
+#        sudo bash update-picocrush.sh ollama       # Update Ollama only
+#        sudo bash update-picocrush.sh models       # Pull any missing default models
+#        sudo bash update-picocrush.sh pull <model> # Pull a specific model
 set -euo pipefail
 
 if (( EUID != 0 )); then
@@ -13,91 +13,54 @@ if (( EUID != 0 )); then
 fi
 
 COMPONENT="${1:-all}"
-LLAMA_DIR="/mnt/nvme/llama.cpp"
-MODEL_DIR="/mnt/nvme/models"
-USER="picocluster"
 
 log() { echo "[$(date '+%H:%M:%S')] $*"; }
 
-update_llama() {
-  log "Updating llama.cpp..."
-  cd "$LLAMA_DIR"
-  sudo -u "$USER" git pull --ff-only 2>&1 | tail -3
-  cd build
-  log "Rebuilding (this takes ~10 minutes)..."
-  sudo -u "$USER" cmake .. -DGGML_CUDA=ON -DCMAKE_CUDA_ARCHITECTURES=87
-  sudo -u "$USER" make -j$(nproc) 2>&1 | tail -5
-  systemctl restart llama-server
-  # Wait for health
-  for i in $(seq 1 30); do
-    if curl -s --max-time 2 http://127.0.0.1:8080/health | grep -q '"ok"'; then
-      log "llama-server restarted and healthy"
-      return
-    fi
-    sleep 2
-  done
-  log "WARNING: llama-server may not be healthy"
+DEFAULT_MODELS=("llama3.2:3b" "llama3.1:8b" "phi3.5:3.8b" "qwen2.5:3b")
+
+update_ollama() {
+  log "Updating Ollama..."
+  curl -fsSL https://ollama.ai/install.sh | sh
+  systemctl restart ollama
+  sleep 3
+  log "Ollama $(ollama --version 2>/dev/null)"
 }
 
 update_models() {
-  log "Checking models..."
-  declare -A MODELS
-  MODELS["Llama-3.2-3B-Instruct-Q4_K_M.gguf"]="https://huggingface.co/bartowski/Llama-3.2-3B-Instruct-GGUF/resolve/main/Llama-3.2-3B-Instruct-Q4_K_M.gguf"
-  MODELS["Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf"]="https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf"
-  MODELS["Phi-3.5-mini-instruct-Q4_K_M.gguf"]="https://huggingface.co/bartowski/Phi-3.5-mini-instruct-GGUF/resolve/main/Phi-3.5-mini-instruct-Q4_K_M.gguf"
-  MODELS["Qwen2.5-3B-Instruct-Q4_K_M.gguf"]="https://huggingface.co/bartowski/Qwen2.5-3B-Instruct-GGUF/resolve/main/Qwen2.5-3B-Instruct-Q4_K_M.gguf"
-
-  for model in "${!MODELS[@]}"; do
-    if [[ -f "$MODEL_DIR/$model" ]]; then
-      log "  $model: exists ($(du -h "$MODEL_DIR/$model" | cut -f1))"
-    else
-      log "  $model: downloading..."
-      sudo -u "$USER" wget -q --show-progress -O "$MODEL_DIR/$model" "${MODELS[$model]}" || {
-        log "  WARNING: Failed to download $model"
-        rm -f "$MODEL_DIR/$model"
-      }
-    fi
+  log "Pulling default models..."
+  for model in "${DEFAULT_MODELS[@]}"; do
+    log "  $model..."
+    ollama pull "$model" 2>&1 | tail -1
   done
-}
-
-add_model() {
-  local url="$1"
-  local filename=$(basename "$url")
-  log "Downloading $filename..."
-  sudo -u "$USER" wget -q --show-progress -O "$MODEL_DIR/$filename" "$url"
-  log "Downloaded to $MODEL_DIR/$filename"
-  log "Switch to it with: sudo model-switch $filename"
-  model-switch --list
 }
 
 case "$COMPONENT" in
   all)
-    update_llama
+    update_ollama
     update_models
     ;;
-  llama)
-    update_llama
+  ollama)
+    update_ollama
     ;;
   models)
     update_models
     ;;
-  add-model)
+  pull)
     if [[ -z "${2:-}" ]]; then
-      echo "Usage: $0 add-model <huggingface-url>"
-      echo "Example: $0 add-model https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-Q4_K_M.gguf"
+      echo "Usage: $0 pull <model>"
+      echo "Example: $0 pull gemma2:2b"
       exit 1
     fi
-    add_model "$2"
+    ollama pull "$2"
     ;;
   *)
-    echo "Usage: $0 [all|llama|models|add-model URL]"
+    echo "Usage: $0 [all|ollama|models|pull <model>]"
     exit 1
     ;;
 esac
 
 log ""
-log "=== Update complete ==="
-log "  llama-server: $(systemctl is-active llama-server)"
-log "  Active model: $(grep -oP '(?<=--model )\S+' /etc/systemd/system/llama-server.service | xargs basename)"
-log "  Available models:"
-model-switch --list 2>/dev/null | grep "    \|  \*" || ls "$MODEL_DIR"/*.gguf 2>/dev/null
+log "=== Status ==="
+log "  Ollama: $(systemctl is-active ollama)"
+log "  Models:"
+ollama list 2>&1 | sed 's/^/    /'

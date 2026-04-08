@@ -34,8 +34,8 @@ from apa102 import Blinkt, sweep, fill, pulse, rainbow_cycle, flash, NUM_LEDS
 
 OPENCLAW_URL = "http://127.0.0.1:18789/__openclaw__/canvas/"
 THREADWEAVER_URL = "http://127.0.0.1:8000/api/settings"
-LLAMA_SLOTS_URL = "http://10.1.10.221:8080/slots"
-LLAMA_HEALTH_URL = "http://10.1.10.221:8080/health"
+LLAMA_SLOTS_URL = "http://10.1.10.221:11434/api/ps"
+LLAMA_HEALTH_URL = "http://10.1.10.221:11434/api/tags"
 BOOT_TIMEOUT = 120
 
 running = True
@@ -57,14 +57,12 @@ def http_check(url, timeout=2):
 
 
 def check_inference_active():
-    """Check if llama-server on picocrush is actively generating tokens."""
+    """Check if Ollama on picocrush is actively running a model."""
     try:
         resp = urllib.request.urlopen(LLAMA_SLOTS_URL, timeout=2)
-        slots = json.loads(resp.read())
-        for slot in slots:
-            if slot.get("state", 0) != 0:
-                return True
-        return False
+        data = json.loads(resp.read())
+        models = data.get("models", [])
+        return len(models) > 0
     except Exception:
         return False
 

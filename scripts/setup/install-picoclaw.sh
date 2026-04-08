@@ -149,7 +149,7 @@ echo ""
 log "  ThreadWeaver:  $(curl -sf --max-time 5 http://127.0.0.1:8000/api/settings >/dev/null 2>&1 && echo 'OK' || echo 'STARTING')"
 log "  OpenClaw:      $(curl -sf --max-time 5 http://127.0.0.1:18789/__openclaw__/canvas/ >/dev/null 2>&1 && echo 'OK' || echo 'STARTING')"
 log "  Blinkt! LEDs:  $(systemctl is-active picoclaw-leds 2>/dev/null || echo 'n/a')"
-log "  llama-server:  $(curl -sf --max-time 5 http://${CRUSH_IP}:8080/health >/dev/null 2>&1 && echo 'OK' || echo 'NOT REACHABLE')"
+log "  Ollama:        $(curl -sf --max-time 5 http://${CRUSH_IP}:11434/api/tags >/dev/null 2>&1 && echo 'OK' || echo 'NOT REACHABLE')"
 
 log ""
 log "============================================"

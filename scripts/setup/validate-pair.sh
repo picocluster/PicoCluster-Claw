@@ -56,14 +56,14 @@ echo ""
 
 # --- picocrush services ---
 echo "--- picocrush (Orin Nano) ---"
-check "llama-server health" "curl -sf --max-time 5 http://$CRUSH_IP:8080/health | grep -q ok"
-check "llama-server models" "curl -sf --max-time 5 http://$CRUSH_IP:8080/v1/models | grep -q model"
+check "Ollama health" "curl -sf --max-time 5 http://$CRUSH_IP:11434/api/tags | grep -q models"
+check "Ollama models" "curl -sf --max-time 5 http://$CRUSH_IP:11434/api/tags | grep -q name"
 warn_check "GPU accessible" "ssh -o ConnectTimeout=5 picocluster@$CRUSH_IP 'nvidia-smi' 2>/dev/null"
-warn_check "llama-server service enabled" "ssh -o ConnectTimeout=5 picocluster@$CRUSH_IP 'systemctl is-enabled llama-server' 2>/dev/null"
+warn_check "Ollama service enabled" "ssh -o ConnectTimeout=5 picocluster@$CRUSH_IP 'systemctl is-enabled ollama' 2>/dev/null"
 
 # Inference test
 echo -n "  "
-INFERENCE=$(curl -sf --max-time 30 "http://$CRUSH_IP:8080/v1/chat/completions" \
+INFERENCE=$(curl -sf --max-time 30 "http://$CRUSH_IP:11434/v1/chat/completions" \
   -H "Content-Type: application/json" \
   -d '{"model":"test","messages":[{"role":"user","content":"Say OK"}],"max_tokens":5}' 2>/dev/null)
 if echo "$INFERENCE" | grep -q '"content"'; then
@@ -99,7 +99,7 @@ echo ""
 
 # --- Model info ---
 echo "--- Model ---"
-ACTIVE_MODEL=$(curl -sf --max-time 5 "http://$CRUSH_IP:8080/v1/models" 2>/dev/null | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0]['id'])" 2>/dev/null || echo "unknown")
+ACTIVE_MODEL=$(curl -sf --max-time 5 "http://$CRUSH_IP:11434/api/tags" 2>/dev/null | python3 -c "import sys,json; models=json.load(sys.stdin).get('models',[]); print(', '.join(m['name'] for m in models) if models else 'none loaded')" 2>/dev/null || echo "unknown")
 echo "  Active model: $ACTIVE_MODEL"
 GPU_MEM=$(ssh -o ConnectTimeout=5 picocluster@$CRUSH_IP 'nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader' 2>/dev/null || echo "unknown")
 echo "  GPU memory: $GPU_MEM"

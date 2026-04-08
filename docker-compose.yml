@@ -14,8 +14,8 @@ services:
       - "8000:8000"
     environment:
       - LLM_PROVIDER=local
-      - LOCAL_BASE_URL=http://picocrush:8080/v1
-      - LOCAL_MODEL=${DEFAULT_MODEL:-Llama-3.2-3B-Instruct-Q4_K_M.gguf}
+      - LOCAL_BASE_URL=http://picocrush:11434/v1
+      - LOCAL_MODEL=${DEFAULT_MODEL:-llama3.2:3b}
     extra_hosts:
       - "picocrush:${CRUSH_IP:-10.1.10.221}"
     healthcheck:
@@ -32,8 +32,8 @@ services:
       - "18789:18789"
     environment:
       - OPENCLAW_TOKEN=${OPENCLAW_TOKEN:-picocluster-token}
-      - LOCAL_BASE_URL=http://picocrush:8080/v1
-      - LOCAL_MODEL=${DEFAULT_MODEL:-Llama-3.2-3B-Instruct-Q4_K_M.gguf}
+      - LOCAL_BASE_URL=http://picocrush:11434/v1
+      - LOCAL_MODEL=${DEFAULT_MODEL:-llama3.2:3b}
     extra_hosts:
       - "picocrush:${CRUSH_IP:-10.1.10.221}"
     volumes:

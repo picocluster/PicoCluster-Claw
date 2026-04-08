@@ -28,11 +28,11 @@ cat > "$CONFIG" <<EOF
   "models": {
     "providers": {
       "local": {
-        "baseUrl": "${LOCAL_BASE_URL:-http://picocrush:8080/v1}",
+        "baseUrl": "${LOCAL_BASE_URL:-http://picocrush:11434/v1}",
         "apiKey": "none",
         "models": [
           {
-            "id": "${LOCAL_MODEL:-Llama-3.2-3B-Instruct-Q4_K_M.gguf}",
+            "id": "${LOCAL_MODEL:-llama3.2:3b}",
             "name": "Llama 3.2 3B"
           }
         ]
