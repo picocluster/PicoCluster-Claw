@@ -12,6 +12,7 @@ cat > "$CONFIG" <<EOF
       "token": "${OPENCLAW_TOKEN:-picocluster-token}"
     },
     "bind": "lan",
+    "trustedProxies": ["172.16.0.0/12", "127.0.0.1", "::1"],
     "controlUi": {
       "allowedOrigins": [
         "http://localhost:18789",
@@ -20,7 +21,8 @@ cat > "$CONFIG" <<EOF
         "https://127.0.0.1:18790",
         "http://picoclaw:18789",
         "http://10.1.10.220:18789"
-      ]
+      ],
+      "dangerouslyDisableDeviceAuth": true
     }
   },
   "models": {
