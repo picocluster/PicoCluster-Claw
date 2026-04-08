@@ -1,0 +1,4 @@
+:18790 {
+	tls internal
+	reverse_proxy localhost:18789
+}

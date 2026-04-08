@@ -127,7 +127,8 @@ fi
 # 5. Firewall
 # ============================================================
 log "--- Step 5/5: Firewall ---"
-ufw allow 18789/tcp comment "OpenClaw WebChat" 2>/dev/null || true
+ufw allow 18789/tcp comment "OpenClaw Gateway" 2>/dev/null || true
+ufw allow 18790/tcp comment "OpenClaw Dashboard (HTTPS via Caddy)" 2>/dev/null || true
 ufw deny 18791/tcp comment "OpenClaw control" 2>/dev/null || true
 ufw deny 18792/tcp comment "OpenClaw CDP relay" 2>/dev/null || true
 ufw allow 5173/tcp comment "ThreadWeaver UI" 2>/dev/null || true

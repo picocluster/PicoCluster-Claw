@@ -44,5 +44,17 @@ services:
       timeout: 5s
       retries: 3
 
+  caddy:
+    image: caddy:alpine
+    container_name: caddy
+    restart: always
+    network_mode: "host"
+    volumes:
+      - ./openclaw/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
 volumes:
   openclaw-data:
+  caddy-data:
+  caddy-config:
