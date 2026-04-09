@@ -134,21 +134,40 @@ def boot_sequence(leds):
 # ─── Idle effects ───────────────────────────────────────────
 
 class IdleEngine:
-    """Manages the idle state with scanner, color drift, fade, and fireworks."""
+    """Manages the idle state with scanner, color drift, fade, and look-around behavior."""
+
+    # Behavior modes
+    MODE_SCAN = "scan"          # Normal back-and-forth scanning
+    MODE_LOOK_AROUND = "look"   # Stop center, look left, pause, look right, pause, resume
 
     def __init__(self):
         self.scanner_pos = 0
         self.scanner_dir = 1
-        self.scanner_speed = 0  # ticks between moves
         self.tick = 0
-        self.move_every = 3  # move one pixel every N frames (20fps / 3.3 = ~6 moves/sec)
+        self.move_every = 3  # move one pixel every N frames (~6 moves/sec at 18fps)
         self.color_idx = 0.0
         self.color_speed = 0.003
-        self.brightness_base = 0.15
         self.fade_target = 0.15
         self.fade_current = 0.15
         self.next_fade_time = time.time() + random.uniform(15, 40)
-        self.firework_pixels = {}  # {pixel_idx: (r, g, b, brightness, decay_step)}
+        self.firework_pixels = {}
+
+        # Behavior state
+        self.mode = self.MODE_SCAN
+        self.next_look_time = time.time() + random.uniform(8, 18)
+        self.look_step = 0      # which step of the look-around sequence
+        self.look_pause = 0     # frames to pause before next look step
+        # Look-around sequence: (target_position, pause_frames_after)
+        self.look_sequence = [
+            (3, 20),    # move to center, pause
+            (0, 25),    # look left, pause
+            (3, 15),    # back to center, brief pause
+            (7, 25),    # look right, pause
+            (3, 15),    # back to center, pause
+        ]
+        # Blink state
+        self.next_blink_time = time.time() + random.uniform(3, 8)
+        self.blink_frames = 0  # countdown when blinking
 
     def get_color(self):
         """Get current scanner color from palette with smooth interpolation."""
@@ -182,21 +201,63 @@ class IdleEngine:
         diff = self.fade_target - self.fade_current
         self.fade_current += diff * 0.03
 
-        # Scanner movement — integer positions, crisp
+        # Check if it's time to switch to look-around mode
+        if self.mode == self.MODE_SCAN and now >= self.next_look_time:
+            self.mode = self.MODE_LOOK_AROUND
+            self.look_step = 0
+            self.look_pause = 0
+
+        # Movement
         self.tick += 1
         if self.tick >= self.move_every:
             self.tick = 0
-            self.scanner_pos += self.scanner_dir
-            if self.scanner_pos >= NUM_LEDS - 1:
-                self.scanner_pos = NUM_LEDS - 1
-                self.scanner_dir = -1
-            elif self.scanner_pos <= 0:
-                self.scanner_pos = 0
-                self.scanner_dir = 1
+
+            if self.mode == self.MODE_SCAN:
+                # Normal scanning
+                self.scanner_pos += self.scanner_dir
+                if self.scanner_pos >= NUM_LEDS - 1:
+                    self.scanner_pos = NUM_LEDS - 1
+                    self.scanner_dir = -1
+                elif self.scanner_pos <= 0:
+                    self.scanner_pos = 0
+                    self.scanner_dir = 1
+
+            elif self.mode == self.MODE_LOOK_AROUND:
+                if self.look_pause > 0:
+                    # Pausing — hold position
+                    self.look_pause -= 1
+                else:
+                    # Move toward current look target
+                    target, pause_after = self.look_sequence[self.look_step]
+                    if self.scanner_pos < target:
+                        self.scanner_pos += 1
+                    elif self.scanner_pos > target:
+                        self.scanner_pos -= 1
+                    else:
+                        # Arrived at target — pause then next step
+                        self.look_pause = pause_after
+                        self.look_step += 1
+                        if self.look_step >= len(self.look_sequence):
+                            # Done looking around — resume scanning
+                            self.mode = self.MODE_SCAN
+                            self.scanner_dir = random.choice([-1, 1])
+                            self.next_look_time = now + random.uniform(10, 25)
 
         # Render — use RGB scaling for smooth falloff (APA102 brightness has only 31 steps)
         r, g, b = self.get_color()
         master = self.fade_current / 0.15  # normalized 0-1 for fade to black
+
+        # Blink — quick off/on
+        if now >= self.next_blink_time and self.blink_frames == 0:
+            self.blink_frames = 4  # ~220ms at 18fps (2 frames off, 2 frames dim)
+            self.next_blink_time = now + random.uniform(3, 10)
+        if self.blink_frames > 0:
+            self.blink_frames -= 1
+            if self.blink_frames >= 2:
+                leds.clear()
+                leds.show()
+                return
+            master *= 0.3
 
         for i in range(NUM_LEDS):
             # Check for firework on this pixel first
