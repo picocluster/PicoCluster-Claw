@@ -1,6 +1,6 @@
 # PicoClaw FAQ
 
-Frequently asked questions about running your PicoClaw cluster. If you don't find your answer here, check [access-guide.md](access-guide.md) for connection details, [mcp-tools.md](mcp-tools.md) for tool reference, or [examples.md](examples.md) for things to try.
+Frequently asked questions about running your PicoClaw cluster. 26 questions across getting started, models, tools, operations, and privacy. If you don't find your answer here, check [access-guide.md](access-guide.md) for connection details, [mcp-tools.md](mcp-tools.md) for tool reference, or [examples.md](examples.md) for things to try.
 
 ---
 
@@ -263,7 +263,32 @@ ThreadWeaver also supports connecting to **any stdio-based MCP server** dynamica
 
 ---
 
-### 16. Why don't smaller models use tools as well as larger ones?
+### 16. Why doesn't the chat respond when I use gemma3, llava, or moondream?
+
+Some Ollama models don't support **tool calling** — the structured JSON format ThreadWeaver uses to let the LLM invoke MCP tools. When you send a chat request, ThreadWeaver always includes the 28 tool schemas. If the model rejects tool schemas, Ollama returns a 400 error and the chat hangs with no visible reply.
+
+Known models that **don't** support tools (as of the Beta ship):
+
+- `gemma3:4b` — general chat, but no tool support
+- `llava:7b` — vision model, tools are secondary
+- `moondream:1.8b` — tiny vision model, no tool support
+- `starcoder2:3b` — code completion model, no tool support
+
+Known models that **do** support tools (safe defaults):
+
+- `llama3.2:3b` ← **default local model**
+- `llama3.1:8b` — best quality, slower
+- `phi3.5:3.8b`
+- `qwen2.5:3b`
+- `deepseek-r1:7b`
+
+**Fix:** open ThreadWeaver → Settings → Local provider → change the model to one of the tool-capable options. The default after install is `llama3.2:3b`, which is known to work.
+
+**Symptom to recognize:** you click Send, the spinner runs briefly, then stops, and no reply appears. Check the container logs with `sudo docker logs threadweaver --tail 40 | grep -v settings` and look for `openai.BadRequestError: ... does not support tools`. You can still use these models for vision (upload image + ask "describe this") or raw chat if you disable tool use in Settings (if that option is available in your ThreadWeaver version).
+
+---
+
+### 17. Why don't smaller models use tools as well as larger ones?
 
 Tool use is a form of structured output — the model has to produce valid JSON in a specific schema, decide *when* to use a tool versus answer directly, and chain multiple tool calls when a question requires several steps. Bigger models with more parameters generally handle this better because they've seen more examples of structured tool calling during training.
 
@@ -281,7 +306,7 @@ For tool-heavy tasks, either use `llama3.1:8b` or switch to an external provider
 
 ## Cluster operations
 
-### 17. How do I shut down or restart the cluster?
+### 18. How do I shut down or restart the cluster?
 
 Three ways, pick your favorite:
 
@@ -309,7 +334,7 @@ Whichever method you use, the Blinkt! LEDs show a blue pulse sequence before the
 
 ---
 
-### 18. How do I update ThreadWeaver or OpenClaw to newer versions?
+### 19. How do I update ThreadWeaver or OpenClaw to newer versions?
 
 Use the built-in update scripts:
 
@@ -330,7 +355,7 @@ These scripts `git pull` the PicoClaw repo first, then run whatever update is ne
 
 ---
 
-### 19. What do the LED colors and animations mean?
+### 20. What do the LED colors and animations mean?
 
 The Blinkt! strip on picoclaw shows cluster status at a glance:
 
@@ -349,7 +374,7 @@ The LED API is reachable at `http://picoclaw:7777/` — you can drive it from yo
 
 ---
 
-### 20. How do I check if everything is healthy?
+### 21. How do I check if everything is healthy?
 
 On picoclaw:
 
@@ -373,7 +398,7 @@ The control panel (`http://picoclaw/`) also pulls some of this data live.
 
 ---
 
-### 21. One of the services isn't responding — what do I do?
+### 22. One of the services isn't responding — what do I do?
 
 First, check `pc-status` on both nodes to see which service is actually down. Then:
 
@@ -410,7 +435,7 @@ If all else fails, pull the power to both nodes, wait 10 seconds, and boot them 
 
 ## Privacy and security
 
-### 22. Is my data private when I use the local LLM?
+### 23. Is my data private when I use the local LLM?
 
 Yes. The `local` provider runs inference on picocrush (Jetson Orin Nano) using Ollama, and the data path is entirely inside your LAN:
 
@@ -424,7 +449,7 @@ Nothing leaves your network. The model weights are stored locally on picocrush's
 
 ---
 
-### 23. What's the difference between ThreadWeaver and OpenClaw?
+### 24. What's the difference between ThreadWeaver and OpenClaw?
 
 They're both agents, but different styles:
 
@@ -436,7 +461,7 @@ Both run simultaneously on picoclaw, both talk to the same Ollama backend on pic
 
 ---
 
-### 24. How do I change the default password and tokens?
+### 25. How do I change the default password and tokens?
 
 **SSH password** (do this first — the default `picocluster` / `picocluster` is well-known):
 
@@ -470,7 +495,7 @@ Update the `pc-restart` / `pc-shutdown` wrapper scripts to pass the new token, o
 
 ---
 
-### 25. Can I expose PicoClaw to the internet safely?
+### 26. Can I expose PicoClaw to the internet safely?
 
 **Not directly.** PicoClaw's default firewall only accepts connections from your LAN, and the ThreadWeaver/OpenClaw dashboards require an SSH tunnel from a trusted machine.
 
