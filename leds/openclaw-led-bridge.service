@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenClaw LED Bridge
+After=picoclaw-leds.service openclaw.service
+Wants=picoclaw-leds.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/picoclcaw/leds/openclaw_led_bridge.py
+Restart=always
+RestartSec=10
+User=root
+
+[Install]
+WantedBy=multi-user.target

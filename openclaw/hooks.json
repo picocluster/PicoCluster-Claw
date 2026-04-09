@@ -1,0 +1,20 @@
+{
+  "hooks": [
+    {
+      "event": "agent:run:start",
+      "command": "curl -sf -X POST http://host.docker.internal:7777/set_status -d '{\"color\":\"purple\",\"message\":\"thinking\"}' || true"
+    },
+    {
+      "event": "agent:tool:start",
+      "command": "curl -sf -X POST http://host.docker.internal:7777/set_status -d '{\"color\":\"cyan\",\"message\":\"using tool\"}' || true"
+    },
+    {
+      "event": "agent:run:end",
+      "command": "curl -sf -X POST http://host.docker.internal:7777/pulse_success || true"
+    },
+    {
+      "event": "agent:run:error",
+      "command": "curl -sf -X POST http://host.docker.internal:7777/pulse_error || true"
+    }
+  ]
+}
