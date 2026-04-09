@@ -128,7 +128,8 @@ fi
 # ============================================================
 log "--- Step 5/5: Firewall ---"
 ufw allow 80/tcp comment "PicoClaw Portal" 2>/dev/null || true
-ufw allow from 172.16.0.0/12 to any port 7777 comment "LED API from Docker" 2>/dev/null || true
+ufw allow 7777/tcp comment "LED API" 2>/dev/null || true
+ufw allow 8888/tcp comment "Shutdown API" 2>/dev/null || true
 ufw allow 18789/tcp comment "OpenClaw Gateway" 2>/dev/null || true
 ufw allow 18790/tcp comment "OpenClaw Dashboard (HTTPS via Caddy)" 2>/dev/null || true
 ufw allow 5174/tcp comment "ThreadWeaver HTTPS (via Caddy)" 2>/dev/null || true
