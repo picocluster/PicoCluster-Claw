@@ -44,6 +44,18 @@ services:
       timeout: 5s
       retries: 3
 
+  portal:
+    image: nginx:alpine
+    container_name: portal
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./portal/index.html:/usr/share/nginx/html/index.html:ro
+      - ./portal/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    extra_hosts:
+      - "picocrush:${CRUSH_IP:-10.1.10.221}"
+
   caddy:
     image: caddy:alpine
     container_name: caddy

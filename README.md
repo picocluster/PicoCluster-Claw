@@ -1,29 +1,31 @@
 # PicoClaw
 
-A self-hosted AI agent appliance built on [PicoCluster](https://picocluster.com) hardware. PicoClaw pairs a Raspberry Pi 5 running [OpenClaw](https://github.com/openclaw/openclaw) with an NVIDIA Jetson Orin Nano running local LLM inference — giving you a private, always-on AI agent for under $2/month in electricity.
+A self-hosted AI agent appliance built on [PicoCluster](https://picocluster.com) hardware. PicoClaw pairs a Raspberry Pi 5 running [OpenClaw](https://github.com/openclaw/openclaw) and [ThreadWeaver](https://github.com/nosqltips/ThreadWeaver) with an NVIDIA Jetson Orin Nano running [Ollama](https://ollama.com) for local LLM inference — giving you a private, always-on AI for under $2/month in electricity.
 
 ## Architecture
 
 ```
-picoclaw (RPi5 8GB)              picocrush (Orin Nano Super 8GB)
-├── ThreadWeaver :5173           ├── llama-server (llama.cpp)
-├── OpenClaw gateway :18789      ├── GPU-accelerated inference
-├── Browser automation           ├── Multiple GGUF models
-├── Blinkt! LED status           ├── OpenAI-compatible API :8080
-└── Agent orchestration          └── CUDA / cuDNN / TensorRT
-        │                                    │
-        └──── HTTP (port 8080) ──────────────┘
+picoclaw (RPi5 8GB)                picocrush (Orin Nano Super 8GB)
+├── Portal :80                     ├── Ollama :11434
+├── ThreadWeaver :5173             ├── 9 LLM models (GPU-accelerated)
+├── OpenClaw Gateway :18789        ├── Vision, Code, Reasoning models
+├── Caddy HTTPS proxy :18790       ├── OpenAI-compatible API
+├── Blinkt! LED status             └── CUDA / cuDNN / TensorRT
+└── Docker containers                      │
+        │                                  │
+        └──── HTTP (port 11434) ───────────┘
 ```
 
 ## Hardware
 
 | Component | Role | Power |
 |-----------|------|------:|
-| Raspberry Pi 5 (8GB) | Agent orchestrator | ~3-7.5W |
-| NVIDIA Jetson Orin Nano Super (8GB) | LLM inference | ~6-20W |
-| MicroSD (RPi5, 64GB+) | Boot + OS |  |
-| NVMe SSD (Orin, 256GB+) | Models + llama.cpp |  |
-| PicoCluster case + 50W PSU | Enclosure + power |  |
+| Raspberry Pi 5 (8GB) | Web UIs, agent orchestrator | ~3-7.5W |
+| NVIDIA Jetson Orin Nano Super (8GB) | LLM inference (Ollama) | ~6-20W |
+| MicroSD 128GB (both nodes) | Boot + OS | |
+| NVMe SSD 256GB+ (Orin) | Model storage | |
+| PicoCluster case + 50W PSU | Enclosure + power | |
+| Pimoroni Blinkt! (RPi5) | LED status indicator | |
 
 **Total power:** ~14W idle, ~20W typical, ~35W peak
 
@@ -33,102 +35,107 @@ picoclaw (RPi5 8GB)              picocrush (Orin Nano Super 8GB)
 
 Flash the PicoClaw images to both nodes using `dd` or your preferred imaging tool.
 
-### 2. Configure the pair
+### 2. Install picocrush (Orin Nano)
 
 ```bash
-# On picoclaw (RPi5):
-sudo ./scripts/setup/configure-pair.sh picoclaw
-
-# On picocrush (Orin Nano):
-sudo ./scripts/setup/configure-pair.sh picocrush
+sudo bash install-picocrush.sh
 ```
 
-### 3. Run Ansible provisioning
+Installs Ollama with CUDA, pulls 9 default models, configures firewall and power mode.
+
+### 3. Install picoclaw (RPi5)
 
 ```bash
-# From picoclaw:
-cd ansible
-ansible-playbook -i inventory/cluster.yml site.yml --become
+sudo bash install-picoclaw.sh
 ```
 
-This installs and configures:
-- **picocrush:** llama.cpp with CUDA, downloads models, starts llama-server
-- **picoclaw:** Node.js, OpenClaw, WebChat gateway
+Installs Docker containers (ThreadWeaver, OpenClaw, Portal, Caddy), Blinkt! LED daemon, configures firewall.
 
 ### 4. Access your AI
 
-| Interface | URL | Purpose |
-|-----------|-----|---------|
-| **ThreadWeaver** | `http://picoclaw:5173` | Chat UI with branching conversations, search, notebooks |
-| **OpenClaw Dashboard** | `https://localhost:18790` * | AI agent with browser automation and tools |
-| **OpenClaw TUI** | `ssh picocluster@picoclaw` then `openclaw tui` | Terminal-based agent chat |
-| **Blinkt! LEDs** | Physical (picoclaw) | Boot animation + runtime status indicator |
-| **llama-server API** | `http://picocrush:8080/v1` | OpenAI-compatible inference endpoint |
+Open **http://picoclaw** in your browser for the PicoClaw portal with links to all services.
 
-\* OpenClaw's dashboard requires HTTPS. Set up an SSH tunnel first:
+| Interface | URL | Notes |
+|-----------|-----|-------|
+| **PicoClaw Portal** | `http://picoclaw` | Landing page with status and docs |
+| **ThreadWeaver** | `http://picoclaw:5173` | Chat UI — works directly over HTTP |
+| **OpenClaw Dashboard** | `https://localhost:18790` | Requires SSH tunnel (see below) |
+| **OpenClaw TUI** | `ssh picocluster@picoclaw` then `openclaw tui` | Terminal chat |
+| **Ollama API** | `http://picocrush:11434/v1` | OpenAI-compatible endpoint |
+
+**SSH tunnel for OpenClaw Dashboard:**
 ```bash
-ssh -L 18790:localhost:18790 -L 5174:localhost:5174 picocluster@picoclaw
+ssh -L 18790:localhost:18790 picocluster@picoclaw
 ```
-Then open `https://localhost:18790` (token: `picocluster-token`).
+Then open `https://localhost:18790` (token: `picocluster-token`)
 
 See [docs/access-guide.md](docs/access-guide.md) for all access methods including Tailscale, Telegram, and mobile.
+
+## Models
+
+9 models installed by default (~27GB on NVMe). Ollama manages loading/unloading automatically.
+
+| Model | Size | Type |
+|-------|-----:|------|
+| llama3.2:3b | 2.0 GB | General (primary) |
+| llama3.1:8b | 4.9 GB | General (quality) |
+| gemma3:4b | 3.3 GB | General (multilingual) |
+| phi3.5:3.8b | 2.2 GB | Reasoning |
+| deepseek-r1:7b | 4.7 GB | Reasoning (chain-of-thought) |
+| qwen2.5:3b | 1.9 GB | Code / structured output |
+| starcoder2:3b | 1.7 GB | Code generation |
+| llava:7b | 4.7 GB | Vision (image understanding) |
+| moondream:1.8b | 1.7 GB | Vision (lightweight) |
+
+```bash
+# Add more models on picocrush:
+ollama pull <model>
+ollama list
+```
+
+## Management
+
+| Task | Command |
+|------|---------|
+| Update ThreadWeaver | `sudo bash /opt/picoclcaw/scripts/setup/update-threadweaver.sh` |
+| Update all containers | `sudo bash /opt/picoclcaw/scripts/setup/update-picoclaw.sh` |
+| Update Ollama + models | `sudo bash /opt/picoclcaw/scripts/setup/update-picocrush.sh` |
+| Container status | `cd /opt/picoclcaw && sudo docker compose ps` |
+| View logs | `cd /opt/picoclcaw && sudo docker compose logs -f` |
+| Restart services | `cd /opt/picoclcaw && sudo docker compose restart` |
+| Add a model | `ssh picocrush` then `ollama pull <model>` |
+| Validate cluster | `bash /opt/picoclcaw/scripts/setup/validate-pair.sh` |
+
+## Blinkt! LED Status
+
+The Pimoroni Blinkt! on picoclaw provides visual feedback:
+
+- **Scanning eye**: Idle — color-shifting Larson scanner with blink and look-around behaviors
+- **Green/cyan chase**: LLM inference active
+- **Amber pulse**: Service degraded
+- **Red pulse**: Services down
+- **Boot sequence**: Rainbow → blue sweep → amber progress → green ready
 
 ## Repository Structure
 
 ```
 PicoClaw/
+├── docker-compose.yml              # All services (ThreadWeaver, OpenClaw, Portal, Caddy)
+├── portal/                         # PicoClaw landing page (nginx on port 80)
+├── openclaw/                       # OpenClaw Dockerfile + config
+├── threadweaver/                   # ThreadWeaver Dockerfile + patches
+├── leds/                           # Blinkt! LED driver and status daemon
 ├── ansible/                        # Ansible provisioning playbooks
-│   ├── inventory/cluster.yml       #   Node IPs and SSH config
-│   ├── group_vars/                 #   Shared and per-node variables
-│   ├── roles/
-│   │   ├── common/                 #   Base setup (both nodes)
-│   │   ├── orin_inference/         #   llama.cpp + models (picocrush)
-│   │   └── rpi5_openclaw/          #   OpenClaw gateway (picoclaw)
-│   ├── site.yml                    #   Full provisioning playbook
-│   └── validate.yml                #   Smoke tests
-├── leds/                           # Blinkt! LED status indicators
-│   ├── apa102.py                   #   Unified APA102 driver (gpiod v1/v2)
-│   ├── picoclaw_status.py          #   Boot animation + runtime status (RPi5)
-│   ├── picocrush_status.py         #   Status daemon (Orin, reference only)
-│   ├── install-leds.sh             #   LED daemon installer
-│   └── picoclaw-leds.service       #   systemd service
-├── threadweaver/                   # ThreadWeaver chat UI
-│   ├── install-threadweaver.sh     #   Native install (git + venv + npm)
-│   ├── patch-llama-server.py       #   Patch for llama-server model discovery
-│   ├── Dockerfile                  #   Docker build (for larger storage)
-│   └── docker-compose.yml          #   Docker compose config
 ├── scripts/
-│   ├── imaging/                    # Image capture and management
-│   │   ├── jetson-shrink.sh        #   Shrink dd-captured Orin images
-│   │   ├── resize_ubuntu.sh        #   Expand Orin rootfs after flash
-│   │   ├── resize_raspbian.sh      #   Expand RPi5 rootfs after flash
-│   │   └── sd-to-nvme.sh           #   Migrate Orin boot to NVMe
-│   ├── setup/                      # Node setup and configuration
-│   │   ├── build-rpi5-image.sh     #   Strip + harden Raspbian
-│   │   ├── build-orin-image.sh     #   Strip + harden JetPack
-│   │   └── configure-pair.sh       #   Set IPs, hostnames, configs
+│   ├── setup/                      # Install, update, configure, validate scripts
+│   ├── imaging/                    # Image capture, shrink, resize, NVMe migration
 │   └── testing/                    # Stress tests and benchmarking
-│       ├── stress-test-rpi5.sh     #   RPi5 power/thermal testing
-│       └── stress-test-orin.sh     #   Orin power/thermal testing
 └── docs/                           # Documentation
-    ├── benchmark-report.md         #   Power, thermal, performance data
-    ├── storage-options.md          #   Drive sizing and recommendations
-    ├── roadmap.md                  #   Project roadmap and phases
-    └── picoclcaw-deployment-plan.md #  Deployment architecture
+    ├── access-guide.md             # All access methods and troubleshooting
+    ├── benchmark-report.md         # Power, thermal, performance data
+    ├── storage-options.md          # Drive sizing recommendations
+    └── roadmap.md                  # Project roadmap
 ```
-
-## Models
-
-Default model set (~11GB, all Q4_K_M quantization):
-
-| Model | Size | Speed | Use Case |
-|-------|-----:|------:|----------|
-| Llama 3.2 3B | 1.9GB | ~18 t/s | Primary agent model |
-| Llama 3.1 8B | 4.7GB | ~10 t/s | Higher quality |
-| Phi-3.5 Mini 3.8B | 2.3GB | ~17 t/s | Strong reasoning |
-| Qwen 2.5 3B | 2.0GB | ~18 t/s | Code / structured output |
-
-All models run fully on GPU (ngl 99) on the 8GB Orin Nano.
 
 ## Energy Cost
 
@@ -138,44 +145,49 @@ All models run fully on GPU (ngl 99) on the 8GB Orin Nano.
 | Typical agent workload | 20W | $2.30 | $28.03 |
 | Realistic blend (90% idle) | 15W | $1.73 | $21.02 |
 
-*Your own private AI agent for under $2/month.*
+*Your own private AI for under $2/month.*
 
 ## Security
 
-PicoClaw runs entirely on your local network with no cloud dependencies:
-
-- OpenClaw gateway bound to LAN with token authentication
-- llama-server restricted to picoclaw IP only via firewall
+- All services run on your local network — no cloud dependencies
+- OpenClaw in Docker container (isolated)
+- OpenClaw dashboard requires HTTPS + token authentication
+- Ollama restricted to picoclaw IP via firewall
 - SSH hardened (no root login)
 - UFW firewall on both nodes
 - fail2ban on SSH
 - Automatic security updates
-- No API keys sent to external services
 
-See [docs/picoclcaw-deployment-plan.md](docs/picoclcaw-deployment-plan.md) for the full security hardening checklist.
+## Services Overview
+
+| Service | Node | Port | Container |
+|---------|------|------|-----------|
+| PicoClaw Portal | picoclaw | 80 | nginx |
+| ThreadWeaver UI | picoclaw | 5173 | threadweaver |
+| ThreadWeaver API | picoclaw | 8000 | threadweaver |
+| OpenClaw Gateway | picoclaw | 18789 | openclaw |
+| OpenClaw HTTPS | picoclaw | 18790 | caddy |
+| Blinkt! LEDs | picoclaw | GPIO | native |
+| Ollama | picocrush | 11434 | native |
+
+## Default Credentials
+
+| Service | Credential | Value |
+|---------|-----------|-------|
+| SSH (both nodes) | User / Password | `picocluster` / `picocluster` |
+| OpenClaw | Gateway Token | `picocluster-token` |
+| Ollama | Auth | None (firewall-restricted) |
+
+> **Note:** Hostnames, IPs, and credentials shown are defaults. If you changed them via `configure-pair.sh`, substitute your values.
 
 ## License
 
 Apache 2.0
 
-## Services Overview
-
-| Service | Node | Port | Description |
-|---------|------|------|-------------|
-| **ThreadWeaver** | picoclaw | 5173 | LLM chat UI with branching conversations |
-| **OpenClaw Gateway** | picoclaw | 18789 | AI agent orchestrator + WebChat |
-| **OpenClaw Browser** | picoclaw | 18791 | Browser automation (internal) |
-| **Blinkt! LEDs** | picoclaw | GPIO | Boot animation + status indicator |
-| **llama-server** | picocrush | 8080 | GPU-accelerated LLM inference |
-
-Default credentials:
-- SSH: `picocluster` / `picocluster`
-- OpenClaw token: `picocluster-token`
-- llama-server: no auth (firewall-restricted to picoclaw)
-
 ## Links
 
 - [PicoCluster](https://picocluster.com)
-- [OpenClaw](https://github.com/openclaw/openclaw)
 - [ThreadWeaver](https://github.com/nosqltips/ThreadWeaver)
+- [OpenClaw](https://github.com/openclaw/openclaw)
+- [Ollama](https://ollama.com)
 - [llama.cpp](https://github.com/ggerganov/llama.cpp)

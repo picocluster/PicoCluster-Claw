@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PicoClaw</title>
+  <style>
+    :root {
+      --bg: #0a0a1a;
+      --card: #12122a;
+      --border: #1e1e3a;
+      --text: #e0e0f0;
+      --dim: #8888aa;
+      --accent: #4a9eff;
+      --green: #4ade80;
+      --amber: #fbbf24;
+      --red: #f87171;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    header p {
+      color: var(--dim);
+      font-size: 1.1rem;
+    }
+
+    .status-bar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .status-item {
+      flex: 1;
+      min-width: 120px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .status-item .label { font-size: 0.75rem; color: var(--dim); text-transform: uppercase; letter-spacing: 0.05em; }
+    .status-item .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+    .status-item .value { font-size: 0.95rem; margin-top: 0.4rem; }
+    .dot.green { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .dot.amber { background: var(--amber); }
+    .dot.red { background: var(--red); }
+    .dot.gray { background: #555; }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: var(--accent); }
+    .card h3 { font-size: 1.1rem; margin-bottom: 0.3rem; }
+    .card .desc { color: var(--dim); font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.4; }
+    .card a {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+    .card a:hover { opacity: 0.85; }
+    .card a.secondary { background: transparent; border: 1px solid var(--border); color: var(--dim); }
+
+    .section { margin-bottom: 2.5rem; }
+    .section h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    table th { text-align: left; color: var(--dim); font-weight: 500; padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); }
+    table td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); }
+    table tr:last-child td { border-bottom: none; }
+    code { background: #1a1a3a; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.82rem; }
+
+    .footer { text-align: center; color: var(--dim); font-size: 0.8rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+    .footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <header>
+      <h1>PicoClaw</h1>
+      <p>Self-hosted AI agent appliance &mdash; private, local, always-on</p>
+    </header>
+
+    <div class="status-bar" id="status-bar">
+      <div class="status-item">
+        <div class="label">ThreadWeaver</div>
+        <div class="value"><span class="dot gray" id="dot-tw"></span><span id="status-tw">checking...</span></div>
+      </div>
+      <div class="status-item">
+        <div class="label">OpenClaw</div>
+        <div class="value"><span class="dot gray" id="dot-oc"></span><span id="status-oc">checking...</span></div>
+      </div>
+      <div class="status-item">
+        <div class="label">Ollama</div>
+        <div class="value"><span class="dot gray" id="dot-ol"></span><span id="status-ol">checking...</span></div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>ThreadWeaver</h3>
+        <div class="desc">Chat with your local LLMs. Branching conversations, search, notebooks. Switch between 9 models.</div>
+        <a href="http://picoclaw:5173">Open Chat</a>
+      </div>
+      <div class="card">
+        <h3>OpenClaw Dashboard</h3>
+        <div class="desc">AI agent with browser automation, tools, and messaging channels. Requires SSH tunnel for HTTPS.</div>
+        <a href="https://localhost:18790" class="secondary">Open Dashboard</a>
+      </div>
+      <div class="card">
+        <h3>Ollama API</h3>
+        <div class="desc">OpenAI-compatible inference endpoint on picocrush. 9 models available, GPU-accelerated.</div>
+        <a href="http://picocrush:11434" class="secondary">API Endpoint</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Installed Models</h2>
+      <table>
+        <thead><tr><th>Model</th><th>Type</th><th>Size</th></tr></thead>
+        <tbody>
+          <tr><td>llama3.2:3b</td><td>General</td><td>2.0 GB</td></tr>
+          <tr><td>llama3.1:8b</td><td>General</td><td>4.9 GB</td></tr>
+          <tr><td>gemma3:4b</td><td>General</td><td>3.3 GB</td></tr>
+          <tr><td>phi3.5:3.8b</td><td>Reasoning</td><td>2.2 GB</td></tr>
+          <tr><td>deepseek-r1:7b</td><td>Reasoning</td><td>4.7 GB</td></tr>
+          <tr><td>qwen2.5:3b</td><td>Code</td><td>1.9 GB</td></tr>
+          <tr><td>starcoder2:3b</td><td>Code</td><td>1.7 GB</td></tr>
+          <tr><td>llava:7b</td><td>Vision</td><td>4.7 GB</td></tr>
+          <tr><td>moondream:1.8b</td><td>Vision</td><td>1.7 GB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Access Methods</h2>
+      <table>
+        <thead><tr><th>Method</th><th>URL / Command</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>ThreadWeaver (HTTP)</td><td><code>http://picoclaw:5173</code></td><td>Works directly from any browser on LAN</td></tr>
+          <tr><td>OpenClaw Dashboard</td><td><code>https://localhost:18790</code></td><td>Requires SSH tunnel first</td></tr>
+          <tr><td>OpenClaw TUI</td><td><code>ssh picocluster@picoclaw</code> then <code>openclaw tui</code></td><td>Terminal chat</td></tr>
+          <tr><td>Ollama API</td><td><code>http://picocrush:11434/v1</code></td><td>OpenAI-compatible endpoint</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>SSH Tunnel (for OpenClaw Dashboard)</h2>
+      <p style="color: var(--dim); font-size: 0.9rem; margin-bottom: 0.8rem;">
+        OpenClaw's dashboard requires HTTPS. Run this on your computer:
+      </p>
+      <code style="display: block; padding: 0.8rem; background: #1a1a3a; border-radius: 8px; font-size: 0.85rem;">
+        ssh -L 18790:localhost:18790 picocluster@picoclaw
+      </code>
+      <p style="color: var(--dim); font-size: 0.85rem; margin-top: 0.6rem;">
+        Then open <code>https://localhost:18790</code> &mdash; token: <code>picocluster-token</code>
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Management</h2>
+      <table>
+        <thead><tr><th>Task</th><th>Command (on picoclaw)</th></tr></thead>
+        <tbody>
+          <tr><td>Update ThreadWeaver</td><td><code>sudo bash /opt/picoclcaw/scripts/setup/update-threadweaver.sh</code></td></tr>
+          <tr><td>Update all containers</td><td><code>sudo bash /opt/picoclcaw/scripts/setup/update-picoclaw.sh</code></td></tr>
+          <tr><td>View container status</td><td><code>cd /opt/picoclcaw && sudo docker compose ps</code></td></tr>
+          <tr><td>View logs</td><td><code>cd /opt/picoclcaw && sudo docker compose logs -f</code></td></tr>
+          <tr><td>Restart all services</td><td><code>cd /opt/picoclcaw && sudo docker compose restart</code></td></tr>
+          <tr><td>Add a new model</td><td><code>ssh picocrush</code> then <code>ollama pull &lt;model&gt;</code></td></tr>
+          <tr><td>List models</td><td><code>ssh picocrush</code> then <code>ollama list</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Hardware</h2>
+      <table>
+        <thead><tr><th>Node</th><th>Hardware</th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td>picoclaw</td><td>Raspberry Pi 5 (8GB)</td><td>Agent orchestrator, web UIs, LED status</td></tr>
+          <tr><td>picocrush</td><td>NVIDIA Jetson Orin Nano Super (8GB)</td><td>GPU-accelerated LLM inference (Ollama)</td></tr>
+        </tbody>
+      </table>
+      <p style="color: var(--dim); font-size: 0.85rem; margin-top: 0.8rem;">
+        Total power: ~14W idle, ~20W typical. Your own private AI for under $2/month.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Default Credentials</h2>
+      <table>
+        <thead><tr><th>Service</th><th>Username / Token</th><th>Password</th></tr></thead>
+        <tbody>
+          <tr><td>SSH (both nodes)</td><td><code>picocluster</code></td><td><code>picocluster</code></td></tr>
+          <tr><td>OpenClaw</td><td>Gateway Token</td><td><code>picocluster-token</code></td></tr>
+          <tr><td>Ollama</td><td colspan="2">No auth (firewall-restricted to picoclaw)</td></tr>
+        </tbody>
+      </table>
+      <p style="color: var(--amber); font-size: 0.85rem; margin-top: 0.8rem;">
+        Change these after initial setup for security.
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>
+        <a href="https://github.com/picocluster/PicoClaw">GitHub</a> &middot;
+        <a href="https://picocluster.com">PicoCluster</a> &middot;
+        <a href="https://github.com/nosqltips/ThreadWeaver">ThreadWeaver</a> &middot;
+        <a href="https://github.com/openclaw/openclaw">OpenClaw</a> &middot;
+        <a href="https://ollama.com">Ollama</a>
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    // Live status checks
+    async function checkService(url, dotId, statusId, label) {
+      const dot = document.getElementById(dotId);
+      const status = document.getElementById(statusId);
+      try {
+        const controller = new AbortController();
+        setTimeout(() => controller.abort(), 5000);
+        const resp = await fetch(url, { signal: controller.signal, mode: 'no-cors' });
+        dot.className = 'dot green';
+        status.textContent = 'online';
+      } catch {
+        // no-cors requests don't give status, but if they don't throw network error, service is up
+        // For same-origin we can check properly
+        try {
+          const resp = await fetch(url, { signal: AbortSignal.timeout(5000) });
+          if (resp.ok || resp.status === 401) {
+            dot.className = 'dot green';
+            status.textContent = 'online';
+          } else {
+            dot.className = 'dot amber';
+            status.textContent = 'error';
+          }
+        } catch {
+          dot.className = 'dot red';
+          status.textContent = 'offline';
+        }
+      }
+    }
+
+    function checkAll() {
+      checkService('/api/settings', 'dot-tw', 'status-tw', 'ThreadWeaver');
+      checkService('http://' + location.hostname + ':18789/', 'dot-oc', 'status-oc', 'OpenClaw');
+      checkService('http://picocrush:11434/api/tags', 'dot-ol', 'status-ol', 'Ollama');
+    }
+
+    checkAll();
+    setInterval(checkAll, 30000);
+  </script>
+</body>
+</html>
