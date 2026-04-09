@@ -69,16 +69,17 @@ class LEDHandler(BaseHTTPRequestHandler):
         if self.path == "/set_status":
             color_name = body.get("color", "blue")
             color = COLOR_MAP.get(color_name, COLOR_MAP["blue"])
-            duration = body.get("duration", 0)
+            duration = body.get("duration", 10)  # Default 10s, auto-returns to idle
             set_state(mode="status", color=color, message=body.get("message", ""), duration=duration)
-            self._respond(200, {"status": "ok", "mode": "status", "color": color_name})
+            self._respond(200, {"status": "ok", "mode": "status", "color": color_name, "duration": duration})
 
         elif self.path == "/set_progress":
             percent = max(0, min(100, body.get("percent", 0)))
             color_name = body.get("color", "green")
             color = COLOR_MAP.get(color_name, COLOR_MAP["green"])
-            set_state(mode="progress", color=color, percent=percent, message=body.get("message", ""), duration=0)
-            self._respond(200, {"status": "ok", "mode": "progress", "percent": percent})
+            duration = body.get("duration", 30)  # Auto-clear after 30s of no updates
+            set_state(mode="progress", color=color, percent=percent, message=body.get("message", ""), duration=duration)
+            self._respond(200, {"status": "ok", "mode": "progress", "percent": percent, "duration": duration})
 
         elif self.path == "/pulse_success":
             set_state(mode="pulse_success", color=COLOR_MAP["green"], message=body.get("message", ""), duration=2)
