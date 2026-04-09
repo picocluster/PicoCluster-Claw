@@ -22,6 +22,8 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
       - ./leds/mcp_server.py:/opt/mcp/led_server.py:ro
+      - ./mcp:/opt/mcp/servers:ro
+      - picoclcaw-sandbox:/tmp/picoclcaw-sandbox
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://127.0.0.1:8000/api/settings"]
       interval: 30s
@@ -90,3 +92,4 @@ volumes:
   openclaw-data:
   caddy-data:
   caddy-config:
+  picoclcaw-sandbox:

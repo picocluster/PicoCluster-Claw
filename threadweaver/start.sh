@@ -15,14 +15,23 @@ BACKEND_PID=$!
 
 sleep 3
 
-# Auto-connect LED MCP server if available
-if [ -f /opt/mcp/led_server.py ]; then
-  curl -sf -X POST http://127.0.0.1:8000/api/mcp/connect \
-    -H "Content-Type: application/json" \
-    -d '{"name":"leds","command":"python3","args":["/opt/mcp/led_server.py"]}' \
-    && echo "LED MCP server connected" \
-    || echo "LED MCP server connection failed (will retry on next restart)"
-fi
+# Auto-connect all PicoClaw MCP servers
+connect_mcp() {
+  local name="$1"
+  local script="$2"
+  if [ -f "$script" ]; then
+    curl -sf -X POST http://127.0.0.1:8000/api/mcp/connect \
+      -H "Content-Type: application/json" \
+      -d "{\"name\":\"${name}\",\"command\":\"python3\",\"args\":[\"${script}\"]}" \
+      > /dev/null && echo "MCP connected: ${name}" || echo "MCP failed: ${name}"
+  fi
+}
+
+connect_mcp "leds" "/opt/mcp/led_server.py"
+connect_mcp "system" "/opt/mcp/servers/system_info_server.py"
+connect_mcp "picocrush" "/opt/mcp/servers/picocrush_server.py"
+connect_mcp "time" "/opt/mcp/servers/time_server.py"
+connect_mcp "files" "/opt/mcp/servers/files_server.py"
 
 # Start frontend
 cd /app/frontend
