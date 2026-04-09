@@ -1,0 +1,4 @@
+#!/bin/bash
+# pc-update — Update all PicoClaw components (containers + LEDs)
+set -euo pipefail
+sudo bash /opt/picoclcaw/scripts/setup/update-picoclaw.sh "${1:-all}"

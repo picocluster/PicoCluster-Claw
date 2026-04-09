@@ -61,6 +61,32 @@ EOF
 fi
 
 # ============================================================
+# Cleanup: Remove legacy leftover files
+# ============================================================
+log "--- Cleanup: Removing legacy files ---"
+LEGACY_FILES=(
+  "/home/${USER}/genKeys.sh"
+  "/home/${USER}/resizeAllNodes.sh"
+  "/home/${USER}/resize_rpi.sh"
+  "/home/${USER}/resize_raspbian.sh"
+  "/home/${USER}/restartAllNodes.sh"
+  "/home/${USER}/stopAllNodes.sh"
+  "/home/${USER}/testAllNodes.sh"
+  "/home/${USER}/build-rpi5-image.sh"
+  "/home/${USER}/install-picoclaw.sh"
+)
+for f in "${LEGACY_FILES[@]}"; do
+  if [[ -f "$f" ]]; then
+    rm -f "$f"
+    log "  Removed $f"
+  fi
+done
+if [[ -d "/home/${USER}/.ansible" ]]; then
+  rm -rf "/home/${USER}/.ansible"
+  log "  Removed .ansible/"
+fi
+
+# ============================================================
 # 1. Docker
 # ============================================================
 log "--- Step 1/5: Docker ---"
@@ -149,6 +175,33 @@ ufw deny 18792/tcp comment "OpenClaw CDP relay" 2>/dev/null || true
 ufw allow 5173/tcp comment "ThreadWeaver UI" 2>/dev/null || true
 ufw allow 8000/tcp comment "ThreadWeaver API" 2>/dev/null || true
 log "Firewall configured"
+
+# ============================================================
+# Install user management scripts
+# ============================================================
+log "--- Installing user management scripts ---"
+USER_BIN="/home/${USER}/bin"
+if [[ -d "$INSTALL_DIR/scripts/user-bin/picoclaw" ]]; then
+  mkdir -p "$USER_BIN"
+  cp "$INSTALL_DIR/scripts/user-bin/picoclaw/"* "$USER_BIN/"
+  chmod +x "$USER_BIN/"*
+  chown -R "${USER}:${USER}" "$USER_BIN"
+  log "  Installed: $(ls "$USER_BIN" | tr '\n' ' ')"
+
+  # Ensure ~/bin is in PATH for the picocluster user (Raspbian default .profile handles this,
+  # but only if ~/bin exists at login time — we just created it, so force-source it)
+  if ! grep -q "HOME/bin" "/home/${USER}/.bashrc" 2>/dev/null; then
+    cat >> "/home/${USER}/.bashrc" <<'BASHRC'
+
+# PicoClaw user scripts
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+BASHRC
+  fi
+else
+  log "  WARNING: user-bin/picoclaw not found in repo — skipping"
+fi
 
 # ============================================================
 # Verify

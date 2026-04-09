@@ -1,0 +1,7 @@
+#!/bin/bash
+# pc-logs — Tail PicoClaw container logs
+# Usage: pc-logs                # Tail all containers
+#        pc-logs threadweaver   # Tail just one container
+set -euo pipefail
+cd /opt/picoclcaw
+sudo docker compose logs -f --tail=100 "$@"

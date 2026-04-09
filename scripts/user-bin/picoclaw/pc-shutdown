@@ -1,0 +1,27 @@
+#!/bin/bash
+# pc-shutdown — Shutdown the PicoClaw cluster (or one node)
+# Usage: pc-shutdown           # Shutdown both nodes
+#        pc-shutdown picoclaw  # Shutdown picoclaw only
+#        pc-shutdown picocrush # Shutdown picocrush only
+set -euo pipefail
+
+TARGET="${1:-all}"
+TOKEN="${SHUTDOWN_TOKEN:-picocluster-shutdown}"
+
+case "$TARGET" in
+  all|picoclaw|picocrush) ;;
+  *)
+    echo "Usage: pc-shutdown [all|picoclaw|picocrush]"
+    exit 1
+    ;;
+esac
+
+echo "WARNING: This will shut down ${TARGET}."
+read -rp "Type 'yes' to confirm: " confirm
+[[ "$confirm" == "yes" ]] || { echo "Cancelled."; exit 0; }
+
+curl -sf -X POST http://127.0.0.1:8888/shutdown \
+  -H "Content-Type: application/json" \
+  -d "{\"token\":\"$TOKEN\",\"target\":\"$TARGET\"}"
+echo ""
+echo "Shutdown initiated for: $TARGET"

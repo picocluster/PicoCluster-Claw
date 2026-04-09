@@ -1,0 +1,58 @@
+#!/bin/bash
+# pc-led — Control the Blinkt! LED strip
+# Usage:
+#   pc-led color <name> [duration]   # Set solid color (red|green|blue|amber|orange|cyan|purple|white)
+#   pc-led flash <name> [duration]   # Flashing on/off
+#   pc-led progress <percent>        # Progress bar (0-100)
+#   pc-led success                   # Green success burst
+#   pc-led error                     # Red error flash
+#   pc-led clear                     # Return to idle scanner
+set -euo pipefail
+
+API="http://127.0.0.1:7777"
+
+usage() {
+  sed -n '2,10p' "$0"
+  exit 1
+}
+
+CMD="${1:-}"
+[[ -z "$CMD" ]] && usage
+
+call() {
+  local endpoint="$1" data="$2"
+  curl -sf -X POST "$API/$endpoint" \
+    -H "Content-Type: application/json" \
+    -d "$data"
+  echo ""
+}
+
+case "$CMD" in
+  color)
+    COLOR="${2:-blue}"
+    DURATION="${3:-15}"
+    call "set_status" "{\"color\":\"$COLOR\",\"duration\":$DURATION}"
+    ;;
+  flash)
+    COLOR="${2:-red}"
+    DURATION="${3:-15}"
+    call "flash" "{\"color\":\"$COLOR\",\"duration\":$DURATION}"
+    ;;
+  progress)
+    PERCENT="${2:-0}"
+    COLOR="${3:-green}"
+    call "set_progress" "{\"percent\":$PERCENT,\"color\":\"$COLOR\"}"
+    ;;
+  success)
+    call "pulse_success" "{}"
+    ;;
+  error)
+    call "pulse_error" "{}"
+    ;;
+  clear|reset)
+    call "clear" "{}"
+    ;;
+  *)
+    usage
+    ;;
+esac

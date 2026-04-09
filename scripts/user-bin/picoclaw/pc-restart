@@ -1,0 +1,26 @@
+#!/bin/bash
+# pc-restart — Restart the PicoClaw cluster (or one node)
+# Usage: pc-restart           # Restart both nodes
+#        pc-restart picoclaw  # Restart picoclaw only
+#        pc-restart picocrush # Restart picocrush only
+set -euo pipefail
+
+TARGET="${1:-all}"
+TOKEN="${SHUTDOWN_TOKEN:-picocluster-shutdown}"
+
+case "$TARGET" in
+  all|picoclaw|picocrush) ;;
+  *)
+    echo "Usage: pc-restart [all|picoclaw|picocrush]"
+    exit 1
+    ;;
+esac
+
+read -rp "Restart ${TARGET}? [y/N] " yn
+[[ "$yn" =~ ^[Yy]$ ]] || { echo "Cancelled."; exit 0; }
+
+curl -sf -X POST http://127.0.0.1:8888/restart \
+  -H "Content-Type: application/json" \
+  -d "{\"token\":\"$TOKEN\",\"target\":\"$TARGET\"}"
+echo ""
+echo "Restart initiated for: $TARGET"

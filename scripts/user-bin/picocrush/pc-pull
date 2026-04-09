@@ -1,0 +1,15 @@
+#!/bin/bash
+# pc-pull — Pull a new Ollama model
+# Usage: pc-pull <model-name>
+#        pc-pull gemma2:2b
+set -euo pipefail
+
+if [[ -z "${1:-}" ]]; then
+  echo "Usage: pc-pull <model-name>"
+  echo "Example: pc-pull gemma2:2b"
+  echo ""
+  echo "Browse models: https://ollama.com/library"
+  exit 1
+fi
+
+ollama pull "$1"

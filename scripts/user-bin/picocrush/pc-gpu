@@ -1,0 +1,4 @@
+#!/bin/bash
+# pc-gpu — Show NVIDIA GPU info
+set -euo pipefail
+nvidia-smi

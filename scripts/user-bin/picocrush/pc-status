@@ -1,0 +1,36 @@
+#!/bin/bash
+# pc-status — Show picocrush / Ollama status
+set -euo pipefail
+
+echo "=== PicoCrush Status ==="
+echo ""
+echo "Ollama service: $(systemctl is-active ollama 2>/dev/null || echo 'n/a')"
+echo ""
+echo "Health check:"
+if curl -sf --max-time 3 http://127.0.0.1:11434/api/tags >/dev/null 2>&1; then
+  echo "  Ollama API: OK"
+else
+  echo "  Ollama API: FAIL"
+fi
+echo ""
+echo "GPU memory:"
+nvidia-smi --query-gpu=memory.used,memory.total,utilization.gpu --format=csv,noheader 2>/dev/null | sed 's/^/  /' || echo "  n/a"
+echo ""
+echo "Active models (loaded in GPU):"
+curl -sf http://127.0.0.1:11434/api/ps 2>/dev/null | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+models = data.get('models', [])
+if not models:
+    print('  (none loaded)')
+else:
+    for m in models:
+        vram_gb = m.get('size_vram', 0) / (1024**3)
+        print(f'  {m[\"name\"]}: {vram_gb:.1f}GB VRAM')
+" 2>/dev/null || echo "  n/a"
+echo ""
+echo "Installed models:"
+ollama list 2>/dev/null | tail -n +2 | awk '{printf "  %s (%s)\n", $1, $3$4}' || echo "  n/a"
+echo ""
+echo "Disk (/mnt/nvme): $(df -h /mnt/nvme 2>/dev/null | awk 'NR==2 {print $3 \" used / \" $2 \" total\"}' || echo 'n/a')"
+echo "Load: $(cat /proc/loadavg | awk '{print $1, $2, $3}')"

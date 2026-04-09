@@ -1,0 +1,32 @@
+#!/bin/bash
+# pc-status — Show PicoClaw service status
+set -euo pipefail
+
+echo "=== PicoClaw Status ==="
+echo ""
+echo "Docker containers:"
+sudo docker ps --format "  {{.Names}}: {{.Status}}" 2>/dev/null
+echo ""
+echo "Systemd services:"
+for svc in picoclaw-leds shutdown-api openclaw-led-bridge; do
+  state=$(systemctl is-active "$svc" 2>/dev/null || echo "n/a")
+  echo "  $svc: $state"
+done
+echo ""
+echo "Health checks:"
+check() {
+  local name="$1" url="$2"
+  if curl -sf --max-time 3 "$url" >/dev/null 2>&1; then
+    echo "  $name: OK"
+  else
+    echo "  $name: FAIL"
+  fi
+}
+check "ThreadWeaver" "http://127.0.0.1:8000/api/settings"
+check "OpenClaw    " "http://127.0.0.1:18789/"
+check "LED API     " "http://127.0.0.1:7777/"
+check "Portal      " "http://127.0.0.1:80/"
+check "Ollama      " "http://10.1.10.221:11434/api/tags"
+echo ""
+echo "Disk: $(df -h / | awk 'NR==2 {print $3 \" used / \" $2 \" total (\" $5 \" used)\"}')"
+echo "Load: $(cat /proc/loadavg | awk '{print $1, $2, $3}')"

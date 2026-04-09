@@ -1,0 +1,10 @@
+#!/bin/bash
+# pc-update-models — Update Ollama models on picocrush
+# Usage: pc-update-models           # Pull all default models
+#        pc-update-models pull llama3.2:3b  # Pull a specific model
+set -euo pipefail
+
+CRUSH_HOST="${CRUSH_HOST:-picocluster@10.1.10.221}"
+
+echo "Running model update on picocrush..."
+ssh -o ConnectTimeout=5 "$CRUSH_HOST" "sudo bash /opt/picoclcaw/scripts/setup/update-picocrush.sh $*"

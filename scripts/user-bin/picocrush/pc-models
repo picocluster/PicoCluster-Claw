@@ -1,0 +1,4 @@
+#!/bin/bash
+# pc-models — List installed Ollama models
+set -euo pipefail
+ollama list

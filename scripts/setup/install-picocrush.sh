@@ -11,6 +11,7 @@ set -euo pipefail
 CLAW_IP="${1:-10.1.10.220}"
 OLLAMA_PORT="11434"
 USER="picocluster"
+INSTALL_DIR="/opt/picoclcaw"
 
 # Models to pull (first one is the default)
 MODELS=(
@@ -64,6 +65,46 @@ if [[ -n "$DISK_SIZE" && -n "$PART_SIZE" ]]; then
   else
     log "Filesystem already sized correctly: $(df -h / | awk 'NR==2 {print $2}')"
   fi
+fi
+
+# ============================================================
+# Cleanup: Remove legacy leftover files
+# ============================================================
+log "--- Cleanup: Removing legacy files ---"
+LEGACY_FILES=(
+  "/home/${USER}/genKeys.sh"
+  "/home/${USER}/resizeAllNodes.sh"
+  "/home/${USER}/resize_ubuntu.sh"
+  "/home/${USER}/restartAllNodes.sh"
+  "/home/${USER}/stopAllNodes.sh"
+  "/home/${USER}/testAllNodes.sh"
+  "/home/${USER}/build-orin-image.sh"
+  "/home/${USER}/install-picocrush.sh"
+)
+for f in "${LEGACY_FILES[@]}"; do
+  if [[ -f "$f" ]]; then
+    rm -f "$f"
+    log "  Removed $f"
+  fi
+done
+if [[ -d "/home/${USER}/.ansible" ]]; then
+  rm -rf "/home/${USER}/.ansible"
+  log "  Removed .ansible/"
+fi
+
+# ============================================================
+# Clone PicoClaw repo (for user-bin scripts + update scripts)
+# ============================================================
+log "--- PicoClaw repo ---"
+if ! command -v git &>/dev/null; then
+  apt install -y git 2>/dev/null | tail -1
+fi
+if [[ ! -d "$INSTALL_DIR/.git" ]]; then
+  git clone --depth 1 https://github.com/picocluster/PicoClaw.git "$INSTALL_DIR"
+  log "PicoClaw repo cloned"
+else
+  cd "$INSTALL_DIR" && git pull --ff-only 2>&1 | tail -3
+  log "PicoClaw repo updated"
 fi
 
 # ============================================================
@@ -167,6 +208,32 @@ log "MAXN power mode set and persisted"
 log "--- Step 5/6: Firewall ---"
 ufw allow from "${CLAW_IP}" to any port "${OLLAMA_PORT}" comment "Ollama from picoclaw" 2>/dev/null || true
 log "Firewall: port ${OLLAMA_PORT} open for ${CLAW_IP} only"
+
+# ============================================================
+# Install user management scripts
+# ============================================================
+log "--- Installing user management scripts ---"
+USER_BIN="/home/${USER}/bin"
+if [[ -d "$INSTALL_DIR/scripts/user-bin/picocrush" ]]; then
+  mkdir -p "$USER_BIN"
+  cp "$INSTALL_DIR/scripts/user-bin/picocrush/"* "$USER_BIN/"
+  chmod +x "$USER_BIN/"*
+  chown -R "${USER}:${USER}" "$USER_BIN"
+  log "  Installed: $(ls "$USER_BIN" | tr '\n' ' ')"
+
+  # Ensure ~/bin is in PATH for the picocluster user
+  if ! grep -q "HOME/bin" "/home/${USER}/.bashrc" 2>/dev/null; then
+    cat >> "/home/${USER}/.bashrc" <<'BASHRC'
+
+# PicoClaw user scripts
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+BASHRC
+  fi
+else
+  log "  WARNING: user-bin/picocrush not found in repo — skipping"
+fi
 
 # ============================================================
 # 6. Test
