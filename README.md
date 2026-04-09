@@ -117,18 +117,24 @@ The Pimoroni Blinkt! on picoclaw provides visual feedback:
 - **Red pulse**: Services down
 - **Boot sequence**: Rainbow → blue sweep → amber progress → green ready
 
-### LED MCP Server
+## MCP Servers
 
-PicoClaw includes an MCP (Model Context Protocol) server that exposes the LEDs as AI tools. The LLM can control the physical LEDs from natural language:
+PicoClaw ships with 5 MCP (Model Context Protocol) servers that auto-connect to ThreadWeaver on startup, giving local LLMs **28 tools** to work with — including physical LED control, system monitoring, time awareness, sandboxed file operations, and Ollama management.
 
-> **User:** "Make the LEDs purple"
-> **LLM:** *calls `set_led_color` tool* → Blinkt! turns purple
+> **User:** "Make the LEDs purple and tell me the GPU memory usage on picocrush"
+> **LLM:** *calls `leds__set_led_color` and `picocrush__get_gpu_memory`* → Blinkt! turns purple, reports VRAM stats
 
-Available tools: `set_led_color`, `set_led_progress`, `led_pulse_success`, `led_pulse_error`, `clear_leds`
+| Server | Tools | Purpose |
+|--------|------:|---------|
+| **leds** | 5 | Control Blinkt! LEDs (color, progress, pulse, clear) |
+| **system** | 6 | picoclaw stats (CPU, memory, disk, temperature, uptime, network) |
+| **picocrush** | 4 | Ollama management (list models, active models, GPU memory, pull new) |
+| **time** | 4 | Current time/date, countdowns, duration formatting |
+| **files** | 5 | Sandboxed file operations (read, write, list, delete) |
 
-The MCP server auto-connects when ThreadWeaver starts. LED controls are also available on the portal page and via the HTTP API on port 7777.
+All servers are stdio-based MCP servers mounted into the ThreadWeaver container. See [docs/mcp-tools.md](docs/mcp-tools.md) for the full tool reference and HTTP API.
 
-See [docs/led-tools.md](docs/led-tools.md) for the full API reference.
+LED controls are also available on the portal page and via the HTTP API on port 7777.
 
 ## Repository Structure
 
@@ -139,13 +145,14 @@ PicoClaw/
 ├── openclaw/                       # OpenClaw Dockerfile + config
 ├── threadweaver/                   # ThreadWeaver Dockerfile + patches
 ├── leds/                           # Blinkt! LED driver, status daemon, MCP server
+├── mcp/                            # MCP servers (system, picocrush, time, files)
 ├── scripts/
 │   ├── setup/                      # Install, update, configure, validate scripts
 │   ├── imaging/                    # Image capture, shrink, resize, NVMe migration
 │   └── testing/                    # Stress tests and benchmarking
 └── docs/                           # Documentation
     ├── access-guide.md             # All access methods and troubleshooting
-    ├── led-tools.md                # LED API + MCP server reference
+    ├── mcp-tools.md                # All 5 MCP servers + HTTP API reference
     ├── demo-script.md              # Live demo walkthrough
     ├── blog-post.md                # "Talk to Your AI and Watch It Light Up"
     ├── benchmark-report.md         # Power, thermal, performance data

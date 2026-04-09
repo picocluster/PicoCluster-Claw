@@ -200,6 +200,24 @@
     </div>
 
     <div class="section">
+      <h2>MCP Tools (for AI)</h2>
+      <p style="color: var(--dim); font-size: 0.9rem; margin-bottom: 0.8rem;">
+        28 tools available to the LLM via Model Context Protocol. Try asking: "What time is it?", "How hot is picoclaw?", "Make the LEDs purple"
+      </p>
+      <table>
+        <thead><tr><th>Server</th><th>Tools</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><strong>leds</strong></td><td>5</td><td>set_led_color, set_led_progress, pulse_success, pulse_error, clear_leds</td></tr>
+          <tr><td><strong>system</strong></td><td>6</td><td>get_cpu_info, get_memory_info, get_disk_info, get_temperature, get_uptime, get_network_info</td></tr>
+          <tr><td><strong>picocrush</strong></td><td>4</td><td>list_ollama_models, get_active_models, get_gpu_memory, pull_ollama_model</td></tr>
+          <tr><td><strong>time</strong></td><td>4</td><td>get_current_time, get_day_of_week, time_until, format_duration</td></tr>
+          <tr><td><strong>files</strong></td><td>5</td><td>list_files, read_file, write_file, delete_file, get_sandbox_path (sandboxed)</td></tr>
+          <tr><td><em>built-in</em></td><td>4</td><td>read_file, write_file, list_directory, run_command</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
       <h2>Access Methods</h2>
       <table>
         <thead><tr><th>Method</th><th>URL / Command</th><th>Notes</th></tr></thead>
