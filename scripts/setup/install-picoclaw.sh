@@ -172,8 +172,13 @@ ufw allow 18790/tcp comment "OpenClaw Dashboard (HTTPS via Caddy)" 2>/dev/null |
 ufw allow 5174/tcp comment "ThreadWeaver HTTPS (via Caddy)" 2>/dev/null || true
 ufw deny 18791/tcp comment "OpenClaw control" 2>/dev/null || true
 ufw deny 18792/tcp comment "OpenClaw CDP relay" 2>/dev/null || true
-ufw allow 5173/tcp comment "ThreadWeaver UI" 2>/dev/null || true
-ufw allow 8000/tcp comment "ThreadWeaver API" 2>/dev/null || true
+# ThreadWeaver UI (5173) and API (8000) are bound to 127.0.0.1 only via docker-compose;
+# LAN access is via the Caddy HTTPS wrapper on 5174 through SSH tunnel.
+# Explicitly deny 5173/8000 in case an older install left them open.
+ufw delete allow 5173/tcp 2>/dev/null || true
+ufw delete allow 8000/tcp 2>/dev/null || true
+ufw deny 5173/tcp comment "ThreadWeaver UI (localhost-only, tunnel via 5174)" 2>/dev/null || true
+ufw deny 8000/tcp comment "ThreadWeaver API (localhost-only)" 2>/dev/null || true
 log "Firewall configured"
 
 # ============================================================
@@ -214,7 +219,7 @@ log "=== Service Status ==="
 docker compose ps 2>/dev/null
 echo ""
 log "  ThreadWeaver:  $(curl -sf --max-time 5 http://127.0.0.1:8000/api/settings >/dev/null 2>&1 && echo 'OK' || echo 'STARTING')"
-log "  OpenClaw:      $(curl -sf --max-time 5 http://127.0.0.1:18789/__openclaw__/canvas/ >/dev/null 2>&1 && echo 'OK' || echo 'STARTING')"
+log "  OpenClaw:      $(curl -sf --max-time 5 http://127.0.0.1:18789/__openclaw__/health >/dev/null 2>&1 && echo 'OK' || echo 'STARTING')"
 log "  Blinkt! LEDs:  $(systemctl is-active picoclaw-leds 2>/dev/null || echo 'n/a')"
 log "  Ollama:        $(curl -sf --max-time 5 http://${CRUSH_IP}:11434/api/tags >/dev/null 2>&1 && echo 'OK' || echo 'NOT REACHABLE')"
 
@@ -223,8 +228,11 @@ log "============================================"
 log "  PicoClaw Install Complete"
 log "============================================"
 log ""
-log "  ThreadWeaver:  http://picoclaw:5173"
-log "  OpenClaw:      http://picoclaw:18789  (token: ${OPENCLAW_TOKEN})"
+log "  ThreadWeaver:  https://localhost:5174   (via SSH tunnel)"
+log "  OpenClaw:      https://localhost:18790  (via SSH tunnel, token: ${OPENCLAW_TOKEN})"
+log ""
+log "  SSH tunnel command (run on your computer):"
+log "    ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@picoclaw"
 log ""
 log "  Manage:  cd $INSTALL_DIR && docker compose [up -d|down|logs|ps]"
 log "  Update:  cd $INSTALL_DIR && git pull && docker compose build --pull && docker compose up -d"

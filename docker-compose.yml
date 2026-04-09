@@ -9,9 +9,12 @@ services:
     build: ./threadweaver
     container_name: threadweaver
     restart: always
+    # Localhost-only binding: LAN clients must use the SSH tunnel + Caddy HTTPS on 5174.
+    # Host-side consumers (Caddy reverse proxy, pc-status, LED daemon, update scripts)
+    # still reach 127.0.0.1:5173 / 127.0.0.1:8000 via docker-proxy loopback.
     ports:
-      - "5173:5173"
-      - "8000:8000"
+      - "127.0.0.1:5173:5173"
+      - "127.0.0.1:8000:8000"
     environment:
       - LLM_PROVIDER=local
       - LOCAL_BASE_URL=http://picocrush:11434/v1
@@ -45,7 +48,9 @@ services:
     volumes:
       - openclaw-data:/home/openclaw/.openclaw
     healthcheck:
-      test: ["CMD", "curl", "-sf", "http://127.0.0.1:18789/__openclaw__/canvas/"]
+      # /__openclaw__/canvas/ requires auth (401) and was a false-negative FAIL.
+      # /__openclaw__/health returns 200 without auth.
+      test: ["CMD", "curl", "-sf", "http://127.0.0.1:18789/__openclaw__/health"]
       interval: 30s
       timeout: 5s
       retries: 3
