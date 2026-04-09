@@ -258,9 +258,9 @@ else
   log "Inference test: FAILED"
 fi
 
-# GPU info
-GPU_MEM=$(nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader 2>/dev/null)
-log "GPU memory: $GPU_MEM"
+# GPU info (Jetson uses unified memory — report RAM instead of separate VRAM)
+GPU_MEM=$(free -h | awk '/^Mem:/ {printf "%s used / %s total (unified)", $3, $2}')
+log "Memory: $GPU_MEM"
 
 log ""
 log "============================================"
@@ -276,5 +276,5 @@ log "    ollama pull <model>      # Download a model"
 log "    ollama rm <model>        # Remove a model"
 log "    ollama run <model>       # Interactive chat"
 log ""
-log "  GPU: ${GPU_MEM}"
+log "  Memory: ${GPU_MEM}"
 log "============================================"

@@ -13,8 +13,13 @@ else
   echo "  Ollama API: FAIL"
 fi
 echo ""
-echo "GPU memory:"
-nvidia-smi --query-gpu=memory.used,memory.total,utilization.gpu --format=csv,noheader 2>/dev/null | sed 's/^/  /' || echo "  n/a"
+echo "Memory (unified with GPU on Jetson):"
+free -h | awk '/^Mem:/ {printf "  %s used / %s total\n", $3, $2}'
+if [[ -r /sys/devices/gpu.0/load ]]; then
+  GPU_LOAD=$(cat /sys/devices/gpu.0/load 2>/dev/null)
+  # Value is in 0.1% units (0-1000)
+  echo "  GPU load: $((GPU_LOAD / 10))%"
+fi
 echo ""
 echo "Active models (loaded in GPU):"
 curl -sf http://127.0.0.1:11434/api/ps 2>/dev/null | python3 -c "
@@ -32,5 +37,11 @@ echo ""
 echo "Installed models:"
 ollama list 2>/dev/null | tail -n +2 | awk '{printf "  %s (%s)\n", $1, $3$4}' || echo "  n/a"
 echo ""
-echo "Disk (/mnt/nvme): $(df -h /mnt/nvme 2>/dev/null | awk 'NR==2 {print $3 \" used / \" $2 \" total\"}' || echo 'n/a')"
+# Show /mnt/nvme if it's a separate mountpoint, otherwise /
+if mountpoint -q /mnt/nvme 2>/dev/null; then
+  DISK_PATH="/mnt/nvme"
+else
+  DISK_PATH="/"
+fi
+echo "Disk ($DISK_PATH): $(df -h "$DISK_PATH" | awk 'NR==2 {printf "%s used / %s total (%s used)", $3, $2, $5}')"
 echo "Load: $(cat /proc/loadavg | awk '{print $1, $2, $3}')"
