@@ -512,7 +512,13 @@ def main():
     start_api_server(port=7777)
 
     with Blinkt(platform="rpi5", brightness=0.2) as leds:
-        boot_sequence(leds)
+        # Skip boot sequence if services are already running (daemon restart)
+        services_ready = (
+            http_check(THREADWEAVER_URL, timeout=1)
+            or http_check(OLLAMA_HEALTH_URL, timeout=1)
+        )
+        if not services_ready:
+            boot_sequence(leds)
         if running:
             runtime_loop(leds)
 
