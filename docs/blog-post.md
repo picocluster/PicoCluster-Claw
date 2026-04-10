@@ -1,4 +1,4 @@
-# Talk to Your AI and Watch It Light Up: Building PicoClaw
+# Talk to Your AI and Watch It Light Up: Building PicoCluster Claw
 
 *A self-hosted AI appliance that runs 9 models on 14 watts — and has a personality.*
 
@@ -8,13 +8,13 @@
 
 What if you could have your own private AI that lives on your desk, costs less than a cup of coffee per month to run, and physically lights up when it's thinking?
 
-That's PicoClaw — a two-board AI appliance that pairs a Raspberry Pi 5 with an NVIDIA Jetson Orin Nano. The Pi handles the web interfaces. The Jetson runs the models. Between them sits a strip of 8 RGB LEDs that turns natural conversation into a light show.
+That's PicoCluster Claw — a two-board AI appliance that pairs a Raspberry Pi 5 with an NVIDIA Jetson Orin Nano. The Pi handles the web interfaces. The Jetson runs the models. Between them sits a strip of 8 RGB LEDs that turns natural conversation into a light show.
 
 ## The Hardware
 
-PicoClaw is built on PicoCluster hardware:
+PicoCluster Claw is built on PicoCluster hardware:
 
-- **picoclaw (RPi5 8GB)** — Runs Docker containers for ThreadWeaver (chat UI), OpenClaw (AI agent), and a landing portal. A Pimoroni Blinkt! LED strip on the GPIO header provides visual feedback.
+- **picocluster-claw (RPi5 8GB)** — Runs Docker containers for ThreadWeaver (chat UI), OpenClaw (AI agent), and a landing portal. A Pimoroni Blinkt! LED strip on the GPIO header provides visual feedback.
 - **picocrush (Orin Nano Super 8GB)** — Runs Ollama with 9 GGUF models on the Jetson's GPU. Inference at 12-18 tokens per second on 3B models.
 
 Total power draw: 14W idle, 20W typical. That's $2/month in electricity.
@@ -60,7 +60,7 @@ This is — as far as we know — the first MCP server that controls physical ha
 
 ## The Portal
 
-Every PicoClaw ships with a landing page at `http://picoclaw`. Live service status, links to all interfaces, LED controls, cluster management, and shutdown buttons. One URL to manage everything.
+Every PicoCluster Claw ships with a landing page at `http://picocluster-claw`. Live service status, links to all interfaces, LED controls, cluster management, and shutdown buttons. One URL to manage everything.
 
 ## One Command to Install
 
@@ -68,8 +68,8 @@ Every PicoClaw ships with a landing page at `http://picoclaw`. Live service stat
 # On picocrush (Orin Nano):
 sudo bash install-picocrush.sh
 
-# On picoclaw (RPi5):
-sudo bash install-picoclaw.sh
+# On picocluster-claw (RPi5):
+sudo bash install-picocluster-claw.sh
 ```
 
 That's it. Flash the golden images, run two scripts, and you have a private AI appliance with:
@@ -82,7 +82,7 @@ That's it. Flash the golden images, run two scripts, and you have a private AI a
 
 ## The Cost
 
-| | PicoClaw | Cloud API |
+| | PicoCluster Claw | Cloud API |
 |---|------:|------:|
 | Hardware (one-time) | ~$350 | $0 |
 | Monthly electricity | $2 | — |
@@ -91,7 +91,7 @@ That's it. Flash the golden images, run two scripts, and you have a private AI a
 | Models | 9 local | Provider's choice |
 | Internet required | No | Yes |
 
-After 2-3 months, PicoClaw pays for itself if you were spending $50+/month on cloud APIs. After that, it's $2/month forever. And your data never leaves your desk.
+After 2-3 months, PicoCluster Claw pays for itself if you were spending $50+/month on cloud APIs. After that, it's $2/month forever. And your data never leaves your desk.
 
 ## What's Next
 
@@ -100,7 +100,7 @@ After 2-3 months, PicoClaw pays for itself if you were spending $50+/month on cl
 - **Pre-built Docker images** to skip build time
 - **More LED effects** — fireworks for special events, custom user animations
 
-PicoClaw is open source at [github.com/picocluster/PicoClaw](https://github.com/picocluster/PicoClaw).
+PicoCluster Claw is open source at [github.com/picocluster/PicoCluster-Claw](https://github.com/picocluster/PicoCluster-Claw).
 
 ---
 

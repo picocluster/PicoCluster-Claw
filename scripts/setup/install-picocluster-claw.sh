@@ -1,10 +1,10 @@
 #!/bin/bash
-# install-picoclaw.sh — Install full PicoClaw stack on RPi5 via Docker
+# install-picocluster-claw.sh — Install full PicoCluster Claw stack on RPi5 via Docker
 # Run on a golden image (after build-rpi5-image.sh + configure-pair.sh)
 #
 # Installs: OpenClaw (Docker), ThreadWeaver (Docker), Blinkt! LEDs (native)
 #
-# Usage: sudo bash install-picoclaw.sh [picocrush-ip]
+# Usage: sudo bash install-picocluster-claw.sh [picocrush-ip]
 set -euo pipefail
 
 CRUSH_IP="${1:-10.1.10.221}"
@@ -17,7 +17,7 @@ CRUSH_IP="${1:-10.1.10.221}"
 # support tool calling (ThreadWeaver auto-falls back to chat-only for those).
 DEFAULT_MODEL="${2:-llama3.1:8b}"
 OPENCLAW_TOKEN="${3:-picocluster-token}"
-INSTALL_DIR="/opt/picoclcaw"
+INSTALL_DIR="/opt/picocluster-claw"
 LED_DIR="$INSTALL_DIR/leds"
 USER="picocluster"
 
@@ -28,7 +28,7 @@ fi
 
 log() { echo "[$(date '+%H:%M:%S')] $*"; }
 
-log "=== PicoClaw Install (picoclaw / RPi5) ==="
+log "=== PicoCluster Claw Install (picocluster-claw / RPi5) ==="
 log "  picocrush: ${CRUSH_IP}"
 log "  Model: ${DEFAULT_MODEL}"
 log ""
@@ -80,7 +80,7 @@ LEGACY_FILES=(
   "/home/${USER}/stopAllNodes.sh"
   "/home/${USER}/testAllNodes.sh"
   "/home/${USER}/build-rpi5-image.sh"
-  "/home/${USER}/install-picoclaw.sh"
+  "/home/${USER}/install-picocluster-claw.sh"
 )
 for f in "${LEGACY_FILES[@]}"; do
   if [[ -f "$f" ]]; then
@@ -107,15 +107,15 @@ else
 fi
 
 # ============================================================
-# 2. Clone PicoClaw repo (for Dockerfiles + compose)
+# 2. Clone PicoCluster Claw repo (for Dockerfiles + compose)
 # ============================================================
-log "--- Step 2/5: PicoClaw repo ---"
+log "--- Step 2/5: PicoCluster Claw repo ---"
 if [[ ! -d "$INSTALL_DIR/.git" ]]; then
-  git clone --depth 1 https://github.com/picocluster/PicoClaw.git "$INSTALL_DIR"
-  log "PicoClaw repo cloned"
+  git clone --depth 1 https://github.com/picocluster/PicoCluster-Claw.git "$INSTALL_DIR"
+  log "PicoCluster Claw repo cloned"
 else
   cd "$INSTALL_DIR" && git pull --ff-only 2>&1 | tail -3
-  log "PicoClaw repo updated"
+  log "PicoCluster Claw repo updated"
 fi
 
 # ============================================================
@@ -144,13 +144,13 @@ apt install -y python3-gpiod 2>/dev/null || pip3 install --break-system-packages
 
 mkdir -p "$LED_DIR"
 cp "$INSTALL_DIR/leds/apa102.py" "$LED_DIR/" 2>/dev/null || true
-cp "$INSTALL_DIR/leds/picoclaw_status.py" "$LED_DIR/" 2>/dev/null || true
+cp "$INSTALL_DIR/leds/picocluster_claw_status.py" "$LED_DIR/" 2>/dev/null || true
 
-if [[ -f "$INSTALL_DIR/leds/picoclaw-leds.service" ]]; then
-  cp "$INSTALL_DIR/leds/picoclaw-leds.service" /etc/systemd/system/
+if [[ -f "$INSTALL_DIR/leds/picocluster-claw-leds.service" ]]; then
+  cp "$INSTALL_DIR/leds/picocluster-claw-leds.service" /etc/systemd/system/
   systemctl daemon-reload
-  systemctl enable picoclaw-leds
-  systemctl start picoclaw-leds
+  systemctl enable picocluster-claw-leds
+  systemctl start picocluster-claw-leds
   log "Blinkt! LED daemon started"
 else
   log "Blinkt! LED service file not found — skipping"
@@ -160,15 +160,15 @@ fi
 # 5. Firewall
 # ============================================================
 log "--- Step 5/5: Firewall ---"
-ufw allow 80/tcp comment "PicoClaw Portal" 2>/dev/null || true
+ufw allow 80/tcp comment "PicoCluster Claw Portal" 2>/dev/null || true
 ufw allow 7777/tcp comment "LED API" 2>/dev/null || true
 ufw allow 8888/tcp comment "Shutdown API" 2>/dev/null || true
 
 # Install host-based shutdown API (not in Docker — needs system shutdown access)
 if [[ -f "$INSTALL_DIR/portal/shutdown-api.service" ]]; then
   cp "$INSTALL_DIR/portal/shutdown-api.service" /etc/systemd/system/
-  echo "picocluster ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/reboot, /usr/sbin/shutdown, /usr/sbin/reboot" > /etc/sudoers.d/picoclcaw-shutdown
-  chmod 440 /etc/sudoers.d/picoclcaw-shutdown
+  echo "picocluster ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/reboot, /usr/sbin/shutdown, /usr/sbin/reboot" > /etc/sudoers.d/picocluster-claw-shutdown
+  chmod 440 /etc/sudoers.d/picocluster-claw-shutdown
   systemctl daemon-reload
   systemctl enable shutdown-api
   systemctl start shutdown-api
@@ -195,9 +195,9 @@ log "Firewall configured"
 # ============================================================
 log "--- Installing user management scripts ---"
 USER_BIN="/home/${USER}/bin"
-if [[ -d "$INSTALL_DIR/scripts/user-bin/picoclaw" ]]; then
+if [[ -d "$INSTALL_DIR/scripts/user-bin/picocluster-claw" ]]; then
   mkdir -p "$USER_BIN"
-  cp "$INSTALL_DIR/scripts/user-bin/picoclaw/"* "$USER_BIN/"
+  cp "$INSTALL_DIR/scripts/user-bin/picocluster-claw/"* "$USER_BIN/"
   chmod +x "$USER_BIN/"*
   chown -R "${USER}:${USER}" "$USER_BIN"
   log "  Installed: $(ls "$USER_BIN" | tr '\n' ' ')"
@@ -207,14 +207,14 @@ if [[ -d "$INSTALL_DIR/scripts/user-bin/picoclaw" ]]; then
   if ! grep -q "HOME/bin" "/home/${USER}/.bashrc" 2>/dev/null; then
     cat >> "/home/${USER}/.bashrc" <<'BASHRC'
 
-# PicoClaw user scripts
+# PicoCluster Claw user scripts
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 BASHRC
   fi
 else
-  log "  WARNING: user-bin/picoclaw not found in repo — skipping"
+  log "  WARNING: user-bin/picocluster-claw not found in repo — skipping"
 fi
 
 # ============================================================
@@ -229,19 +229,19 @@ docker compose ps 2>/dev/null
 echo ""
 log "  ThreadWeaver:  $(curl -sf --max-time 5 http://127.0.0.1:8000/api/settings >/dev/null 2>&1 && echo 'OK' || echo 'STARTING')"
 log "  OpenClaw:      $(curl -sf --max-time 5 http://127.0.0.1:18789/__openclaw__/health >/dev/null 2>&1 && echo 'OK' || echo 'STARTING')"
-log "  Blinkt! LEDs:  $(systemctl is-active picoclaw-leds 2>/dev/null || echo 'n/a')"
+log "  Blinkt! LEDs:  $(systemctl is-active picocluster-claw-leds 2>/dev/null || echo 'n/a')"
 log "  Ollama:        $(curl -sf --max-time 5 http://${CRUSH_IP}:11434/api/tags >/dev/null 2>&1 && echo 'OK' || echo 'NOT REACHABLE')"
 
 log ""
 log "============================================"
-log "  PicoClaw Install Complete"
+log "  PicoCluster Claw Install Complete"
 log "============================================"
 log ""
 log "  ThreadWeaver:  https://localhost:5174   (via SSH tunnel)"
 log "  OpenClaw:      https://localhost:18790  (via SSH tunnel, token: ${OPENCLAW_TOKEN})"
 log ""
 log "  SSH tunnel command (run on your computer):"
-log "    ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@picoclaw"
+log "    ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@picocluster-claw"
 log ""
 log "  Manage:  cd $INSTALL_DIR && docker compose [up -d|down|logs|ps]"
 log "  Update:  cd $INSTALL_DIR && git pull && docker compose build --pull && docker compose up -d"

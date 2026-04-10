@@ -1,7 +1,7 @@
-# PicoClaw Appliance — Roadmap
+# PicoCluster Claw Appliance — Roadmap
 
 ## Architecture
-- **picoclaw — RPi5 (8GB)** — Portal, ThreadWeaver, OpenClaw, Blinkt! LEDs (Docker)
+- **picocluster-claw — RPi5 (8GB)** — Portal, ThreadWeaver, OpenClaw, Blinkt! LEDs (Docker)
 - **picocrush — Orin Nano Super (8GB)** — Ollama with 9 LLM models, GPU-accelerated
 - Shared case, shared power, shared network, 50W PSU
 
@@ -30,21 +30,21 @@
 - [x] Golden images captured, shrunk, archived
 - [x] L4T packages held to prevent apt upgrade breakage
 
-## Phase 4: PicoClaw Software Install (COMPLETE ✅)
+## Phase 4: PicoCluster Claw Software Install (COMPLETE ✅)
 - [x] install-picocrush.sh — Ollama with CUDA, 9 default models, MAXN power mode
-- [x] install-picoclaw.sh — Docker containers (ThreadWeaver, OpenClaw, Portal, Caddy)
+- [x] install-picocluster-claw.sh — Docker containers (ThreadWeaver, OpenClaw, Portal, Caddy)
 - [x] Blinkt! LED status daemon with scanner, blink, look-around behaviors
 - [x] ThreadWeaver chat UI with Ollama model discovery
 - [x] OpenClaw agent with all channel SDK dependencies
 - [x] Caddy HTTPS reverse proxy for OpenClaw dashboard
-- [x] PicoClaw portal landing page (port 80) with live status
+- [x] PicoCluster Claw portal landing page (port 80) with live status
 - [x] validate-pair.sh — end-to-end health checks
 - [x] update-threadweaver.sh — version check + rebuild
-- [x] update-picoclaw.sh / update-picocrush.sh — update scripts
+- [x] update-picocluster-claw.sh / update-picocrush.sh — update scripts
 - [x] Auto-resize filesystem at install time
 
 ## Phase 5: Community Installer (PLANNED)
-- [ ] picoclcaw-setup.sh — all-in-one for BYO hardware
+- [ ] picocluster-claw-setup.sh — all-in-one for BYO hardware
 - [ ] Auto-detect hardware (RPi5 vs Jetson)
 - [ ] Interactive prompts for IP, models, options
 - [ ] Harden + install + configure in one script
@@ -87,4 +87,4 @@ PSU: 50W (15W headroom at peak)
 - Ollama replaced llama-server for native multi-model management and auto-discovery
 - ThreadWeaver requires patches for LAN access (API_BASE, Vite proxy, model discovery) — baked into Docker build
 - Orin Nano GPIO pinmux does not support Blinkt! on physical pins 16/18 — RPi5 only
-- 128GB+ microSD required for picoclaw (Docker + OpenClaw + ThreadWeaver)
+- 128GB+ microSD required for picocluster-claw (Docker + OpenClaw + ThreadWeaver)

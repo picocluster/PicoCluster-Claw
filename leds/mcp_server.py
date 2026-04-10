@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PicoClaw LED MCP Server
+PicoCluster Claw LED MCP Server
 
 Exposes the Blinkt! LED strip as MCP tools that any MCP-compatible
 client (ThreadWeaver, OpenClaw, Claude Code, etc.) can discover and use.
@@ -13,7 +13,7 @@ Tools:
   - clear_leds: Return to idle scanner animation
 
 Runs as a stdio MCP server. Connect via:
-  ThreadWeaver: /api/mcp/connect {"name": "leds", "command": "python3", "args": ["/opt/picoclcaw/leds/mcp_server.py"]}
+  ThreadWeaver: /api/mcp/connect {"name": "leds", "command": "python3", "args": ["/opt/picocluster-claw/leds/mcp_server.py"]}
 """
 
 import sys
@@ -28,7 +28,7 @@ LED_API = os.environ.get("LED_API_URL", "http://172.17.0.1:7777")
 TOOLS = [
     {
         "name": "set_led_color",
-        "description": "Set the PicoClaw Blinkt! LED strip to a solid color. The LEDs will pulse gently in the chosen color. Use to show status, mood, or get the user's attention. Available colors: red, green, blue, amber, cyan, purple, white.",
+        "description": "Set the PicoCluster Claw Blinkt! LED strip to a solid color. The LEDs will pulse gently in the chosen color. Use to show status, mood, or get the user's attention. Available colors: red, green, blue, amber, cyan, purple, white.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -175,7 +175,7 @@ def main():
                         "tools": {"listChanged": False},
                     },
                     "serverInfo": {
-                        "name": "picoclcaw-leds",
+                        "name": "picocluster-claw-leds",
                         "version": "1.0.0",
                     },
                 },

@@ -1,4 +1,4 @@
-# PicoClaw Docker Compose — runs on picoclaw (RPi5)
+# PicoCluster Claw Docker Compose — runs on picocluster-claw (RPi5)
 # Start: docker compose up -d
 # Stop:  docker compose down
 # Logs:  docker compose logs -f
@@ -26,7 +26,7 @@ services:
     volumes:
       - ./leds/mcp_server.py:/opt/mcp/led_server.py:ro
       - ./mcp:/opt/mcp/servers:ro
-      - picoclcaw-sandbox:/tmp/picoclcaw-sandbox
+      - picocluster-claw-sandbox:/tmp/picocluster-claw-sandbox
     healthcheck:
       test: ["CMD", "curl", "-sf", "http://127.0.0.1:8000/api/settings"]
       interval: 30s
@@ -83,4 +83,4 @@ volumes:
   openclaw-data:
   caddy-data:
   caddy-config:
-  picoclcaw-sandbox:
+  picocluster-claw-sandbox:

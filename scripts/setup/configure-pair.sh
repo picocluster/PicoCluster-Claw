@@ -1,5 +1,5 @@
 #!/bin/bash
-# configure-pair.sh — Configure a PicoClaw node pair (claw/crush) with static IPs
+# configure-pair.sh — Configure a PicoCluster Claw node pair (claw/crush) with static IPs
 #
 # Run on each node with the SAME arguments so both agree on addressing.
 #
@@ -127,7 +127,7 @@ else
 fi
 
 # --- Display summary ---
-echo "=== PicoClaw Node Configuration ==="
+echo "=== PicoCluster Claw Node Configuration ==="
 echo ""
 echo "  This node:    $node_type → $my_hostname ($my_ip/$subnet)"
 echo "  Partner node: → $partner_hostname ($partner_ip/$subnet)"

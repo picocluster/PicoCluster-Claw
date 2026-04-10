@@ -118,4 +118,4 @@ def handle_call(name, args):
 
 
 if __name__ == "__main__":
-    run_server("picoclcaw-picocrush", "1.0.0", TOOLS, handle_call)
+    run_server("picocluster-claw-picocrush", "1.0.0", TOOLS, handle_call)

@@ -1,5 +1,5 @@
 #!/bin/bash
-# build-orin-image.sh — Strip and harden a JetPack 6.x Desktop install for PicoClaw golden image
+# build-orin-image.sh — Strip and harden a JetPack 6.x Desktop install for PicoCluster Claw golden image
 # Run as root on a booted Orin Nano with fresh JetPack desktop.
 # After running: dd capture → jetson-shrink.sh → gzip for distribution.
 #
@@ -18,7 +18,7 @@ PICOCLUSTER_USER="picocluster"
 HOSTNAME_DEFAULT="picocrush"
 MY_IP="10.1.10.221"
 PARTNER_IP="10.1.10.220"
-PARTNER_HOSTNAME="picoclaw"
+PARTNER_HOSTNAME="picocluster-claw"
 GATEWAY="10.1.10.1"
 DNS="8.8.8.8"
 SUBNET="24"
@@ -48,7 +48,7 @@ run() {
 # ============================================================
 # STEP 0: Verify environment
 # ============================================================
-log "=== PicoClaw Orin Nano Golden Image Builder ==="
+log "=== PicoCluster Claw Orin Nano Golden Image Builder ==="
 
 if [[ "$(uname -m)" != "aarch64" ]]; then
   log "WARNING: Expected aarch64, got $(uname -m)"
@@ -324,7 +324,7 @@ run "apt update -qq"
 run "apt install -y ufw fail2ban unattended-upgrades"
 
 if ! $DRY_RUN; then
-  # Configure UFW — SSH only for now. Port 8080 added in Phase 4 (restricted to picoclaw IP)
+  # Configure UFW — SSH only for now. Port 8080 added in Phase 4 (restricted to picocluster-claw IP)
   ufw default deny incoming
   ufw default allow outgoing
   ufw allow 22/tcp comment 'SSH'
@@ -562,7 +562,7 @@ AFTER_DISK=$(df -h / | awk 'NR==2 {print $3}')
 
 log ""
 log "============================================"
-log "  PicoClaw Orin Nano Golden Image Build Complete"
+log "  PicoCluster Claw Orin Nano Golden Image Build Complete"
 log "============================================"
 log ""
 log "  Disk before: $BEFORE_DISK"

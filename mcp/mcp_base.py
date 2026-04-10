@@ -1,5 +1,5 @@
 """
-Shared MCP stdio server base — reduces boilerplate across PicoClaw MCP servers.
+Shared MCP stdio server base — reduces boilerplate across PicoCluster Claw MCP servers.
 
 Usage:
     from mcp_base import run_server

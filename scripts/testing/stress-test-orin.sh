@@ -1,5 +1,5 @@
 #!/bin/bash
-# stress-test-orin.sh — PicoClaw Orin Nano (picocrush) in-case thermal/power testing
+# stress-test-orin.sh — PicoCluster Claw Orin Nano (picocrush) in-case thermal/power testing
 # Run as root on the Orin Nano
 # Compares in-case temps vs previous out-of-case benchmarks
 set -euo pipefail
@@ -212,7 +212,7 @@ jetson_clocks
 
 echo "test,watts" > "$RESULTS_DIR/killawatt.csv"
 
-log "=== PicoClaw Orin Nano In-Case Stress Test Suite ==="
+log "=== PicoCluster Claw Orin Nano In-Case Stress Test Suite ==="
 log "Results: $RESULTS_DIR"
 log "Previous out-of-case results: ~/results/"
 log "iperf3 server: $IPERF_SERVER"

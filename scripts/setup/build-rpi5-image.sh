@@ -1,5 +1,5 @@
 #!/bin/bash
-# build-rpi5-image.sh — Strip and harden a Raspbian Desktop install for PicoClaw golden image
+# build-rpi5-image.sh — Strip and harden a Raspbian Desktop install for PicoCluster Claw golden image
 # Run as root on a booted RPi5 with fresh Raspbian Desktop.
 # After running: dd capture → shrink → gzip for distribution.
 #
@@ -12,7 +12,7 @@ set -euo pipefail
 LOGFILE="/var/log/build-image.log"
 DRY_RUN=false
 PICOCLUSTER_USER="picocluster"
-HOSTNAME_DEFAULT="picoclaw"
+HOSTNAME_DEFAULT="picocluster-claw"
 MY_IP="10.1.10.220"
 PARTNER_IP="10.1.10.221"
 PARTNER_HOSTNAME="picocrush"
@@ -43,7 +43,7 @@ run() {
 # ============================================================
 # STEP 0: Verify environment
 # ============================================================
-log "=== PicoClaw RPi5 Golden Image Builder ==="
+log "=== PicoCluster Claw RPi5 Golden Image Builder ==="
 
 if ! grep -qi 'raspbian\|debian' /etc/os-release 2>/dev/null; then
   log "WARNING: This doesn't look like Raspbian. Proceeding anyway..."
@@ -455,7 +455,7 @@ AFTER_DISK=$(df -h / | awk 'NR==2 {print $3}')
 
 log ""
 log "============================================"
-log "  PicoClaw RPi5 Golden Image Build Complete"
+log "  PicoCluster Claw RPi5 Golden Image Build Complete"
 log "============================================"
 log ""
 log "  Disk before: $BEFORE_DISK"

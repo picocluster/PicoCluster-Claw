@@ -1,10 +1,10 @@
-# PicoClaw Storage Recommendations
+# PicoCluster Claw Storage Recommendations
 
 ## Recommended Configuration
 
 | Node | Boot Device | Storage | Size |
 |------|------------|---------|------|
-| **picoclaw** (RPi5) | MicroSD | OS + Docker + OpenClaw + ThreadWeaver | **128GB** |
+| **picocluster-claw** (RPi5) | MicroSD | OS + Docker + OpenClaw + ThreadWeaver | **128GB** |
 | **picocrush** (Orin Nano) | MicroSD | OS (JetPack) | **128GB** |
 | **picocrush** (Orin Nano) | NVMe M.2 | Models + llama.cpp | **256GB** |
 
@@ -12,7 +12,7 @@ Filesystem: **ext4** (default for both Raspbian and JetPack)
 
 ---
 
-## picoclaw (RPi5) — Storage Breakdown
+## picocluster-claw (RPi5) — Storage Breakdown
 
 | Component | Size |
 |-----------|------|

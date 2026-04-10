@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PicoClaw shutdown/restart API.
+"""PicoCluster Claw shutdown/restart API.
 
 Runs as a systemd service on the host (not a container) so it has
 access to ssh, sudo, and system shutdown commands.
@@ -55,7 +55,7 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         target = body.get("target", "all")
-        if target not in ("all", "picoclaw", "picocrush"):
+        if target not in ("all", "picocluster-claw", "picocrush"):
             self._respond(400, {"error": f"invalid target: {target}"})
             return
 
@@ -77,17 +77,17 @@ class Handler(BaseHTTPRequestHandler):
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             )
 
-        if target in ("all", "picoclaw"):
+        if target in ("all", "picocluster-claw"):
             # Delay 3 seconds so response goes out and picocrush command starts
             delay = "+1" if action == "shutdown" else ""
             if action == "shutdown":
                 subprocess.Popen(
-                    ["sudo", "shutdown", "-h", "+1", "PicoClaw shutdown via portal"],
+                    ["sudo", "shutdown", "-h", "+1", "PicoCluster Claw shutdown via portal"],
                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                 )
             else:
                 subprocess.Popen(
-                    ["sudo", "shutdown", "-r", "+1", "PicoClaw restart via portal"],
+                    ["sudo", "shutdown", "-r", "+1", "PicoCluster Claw restart via portal"],
                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                 )
 

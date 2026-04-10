@@ -1,9 +1,9 @@
 #!/bin/bash
-# update-picoclaw.sh — Update PicoClaw on RPi5
-# Usage: sudo bash update-picoclaw.sh [component]
-#        sudo bash update-picoclaw.sh           # Update all
-#        sudo bash update-picoclaw.sh openclaw   # Update OpenClaw only
-#        sudo bash update-picoclaw.sh threadweaver
+# update-picocluster-claw.sh — Update PicoCluster Claw on RPi5
+# Usage: sudo bash update-picocluster-claw.sh [component]
+#        sudo bash update-picocluster-claw.sh           # Update all
+#        sudo bash update-picocluster-claw.sh openclaw   # Update OpenClaw only
+#        sudo bash update-picocluster-claw.sh threadweaver
 set -euo pipefail
 
 if (( EUID != 0 )); then
@@ -12,7 +12,7 @@ if (( EUID != 0 )); then
 fi
 
 COMPONENT="${1:-all}"
-INSTALL_DIR="/opt/picoclcaw"
+INSTALL_DIR="/opt/picocluster-claw"
 
 log() { echo "[$(date '+%H:%M:%S')] $*"; }
 
@@ -20,12 +20,12 @@ cd "$INSTALL_DIR"
 
 case "$COMPONENT" in
   all)
-    log "Updating PicoClaw repo..."
+    log "Updating PicoCluster Claw repo..."
     git pull --ff-only 2>&1 | tail -3
     log "Rebuilding all containers..."
     docker compose build --pull 2>&1 | tail -10
     docker compose up -d
-    systemctl restart picoclaw-leds 2>/dev/null || true
+    systemctl restart picocluster-claw-leds 2>/dev/null || true
     ;;
   openclaw)
     log "Rebuilding OpenClaw container..."
@@ -39,8 +39,8 @@ case "$COMPONENT" in
     ;;
   leds)
     git pull --ff-only 2>&1 | tail -3
-    cp leds/apa102.py leds/picoclaw_status.py /opt/picoclcaw/leds/ 2>/dev/null
-    systemctl restart picoclaw-leds
+    cp leds/apa102.py leds/picocluster_claw_status.py /opt/picocluster-claw/leds/ 2>/dev/null
+    systemctl restart picocluster-claw-leds
     ;;
   *)
     echo "Usage: $0 [all|openclaw|threadweaver|leds]"
@@ -51,4 +51,4 @@ esac
 log ""
 log "=== Status ==="
 docker compose ps 2>/dev/null
-log "  Blinkt LEDs: $(systemctl is-active picoclaw-leds 2>/dev/null || echo 'n/a')"
+log "  Blinkt LEDs: $(systemctl is-active picocluster-claw-leds 2>/dev/null || echo 'n/a')"

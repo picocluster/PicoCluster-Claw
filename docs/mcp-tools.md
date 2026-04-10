@@ -1,13 +1,13 @@
-# PicoClaw MCP Tools Reference
+# PicoCluster Claw MCP Tools Reference
 
-PicoClaw ships with 5 MCP (Model Context Protocol) servers that auto-connect to ThreadWeaver on startup. The local LLM gets **28 tools** total (4 built-in + 24 from MCP servers).
+PicoCluster Claw ships with 5 MCP (Model Context Protocol) servers that auto-connect to ThreadWeaver on startup. The local LLM gets **28 tools** total (4 built-in + 24 from MCP servers).
 
 ## Quick Reference
 
 | Server | Tools | Description |
 |--------|------:|-------------|
 | [leds](#led-server) | 5 | Control the Blinkt! LED strip |
-| [system](#system-server) | 6 | picoclaw system stats |
+| [system](#system-server) | 6 | picocluster-claw system stats |
 | [picocrush](#picocrush-server) | 4 | Ollama model management |
 | [time](#time-server) | 4 | Current time and dates |
 | [files](#files-server) | 5 | Sandboxed file operations |
@@ -16,7 +16,7 @@ PicoClaw ships with 5 MCP (Model Context Protocol) servers that auto-connect to 
 
 ## LED Server
 
-Controls the 8-LED Pimoroni Blinkt! strip on picoclaw's GPIO header.
+Controls the 8-LED Pimoroni Blinkt! strip on picocluster-claw's GPIO header.
 
 | Tool | Description |
 |------|-------------|
@@ -35,19 +35,19 @@ Controls the 8-LED Pimoroni Blinkt! strip on picoclaw's GPIO header.
 Also available as raw HTTP on port 7777 (reachable from your LAN):
 
 ```bash
-curl -X POST http://picoclaw:7777/set_status -H 'Content-Type: application/json' -d '{"color":"purple"}'
-curl -X POST http://picoclaw:7777/set_progress -H 'Content-Type: application/json' -d '{"percent":50,"color":"green"}'
-curl -X POST http://picoclaw:7777/pulse_success
-curl -X POST http://picoclaw:7777/pulse_error
-curl -X POST http://picoclaw:7777/clear
+curl -X POST http://picocluster-claw:7777/set_status -H 'Content-Type: application/json' -d '{"color":"purple"}'
+curl -X POST http://picocluster-claw:7777/set_progress -H 'Content-Type: application/json' -d '{"percent":50,"color":"green"}'
+curl -X POST http://picocluster-claw:7777/pulse_success
+curl -X POST http://picocluster-claw:7777/pulse_error
+curl -X POST http://picocluster-claw:7777/clear
 ```
 
 Colors: `red`, `green`, `blue`, `amber`, `cyan`, `purple`, `white`, `off`
 
-Or use the `pc-led` wrapper from any SSH session on picoclaw:
+Or use the `pc-led` wrapper from any SSH session on picocluster-claw:
 
 ```bash
-ssh picocluster@picoclaw
+ssh picocluster@picocluster-claw
 pc-led color purple 10
 pc-led flash red
 pc-led progress 75 green
@@ -57,7 +57,7 @@ pc-led clear
 
 ### Portal Controls
 
-The [PicoClaw portal](http://picoclaw) has an LED Control section with color buttons, pulse effects, and a progress slider.
+The [PicoCluster Claw portal](http://picocluster-claw) has an LED Control section with color buttons, pulse effects, and a progress slider.
 
 ### OpenClaw Auto-LED
 
@@ -71,7 +71,7 @@ A log-monitoring bridge automatically triggers LED effects on OpenClaw agent eve
 
 ## System Server
 
-Reports picoclaw (RPi5) system statistics.
+Reports picocluster-claw (RPi5) system statistics.
 
 | Tool | Description |
 |------|-------------|
@@ -83,7 +83,7 @@ Reports picoclaw (RPi5) system statistics.
 | `get_network_info` | Network interfaces and IP addresses |
 
 **Example chat:**
-> User: "How hot is picoclaw running?"
+> User: "How hot is picocluster-claw running?"
 > LLM: *calls `get_temperature`* → "CPU temperature: 52.3C (126.1F)"
 
 ---
@@ -124,7 +124,7 @@ Gives the LLM awareness of current date and time. Important because training dat
 
 ## Files Server
 
-Sandboxed file operations — the LLM can read/write/delete files only within `/tmp/picoclcaw-sandbox` (mounted as a Docker volume so it persists across restarts).
+Sandboxed file operations — the LLM can read/write/delete files only within `/tmp/picocluster-claw-sandbox` (mounted as a Docker volume so it persists across restarts).
 
 | Tool | Description |
 |------|-------------|
@@ -140,13 +140,13 @@ Sandboxed file operations — the LLM can read/write/delete files only within `/
 
 ### Security
 
-The sandbox uses Python's `Path.resolve()` + `relative_to()` to reject any path that escapes the sandbox directory. The LLM cannot read `/etc/passwd`, access containers, or touch anything outside `/tmp/picoclcaw-sandbox`.
+The sandbox uses Python's `Path.resolve()` + `relative_to()` to reject any path that escapes the sandbox directory. The LLM cannot read `/etc/passwd`, access containers, or touch anything outside `/tmp/picocluster-claw-sandbox`.
 
 ---
 
 ## Adding Your Own MCP Server
 
-All PicoClaw MCP servers use a shared base (`mcp/mcp_base.py`) that handles the stdio protocol. To add a new server:
+All PicoCluster Claw MCP servers use a shared base (`mcp/mcp_base.py`) that handles the stdio protocol. To add a new server:
 
 ```python
 #!/usr/bin/env python3
@@ -188,10 +188,10 @@ ThreadWeaver can connect to any stdio-based MCP server. Popular ones:
 - **@modelcontextprotocol/server-github** — GitHub API access
 - **@modelcontextprotocol/server-sqlite** — SQLite database queries
 
-Connect via the ThreadWeaver API. The API is bound to `127.0.0.1` only, so run this from picoclaw itself (via SSH or by opening ThreadWeaver in the browser and using its settings UI):
+Connect via the ThreadWeaver API. The API is bound to `127.0.0.1` only, so run this from picocluster-claw itself (via SSH or by opening ThreadWeaver in the browser and using its settings UI):
 
 ```bash
-ssh picocluster@picoclaw
+ssh picocluster@picocluster-claw
 curl -X POST http://127.0.0.1:8000/api/mcp/connect \
   -H "Content-Type: application/json" \
   -d '{"name":"filesystem","command":"npx","args":["-y","@modelcontextprotocol/server-filesystem","/tmp"]}'
@@ -207,7 +207,7 @@ Tool use quality varies by model:
 
 | Model | Tool Use | Multi-turn | Notes |
 |-------|----------|------------|-------|
-| llama3.1:8b | ⭐⭐⭐⭐ | ✅ reliable | **PicoClaw default.** Chains 3+ tool calls cleanly |
+| llama3.1:8b | ⭐⭐⭐⭐ | ✅ reliable | **PicoCluster Claw default.** Chains 3+ tool calls cleanly |
 | deepseek-r1:7b | ⭐⭐⭐⭐ | ✅ reliable | Good reasoning about when to use tools |
 | phi3.5:3.8b | ⭐⭐⭐ | ⚠️ variable | Decent on single/first-turn tool use |
 | qwen2.5:3b | ⭐⭐⭐ | ⚠️ variable | Better at code than tools |

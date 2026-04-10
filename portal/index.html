@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PicoClaw</title>
+  <title>PicoCluster Claw</title>
   <style>
     :root {
       --bg: #0a0a1a;
@@ -216,12 +216,12 @@
   <div class="container">
 
     <header>
-      <h1>PicoClaw</h1>
+      <h1>PicoCluster Claw</h1>
       <p>Self-hosted AI agent appliance &mdash; private, local, always-on</p>
       <p style="margin-top: 0.8rem; font-size: 0.9rem;">
         <a href="https://picocluster.com" target="_blank" style="color: var(--accent); text-decoration: none; margin: 0 0.6rem;">PicoCluster</a>
         &middot;
-        <a href="https://github.com/picocluster/PicoClaw" target="_blank" style="color: var(--accent); text-decoration: none; margin: 0 0.6rem;">PicoClaw on GitHub</a>
+        <a href="https://github.com/picocluster/PicoCluster-Claw" target="_blank" style="color: var(--accent); text-decoration: none; margin: 0 0.6rem;">PicoCluster Claw on GitHub</a>
         &middot;
         <a href="https://github.com/nosqltips/ThreadWeaver" target="_blank" style="color: var(--accent); text-decoration: none; margin: 0 0.6rem;">ThreadWeaver</a>
       </p>
@@ -265,7 +265,7 @@
       <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
         <button onclick="clusterAction('restart', 'all')" style="background: var(--amber); color: #000; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; font-size: 0.9rem; cursor: pointer; font-weight: 500;">Restart Cluster</button>
         <button onclick="clusterAction('shutdown', 'all')" style="background: var(--red); color: #fff; border: none; padding: 0.6rem 1.5rem; border-radius: 8px; font-size: 0.9rem; cursor: pointer; font-weight: 500;">Shutdown Cluster</button>
-        <button onclick="clusterAction('restart', 'picoclaw')" style="background: transparent; border: 1px solid var(--border); color: var(--dim); padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.85rem; cursor: pointer;">Restart picoclaw</button>
+        <button onclick="clusterAction('restart', 'picocluster-claw')" style="background: transparent; border: 1px solid var(--border); color: var(--dim); padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.85rem; cursor: pointer;">Restart picocluster-claw</button>
         <button onclick="clusterAction('restart', 'picocrush')" style="background: transparent; border: 1px solid var(--border); color: var(--dim); padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.85rem; cursor: pointer;">Restart picocrush</button>
       </div>
       <div id="control-msg" style="color: var(--dim); font-size: 0.85rem; margin-top: 0.8rem;"></div>
@@ -312,7 +312,7 @@
     <div class="section">
       <h2>MCP Tools (for AI)</h2>
       <p style="color: var(--dim); font-size: 0.9rem; margin-bottom: 0.8rem;">
-        28 tools available to the LLM via Model Context Protocol. Try asking: "What time is it?", "How hot is picoclaw?", "Make the LEDs purple"
+        28 tools available to the LLM via Model Context Protocol. Try asking: "What time is it?", "How hot is picocluster-claw?", "Make the LEDs purple"
       </p>
       <table>
         <thead><tr><th>Server</th><th>Tools</th><th>Purpose</th></tr></thead>
@@ -334,7 +334,7 @@
         <tbody>
           <tr><td>ThreadWeaver (Chat)</td><td><code>https://localhost:5174</code></td><td>Requires SSH tunnel first</td></tr>
           <tr><td>OpenClaw Dashboard</td><td><code>https://localhost:18790</code></td><td>Requires SSH tunnel first</td></tr>
-          <tr><td>OpenClaw TUI</td><td><code>ssh picocluster@picoclaw</code> then <code>openclaw tui</code></td><td>Terminal chat</td></tr>
+          <tr><td>OpenClaw TUI</td><td><code>ssh picocluster@picocluster-claw</code> then <code>openclaw tui</code></td><td>Terminal chat</td></tr>
           <tr><td>Ollama API</td><td><code>http://picocrush:11434/v1</code></td><td>OpenAI-compatible endpoint</td></tr>
         </tbody>
       </table>
@@ -346,7 +346,7 @@
         Both ThreadWeaver and OpenClaw are served over HTTPS via Caddy and are not exposed directly on the LAN. Run this on your computer to tunnel both:
       </p>
       <code style="display: block; padding: 0.8rem; background: #1a1a3a; border-radius: 8px; font-size: 0.85rem;">
-        ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@picoclaw
+        ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@picocluster-claw
       </code>
       <p style="color: var(--dim); font-size: 0.85rem; margin-top: 0.6rem;">
         Then open:<br>
@@ -358,13 +358,13 @@
     <div class="section">
       <h2>Management</h2>
       <table>
-        <thead><tr><th>Task</th><th>Command (on picoclaw)</th></tr></thead>
+        <thead><tr><th>Task</th><th>Command (on picocluster-claw)</th></tr></thead>
         <tbody>
-          <tr><td>Update ThreadWeaver</td><td><code>sudo bash /opt/picoclcaw/scripts/setup/update-threadweaver.sh</code></td></tr>
-          <tr><td>Update all containers</td><td><code>sudo bash /opt/picoclcaw/scripts/setup/update-picoclaw.sh</code></td></tr>
-          <tr><td>View container status</td><td><code>cd /opt/picoclcaw && sudo docker compose ps</code></td></tr>
-          <tr><td>View logs</td><td><code>cd /opt/picoclcaw && sudo docker compose logs -f</code></td></tr>
-          <tr><td>Restart all services</td><td><code>cd /opt/picoclcaw && sudo docker compose restart</code></td></tr>
+          <tr><td>Update ThreadWeaver</td><td><code>sudo bash /opt/picocluster-claw/scripts/setup/update-threadweaver.sh</code></td></tr>
+          <tr><td>Update all containers</td><td><code>sudo bash /opt/picocluster-claw/scripts/setup/update-picocluster-claw.sh</code></td></tr>
+          <tr><td>View container status</td><td><code>cd /opt/picocluster-claw && sudo docker compose ps</code></td></tr>
+          <tr><td>View logs</td><td><code>cd /opt/picocluster-claw && sudo docker compose logs -f</code></td></tr>
+          <tr><td>Restart all services</td><td><code>cd /opt/picocluster-claw && sudo docker compose restart</code></td></tr>
           <tr><td>Add a new model</td><td><code>ssh picocrush</code> then <code>ollama pull &lt;model&gt;</code></td></tr>
           <tr><td>List models</td><td><code>ssh picocrush</code> then <code>ollama list</code></td></tr>
         </tbody>
@@ -410,15 +410,15 @@
           <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
         </div>
         <div class="example">
-          <div class="prompt">How much memory is free on picoclaw?</div>
+          <div class="prompt">How much memory is free on picocluster-claw?</div>
           <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
         </div>
         <div class="example">
-          <div class="prompt">How long has picoclaw been running?</div>
+          <div class="prompt">How long has picocluster-claw been running?</div>
           <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
         </div>
         <div class="example">
-          <div class="prompt">Give me a one-paragraph summary of picoclaw's current state: CPU, memory, disk, uptime, and temperature.</div>
+          <div class="prompt">Give me a one-paragraph summary of picocluster-claw's current state: CPU, memory, disk, uptime, and temperature.</div>
           <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
         </div>
       </div>
@@ -459,9 +459,9 @@
 
       <div class="example-group">
         <h3>📁 Files (Sandboxed)</h3>
-        <div class="group-hint">5 tools in the <code>files</code> MCP server, sandboxed to <code>/tmp/picoclcaw-sandbox</code></div>
+        <div class="group-hint">5 tools in the <code>files</code> MCP server, sandboxed to <code>/tmp/picocluster-claw-sandbox</code></div>
         <div class="example">
-          <div class="prompt">Write a file called greeting.txt containing "Hello from PicoClaw".</div>
+          <div class="prompt">Write a file called greeting.txt containing "Hello from PicoCluster Claw".</div>
           <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
         </div>
         <div class="example">
@@ -473,7 +473,7 @@
           <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
         </div>
         <div class="example">
-          <div class="prompt">Write a JSON config file called config.json containing keys "name" (PicoClaw), "version" (1.0), and "features" (a list with chat, tools, and LEDs).</div>
+          <div class="prompt">Write a JSON config file called config.json containing keys "name" (PicoCluster Claw), "version" (1.0), and "features" (a list with chat, tools, and LEDs).</div>
           <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
         </div>
       </div>
@@ -529,7 +529,7 @@
         </div>
       </div>
 
-      <a class="docs-link" href="https://github.com/picocluster/PicoClaw/blob/main/docs/examples.md" target="_blank">More examples in docs/examples.md →</a>
+      <a class="docs-link" href="https://github.com/picocluster/PicoCluster-Claw/blob/main/docs/examples.md" target="_blank">More examples in docs/examples.md →</a>
     </div>
 
     <div class="section">
@@ -541,16 +541,16 @@
         <summary>How do I start chatting with ThreadWeaver?</summary>
         <div class="answer">
           <p>ThreadWeaver is served over HTTPS through an SSH tunnel. Open a terminal on your computer and run:</p>
-          <p><code>ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@picoclaw</code></p>
-          <p>Leave that terminal open. Then in your browser, visit <code>https://localhost:5174</code>. Accept the self-signed cert warning on first visit — the cert is issued by Caddy on picoclaw and your traffic is already encrypted by SSH.</p>
+          <p><code>ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@picocluster-claw</code></p>
+          <p>Leave that terminal open. Then in your browser, visit <code>https://localhost:5174</code>. Accept the self-signed cert warning on first visit — the cert is issued by Caddy on picocluster-claw and your traffic is already encrypted by SSH.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>Why do I need an SSH tunnel?</summary>
         <div class="answer">
-          <p>For security. ThreadWeaver and OpenClaw are bound only to picoclaw's loopback interface (<code>127.0.0.1</code>), so nothing on your LAN can reach them directly without authenticating via SSH first.</p>
-          <p>The tunnel forwards two local ports (<code>5174</code>, <code>18790</code>) to picoclaw's Caddy HTTPS wrapper, which reverse-proxies to the raw HTTP ports inside picoclaw.</p>
+          <p>For security. ThreadWeaver and OpenClaw are bound only to picocluster-claw's loopback interface (<code>127.0.0.1</code>), so nothing on your LAN can reach them directly without authenticating via SSH first.</p>
+          <p>The tunnel forwards two local ports (<code>5174</code>, <code>18790</code>) to picocluster-claw's Caddy HTTPS wrapper, which reverse-proxies to the raw HTTP ports inside picocluster-claw.</p>
         </div>
       </details>
 
@@ -563,9 +563,9 @@
       </details>
 
       <details class="faq">
-        <summary>Can I access PicoClaw from outside my home network?</summary>
+        <summary>Can I access PicoCluster Claw from outside my home network?</summary>
         <div class="answer">
-          <p>Not by default. For remote access, install <a href="https://tailscale.com" style="color: var(--accent);" target="_blank">Tailscale</a> on picoclaw and your remote devices. Then use the Tailscale IP instead of the LAN IP in your SSH tunnel command:</p>
+          <p>Not by default. For remote access, install <a href="https://tailscale.com" style="color: var(--accent);" target="_blank">Tailscale</a> on picocluster-claw and your remote devices. Then use the Tailscale IP instead of the LAN IP in your SSH tunnel command:</p>
           <p><code>ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@&lt;tailscale-ip&gt;</code></p>
           <p>Tailscale wraps everything in a WireGuard VPN and handles NAT traversal automatically.</p>
         </div>
@@ -600,22 +600,22 @@
         <summary>Can I use Claude, GPT, Gemini, or Grok instead of the local models?</summary>
         <div class="answer">
           <p>Yes. ThreadWeaver supports five providers: <code>local</code> (Ollama), <code>anthropic</code>, <code>openai</code>, <code>gemini</code>, and <code>grok</code>.</p>
-          <p>Open ThreadWeaver → Settings → paste your API key → pick a model → chat. You can switch providers mid-conversation. Your API keys are stored on picoclaw and only used to authenticate with that provider.</p>
+          <p>Open ThreadWeaver → Settings → paste your API key → pick a model → chat. You can switch providers mid-conversation. Your API keys are stored on picocluster-claw and only used to authenticate with that provider.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>If I use an external LLM, can it still use the local MCP tools?</summary>
         <div class="answer">
-          <p><strong>Yes, fully.</strong> Tool execution always happens on picoclaw. The external LLM only sees tool schemas and decides <em>when</em> to call them. The flow is:</p>
+          <p><strong>Yes, fully.</strong> Tool execution always happens on picocluster-claw. The external LLM only sees tool schemas and decides <em>when</em> to call them. The flow is:</p>
           <ul>
             <li>You ask the LLM "make the LEDs purple"</li>
             <li>ThreadWeaver sends your message plus the 28 tool schemas to the external API</li>
             <li>The LLM replies with a tool call: <code>{"tool": "set_led_color", "args": {"color": "purple"}}</code></li>
-            <li>ThreadWeaver executes the tool locally on picoclaw</li>
+            <li>ThreadWeaver executes the tool locally on picocluster-claw</li>
             <li>Tool result goes back to the LLM, which writes its final text reply</li>
           </ul>
-          <p>The external LLM never touches your hardware directly — picoclaw acts as the trusted executor. All 28 tools work with every provider. In practice, external models like Claude and GPT-4 are often <em>better</em> at multi-step tool workflows than the smaller local models.</p>
+          <p>The external LLM never touches your hardware directly — picocluster-claw acts as the trusted executor. All 28 tools work with every provider. In practice, external models like Claude and GPT-4 are often <em>better</em> at multi-step tool workflows than the smaller local models.</p>
         </div>
       </details>
 
@@ -624,7 +624,7 @@
         <div class="answer">
           <p>When you use an external provider, the entire conversation flows through that provider's API, including: your prompts, the LLM's replies, all 28 tool schemas, tool call results (CPU temp, file contents, model lists, etc.), and any attached images.</p>
           <p><strong>Not sent:</strong> your API keys (used only to authenticate), files outside the sandbox, anything on your LAN that the tools don't explicitly fetch, other conversations, raw local model inference.</p>
-          <p>For strict privacy, stick with the <code>local</code> provider. Everything stays on picoclaw/picocrush.</p>
+          <p>For strict privacy, stick with the <code>local</code> provider. Everything stays on picocluster-claw/picocrush.</p>
         </div>
       </details>
 
@@ -658,24 +658,24 @@
           <strong>System (6):</strong> CPU temp, memory, disk, uptime, network, load<br>
           <strong>Picocrush (4):</strong> list/pull Ollama models, GPU memory, loaded models<br>
           <strong>Time (4):</strong> current time, day of week, durations, countdowns<br>
-          <strong>Files (5):</strong> sandboxed read/write/list/delete in <code>/tmp/picoclcaw-sandbox</code><br>
+          <strong>Files (5):</strong> sandboxed read/write/list/delete in <code>/tmp/picocluster-claw-sandbox</code><br>
           <strong>Built-in (4):</strong> ThreadWeaver's own file/directory/command tools</p>
-          <p>Try the <strong>Example Prompts</strong> section above or see <a href="https://github.com/picocluster/PicoClaw/blob/main/docs/mcp-tools.md" style="color: var(--accent);" target="_blank">docs/mcp-tools.md</a> for the full reference.</p>
+          <p>Try the <strong>Example Prompts</strong> section above or see <a href="https://github.com/picocluster/PicoCluster-Claw/blob/main/docs/mcp-tools.md" style="color: var(--accent);" target="_blank">docs/mcp-tools.md</a> for the full reference.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>Can the LLM read files on my computer?</summary>
         <div class="answer">
-          <p><strong>No.</strong> The <code>files</code> MCP server is sandboxed to <code>/tmp/picoclcaw-sandbox</code> inside the ThreadWeaver container. Python's <code>Path.resolve()</code> + <code>relative_to()</code> checks reject any path that escapes the sandbox, so attempts like <code>../../../etc/passwd</code> fail loudly.</p>
-          <p>Your computer's filesystem is never exposed. The LLM talks to tools on picoclaw; picoclaw talks to its own sandbox. There's no path from the LLM to your laptop unless you paste the contents yourself.</p>
+          <p><strong>No.</strong> The <code>files</code> MCP server is sandboxed to <code>/tmp/picocluster-claw-sandbox</code> inside the ThreadWeaver container. Python's <code>Path.resolve()</code> + <code>relative_to()</code> checks reject any path that escapes the sandbox, so attempts like <code>../../../etc/passwd</code> fail loudly.</p>
+          <p>Your computer's filesystem is never exposed. The LLM talks to tools on picocluster-claw; picocluster-claw talks to its own sandbox. There's no path from the LLM to your laptop unless you paste the contents yourself.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>Can I add my own MCP tools?</summary>
         <div class="answer">
-          <p>Yes. There's a ~20-line Python template in <a href="https://github.com/picocluster/PicoClaw/blob/main/docs/mcp-tools.md" style="color: var(--accent);" target="_blank">docs/mcp-tools.md</a>. Drop a new file in <code>/opt/picoclcaw/mcp/</code>, add one line to <code>threadweaver/start.sh</code>, and rebuild the ThreadWeaver container with <code>sudo docker compose build threadweaver &amp;&amp; sudo docker compose up -d threadweaver</code>.</p>
+          <p>Yes. There's a ~20-line Python template in <a href="https://github.com/picocluster/PicoCluster-Claw/blob/main/docs/mcp-tools.md" style="color: var(--accent);" target="_blank">docs/mcp-tools.md</a>. Drop a new file in <code>/opt/picocluster-claw/mcp/</code>, add one line to <code>threadweaver/start.sh</code>, and rebuild the ThreadWeaver container with <code>sudo docker compose build threadweaver &amp;&amp; sudo docker compose up -d threadweaver</code>.</p>
           <p>ThreadWeaver also supports connecting to any stdio-based MCP server dynamically via its API — no rebuild required for third-party servers.</p>
         </div>
       </details>
@@ -687,9 +687,9 @@
         <div class="answer">
           <p><strong>From this control panel:</strong> use the Cluster Control buttons above.</p>
           <p><strong>From the terminal:</strong></p>
-          <p><code>ssh picocluster@picoclaw</code><br>
+          <p><code>ssh picocluster@picocluster-claw</code><br>
           <code>pc-restart</code> or <code>pc-shutdown</code><br>
-          <code>pc-restart picoclaw</code> (one node only)</p>
+          <code>pc-restart picocluster-claw</code> (one node only)</p>
           <p>Blue LED pulses signal the shutdown before the node goes down.</p>
         </div>
       </details>
@@ -697,12 +697,12 @@
       <details class="faq">
         <summary>How do I update ThreadWeaver or OpenClaw?</summary>
         <div class="answer">
-          <p><code>ssh picocluster@picoclaw</code>, then one of:</p>
+          <p><code>ssh picocluster@picocluster-claw</code>, then one of:</p>
           <p><code>pc-update-threadweaver</code> — rebuild ThreadWeaver from latest main<br>
           <code>pc-update-openclaw</code> — rebuild OpenClaw with latest npm package<br>
           <code>pc-update</code> — update everything (containers + portal + models)<br>
           <code>pc-update-models</code> — update Ollama models on picocrush</p>
-          <p>All scripts <code>git pull</code> the PicoClaw repo first. They're safe to run on a live cluster — individual containers restart with brief downtime.</p>
+          <p>All scripts <code>git pull</code> the PicoCluster Claw repo first. They're safe to run on a live cluster — individual containers restart with brief downtime.</p>
         </div>
       </details>
 
@@ -717,7 +717,7 @@
           <strong>Blue progress bar:</strong> long operation in progress<br>
           <strong>Amber solid:</strong> warning (high temp, degraded service)<br>
           <strong>Blue pulse then fade:</strong> system shutting down</p>
-          <p>Drive the LEDs manually via the control panel above, via <code>pc-led</code> on the terminal, or via the LED API at <code>http://picoclaw:7777/</code>.</p>
+          <p>Drive the LEDs manually via the control panel above, via <code>pc-led</code> on the terminal, or via the LED API at <code>http://picocluster-claw:7777/</code>.</p>
         </div>
       </details>
 
@@ -733,8 +733,8 @@
         <summary>A service isn't responding — what do I do?</summary>
         <div class="answer">
           <p>First, run <code>pc-status</code> to see which service is actually down.</p>
-          <p><strong>Container unhealthy:</strong> <code>cd /opt/picoclcaw &amp;&amp; sudo docker compose logs &lt;service&gt;</code> then <code>sudo docker compose restart &lt;service&gt;</code></p>
-          <p><strong>Systemd service:</strong> <code>sudo systemctl restart picoclaw-leds</code> or <code>shutdown-api</code></p>
+          <p><strong>Container unhealthy:</strong> <code>cd /opt/picocluster-claw &amp;&amp; sudo docker compose logs &lt;service&gt;</code> then <code>sudo docker compose restart &lt;service&gt;</code></p>
+          <p><strong>Systemd service:</strong> <code>sudo systemctl restart picocluster-claw-leds</code> or <code>shutdown-api</code></p>
           <p><strong>Ollama unreachable:</strong> <code>ssh picocluster@picocrush</code>, then <code>sudo systemctl restart ollama</code></p>
           <p><strong>Nuclear option:</strong> <code>pc-restart all</code></p>
         </div>
@@ -745,8 +745,8 @@
       <details class="faq">
         <summary>Is my data private when I use the local LLM?</summary>
         <div class="answer">
-          <p>Yes. The <code>local</code> provider runs inference on picocrush (Jetson Orin Nano) using Ollama. The data path is entirely inside your LAN: browser → SSH tunnel → ThreadWeaver on picoclaw → Ollama on picocrush. Nothing leaves your network.</p>
-          <p>Model weights are stored locally on picocrush's NVMe. Conversations are stored in ThreadWeaver's database on picoclaw. External API calls only happen if you explicitly switch to an external provider.</p>
+          <p>Yes. The <code>local</code> provider runs inference on picocrush (Jetson Orin Nano) using Ollama. The data path is entirely inside your LAN: browser → SSH tunnel → ThreadWeaver on picocluster-claw → Ollama on picocrush. Nothing leaves your network.</p>
+          <p>Model weights are stored locally on picocrush's NVMe. Conversations are stored in ThreadWeaver's database on picocluster-claw. External API calls only happen if you explicitly switch to an external provider.</p>
         </div>
       </details>
 
@@ -771,7 +771,7 @@
         </div>
       </details>
 
-      <a class="docs-link" href="https://github.com/picocluster/PicoClaw/blob/main/docs/faq.md" target="_blank">Full FAQ with 26 questions in docs/faq.md →</a>
+      <a class="docs-link" href="https://github.com/picocluster/PicoCluster-Claw/blob/main/docs/faq.md" target="_blank">Full FAQ with 26 questions in docs/faq.md →</a>
     </div>
 
     <div class="section">
@@ -779,7 +779,7 @@
       <table>
         <thead><tr><th>Node</th><th>Hardware</th><th>Role</th></tr></thead>
         <tbody>
-          <tr><td>picoclaw</td><td>Raspberry Pi 5 (8GB/16GB)</td><td>Agent orchestrator, web UIs, LED status</td></tr>
+          <tr><td>picocluster-claw</td><td>Raspberry Pi 5 (8GB/16GB)</td><td>Agent orchestrator, web UIs, LED status</td></tr>
           <tr><td>picocrush</td><td>NVIDIA Jetson Orin Nano Super (8GB)</td><td>GPU-accelerated LLM inference (Ollama)</td></tr>
         </tbody>
       </table>
@@ -795,7 +795,7 @@
         <tbody>
           <tr><td>SSH (both nodes)</td><td><code>picocluster</code></td><td><code>picocluster</code></td></tr>
           <tr><td>OpenClaw</td><td>Gateway Token</td><td><code>picocluster-token</code></td></tr>
-          <tr><td>Ollama</td><td colspan="2">No auth (firewall-restricted to picoclaw)</td></tr>
+          <tr><td>Ollama</td><td colspan="2">No auth (firewall-restricted to picocluster-claw)</td></tr>
         </tbody>
       </table>
       <p style="color: var(--amber); font-size: 0.85rem; margin-top: 0.8rem;">
@@ -805,7 +805,7 @@
 
     <div class="footer">
       <p>
-        <a href="https://github.com/picocluster/PicoClaw">GitHub</a> &middot;
+        <a href="https://github.com/picocluster/PicoCluster-Claw">GitHub</a> &middot;
         <a href="https://picocluster.com">PicoCluster</a> &middot;
         <a href="https://github.com/nosqltips/ThreadWeaver">ThreadWeaver</a> &middot;
         <a href="https://github.com/openclaw/openclaw">OpenClaw</a> &middot;

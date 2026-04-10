@@ -1,11 +1,11 @@
 [Unit]
-Description=PicoClaw LED status indicator
+Description=PicoCluster Claw LED status indicator
 After=network.target
 Wants=openclaw.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /opt/picoclcaw/leds/picoclaw_status.py
+ExecStart=/usr/bin/python3 /opt/picocluster-claw/leds/picocluster_claw_status.py
 Restart=always
 RestartSec=5
 User=root

@@ -19,7 +19,7 @@ cat > "$CONFIG" <<EOF
         "http://127.0.0.1:18789",
         "https://localhost:18790",
         "https://127.0.0.1:18790",
-        "http://picoclaw:18789",
+        "http://picocluster-claw:18789",
         "http://10.1.10.220:18789"
       ],
       "dangerouslyDisableDeviceAuth": true

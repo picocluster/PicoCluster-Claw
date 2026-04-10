@@ -1,4 +1,4 @@
-# PicoClaw Demo Script
+# PicoCluster Claw Demo Script
 
 A step-by-step walkthrough for live demos, videos, or trade shows. Total time: ~10 minutes.
 
@@ -9,8 +9,8 @@ A step-by-step walkthrough for live demos, videos, or trade shows. Total time: ~
 ## Setup (before the demo)
 
 1. Both nodes powered on and booted
-2. Blinkt! scanner animation running on picoclaw
-3. Browser open to `http://picoclaw` (portal)
+2. Blinkt! scanner animation running on picocluster-claw
+3. Browser open to `http://picocluster-claw` (portal)
 4. Second browser tab ready for ThreadWeaver
 
 ---
@@ -18,7 +18,7 @@ A step-by-step walkthrough for live demos, videos, or trade shows. Total time: ~
 ## Act 1: The Appliance (~2 min)
 
 **Show the hardware:**
-> "This is PicoClaw — a self-hosted AI agent appliance. Two boards: a Raspberry Pi 5 running the web interfaces, and an NVIDIA Jetson Orin Nano running local AI models. The whole thing draws 14 watts at idle — less than a light bulb."
+> "This is PicoCluster Claw — a self-hosted AI agent appliance. Two boards: a Raspberry Pi 5 running the web interfaces, and an NVIDIA Jetson Orin Nano running local AI models. The whole thing draws 14 watts at idle — less than a light bulb."
 
 **Point to the Blinkt!:**
 > "See the LED scanning back and forth? That's the idle animation. It blinks, looks around — it has personality. Watch..."
@@ -31,7 +31,7 @@ A step-by-step walkthrough for live demos, videos, or trade shows. Total time: ~
 
 ## Act 2: Chat with Your Local AI (~3 min)
 
-**Open ThreadWeaver:** `http://picoclaw:5173`
+**Open ThreadWeaver:** `http://picocluster-claw:5173`
 
 > "This is ThreadWeaver — a chat interface that talks directly to the Llama 3.2 model running on the Jetson's GPU. No cloud. No API keys. Everything stays on your network."
 
@@ -89,9 +89,9 @@ A step-by-step walkthrough for live demos, videos, or trade shows. Total time: ~
 
 ## Act 4: The Portal (~1 min)
 
-**Show the portal:** `http://picoclaw`
+**Show the portal:** `http://picocluster-claw`
 
-> "Every PicoClaw comes with this portal. Live status of all services, model list, management commands, and these LED controls..."
+> "Every PicoCluster Claw comes with this portal. Live status of all services, model list, management commands, and these LED controls..."
 
 *Click a few color buttons, slide the progress bar*
 
@@ -119,7 +119,7 @@ A step-by-step walkthrough for live demos, videos, or trade shows. Total time: ~
 
 ## Closing
 
-> "PicoClaw. Private AI that fits on your desk, runs on 14 watts, and costs $2 a month. The LED is just showing off."
+> "PicoCluster Claw. Private AI that fits on your desk, runs on 14 watts, and costs $2 a month. The LED is just showing off."
 
 *Send one more message in ThreadWeaver to trigger the light show*
 
@@ -144,7 +144,7 @@ Switch to `starcoder2:3b`:
 
 | Problem | Quick Fix |
 |---------|-----------|
-| LEDs not responding | `sudo systemctl restart picoclaw-leds` on picoclaw |
-| ThreadWeaver won't load | `sudo docker restart threadweaver` on picoclaw |
+| LEDs not responding | `sudo systemctl restart picocluster-claw-leds` on picocluster-claw |
+| ThreadWeaver won't load | `sudo docker restart threadweaver` on picocluster-claw |
 | Model not responding | `ssh picocrush` then `ollama list` to verify |
 | LED MCP tools missing | Restart ThreadWeaver — auto-connects on startup |

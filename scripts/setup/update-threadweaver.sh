@@ -9,7 +9,7 @@ if (( EUID != 0 )); then
   exit 1
 fi
 
-INSTALL_DIR="/opt/picoclcaw"
+INSTALL_DIR="/opt/picocluster-claw"
 FORCE="${1:-}"
 
 log() { echo "[$(date '+%H:%M:%S')] $*"; }
@@ -37,7 +37,7 @@ else
   log "New version available: $CURRENT → $LATEST"
 fi
 
-log "Updating PicoClaw repo..."
+log "Updating PicoCluster Claw repo..."
 cd "$INSTALL_DIR"
 git fetch origin && git reset --hard origin/main 2>&1 | tail -1
 

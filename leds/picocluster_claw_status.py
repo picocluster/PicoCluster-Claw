@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PicoClaw LED status daemon — runs on picoclaw (RPi5).
+PicoCluster Claw LED status daemon — runs on picocluster-claw (RPi5).
 
 Boot sequence:
   Rainbow sweep → service discovery → green celebration

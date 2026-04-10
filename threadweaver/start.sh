@@ -33,7 +33,7 @@ for i in $(seq 1 30); do
   sleep 1
 done
 
-# Auto-connect all PicoClaw MCP servers with retry.
+# Auto-connect all PicoCluster Claw MCP servers with retry.
 # Each server gets up to 3 attempts with a 2-second pause between failures.
 connect_mcp() {
   local name="$1"

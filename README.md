@@ -1,11 +1,11 @@
-# PicoClaw
+# PicoCluster Claw
 
-A self-hosted AI agent appliance built on [PicoCluster](https://picocluster.com) hardware. PicoClaw pairs a Raspberry Pi 5 running [OpenClaw](https://github.com/openclaw/openclaw) and [ThreadWeaver](https://github.com/nosqltips/ThreadWeaver) with an NVIDIA Jetson Orin Nano running [Ollama](https://ollama.com) for local LLM inference — giving you a private, always-on AI for under $2/month in electricity.
+A self-hosted AI agent appliance built on [PicoCluster](https://picocluster.com) hardware. PicoCluster Claw pairs a Raspberry Pi 5 running [OpenClaw](https://github.com/openclaw/openclaw) and [ThreadWeaver](https://github.com/nosqltips/ThreadWeaver) with an NVIDIA Jetson Orin Nano running [Ollama](https://ollama.com) for local LLM inference — giving you a private, always-on AI for under $2/month in electricity.
 
 ## Architecture
 
 ```
-picoclaw (RPi5 8GB)                picocrush (Orin Nano Super 8GB)
+picocluster-claw (RPi5 8GB)                picocrush (Orin Nano Super 8GB)
 ├── Portal :80                     ├── Ollama :11434
 ├── ThreadWeaver :5173             ├── 9 LLM models (GPU-accelerated)
 ├── OpenClaw Gateway :18789        ├── Vision, Code, Reasoning models
@@ -33,7 +33,7 @@ picoclaw (RPi5 8GB)                picocrush (Orin Nano Super 8GB)
 
 ### 1. Flash golden images
 
-Flash the PicoClaw images to both nodes using `dd` or your preferred imaging tool.
+Flash the PicoCluster Claw images to both nodes using `dd` or your preferred imaging tool.
 
 ### 2. Install picocrush (Orin Nano)
 
@@ -43,29 +43,29 @@ sudo bash install-picocrush.sh
 
 Installs Ollama with CUDA, pulls 9 default models, configures firewall and power mode.
 
-### 3. Install picoclaw (RPi5)
+### 3. Install picocluster-claw (RPi5)
 
 ```bash
-sudo bash install-picoclaw.sh
+sudo bash install-picocluster-claw.sh
 ```
 
 Installs Docker containers (ThreadWeaver, OpenClaw, Portal, Caddy), Blinkt! LED daemon, configures firewall.
 
 ### 4. Access your AI
 
-Open **http://picoclaw** in your browser for the PicoClaw portal with links to all services.
+Open **http://picocluster-claw** in your browser for the PicoCluster Claw portal with links to all services.
 
 | Interface | URL | Notes |
 |-----------|-----|-------|
-| **PicoClaw Portal** | `http://picoclaw` | Landing page with status and docs |
-| **ThreadWeaver** | `http://picoclaw:5173` | Chat UI — works directly over HTTP |
+| **PicoCluster Claw Portal** | `http://picocluster-claw` | Landing page with status and docs |
+| **ThreadWeaver** | `http://picocluster-claw:5173` | Chat UI — works directly over HTTP |
 | **OpenClaw Dashboard** | `https://localhost:18790` | Requires SSH tunnel (see below) |
-| **OpenClaw TUI** | `ssh picocluster@picoclaw` then `openclaw tui` | Terminal chat |
+| **OpenClaw TUI** | `ssh picocluster@picocluster-claw` then `openclaw tui` | Terminal chat |
 | **Ollama API** | `http://picocrush:11434/v1` | OpenAI-compatible endpoint |
 
 **SSH tunnel for OpenClaw Dashboard:**
 ```bash
-ssh -L 18790:localhost:18790 picocluster@picoclaw
+ssh -L 18790:localhost:18790 picocluster@picocluster-claw
 ```
 Then open `https://localhost:18790` (token: `picocluster-token`)
 
@@ -97,18 +97,18 @@ ollama list
 
 | Task | Command |
 |------|---------|
-| Update ThreadWeaver | `sudo bash /opt/picoclcaw/scripts/setup/update-threadweaver.sh` |
-| Update all containers | `sudo bash /opt/picoclcaw/scripts/setup/update-picoclaw.sh` |
-| Update Ollama + models | `sudo bash /opt/picoclcaw/scripts/setup/update-picocrush.sh` |
-| Container status | `cd /opt/picoclcaw && sudo docker compose ps` |
-| View logs | `cd /opt/picoclcaw && sudo docker compose logs -f` |
-| Restart services | `cd /opt/picoclcaw && sudo docker compose restart` |
+| Update ThreadWeaver | `sudo bash /opt/picocluster-claw/scripts/setup/update-threadweaver.sh` |
+| Update all containers | `sudo bash /opt/picocluster-claw/scripts/setup/update-picocluster-claw.sh` |
+| Update Ollama + models | `sudo bash /opt/picocluster-claw/scripts/setup/update-picocrush.sh` |
+| Container status | `cd /opt/picocluster-claw && sudo docker compose ps` |
+| View logs | `cd /opt/picocluster-claw && sudo docker compose logs -f` |
+| Restart services | `cd /opt/picocluster-claw && sudo docker compose restart` |
 | Add a model | `ssh picocrush` then `ollama pull <model>` |
-| Validate cluster | `bash /opt/picoclcaw/scripts/setup/validate-pair.sh` |
+| Validate cluster | `bash /opt/picocluster-claw/scripts/setup/validate-pair.sh` |
 
 ## Blinkt! LED Status
 
-The Pimoroni Blinkt! on picoclaw provides visual feedback:
+The Pimoroni Blinkt! on picocluster-claw provides visual feedback:
 
 - **Scanning eye**: Idle — color-shifting Larson scanner with blink and look-around behaviors
 - **Green/cyan chase**: LLM inference active (color cycling)
@@ -119,7 +119,7 @@ The Pimoroni Blinkt! on picoclaw provides visual feedback:
 
 ## MCP Servers
 
-PicoClaw ships with 5 MCP (Model Context Protocol) servers that auto-connect to ThreadWeaver on startup, giving local LLMs **28 tools** to work with — including physical LED control, system monitoring, time awareness, sandboxed file operations, and Ollama management.
+PicoCluster Claw ships with 5 MCP (Model Context Protocol) servers that auto-connect to ThreadWeaver on startup, giving local LLMs **28 tools** to work with — including physical LED control, system monitoring, time awareness, sandboxed file operations, and Ollama management.
 
 > **User:** "Make the LEDs purple and tell me the GPU memory usage on picocrush"
 > **LLM:** *calls `leds__set_led_color` and `picocrush__get_gpu_memory`* → Blinkt! turns purple, reports VRAM stats
@@ -127,7 +127,7 @@ PicoClaw ships with 5 MCP (Model Context Protocol) servers that auto-connect to 
 | Server | Tools | Purpose |
 |--------|------:|---------|
 | **leds** | 5 | Control Blinkt! LEDs (color, progress, pulse, clear) |
-| **system** | 6 | picoclaw stats (CPU, memory, disk, temperature, uptime, network) |
+| **system** | 6 | picocluster-claw stats (CPU, memory, disk, temperature, uptime, network) |
 | **picocrush** | 4 | Ollama management (list models, active models, GPU memory, pull new) |
 | **time** | 4 | Current time/date, countdowns, duration formatting |
 | **files** | 5 | Sandboxed file operations (read, write, list, delete) |
@@ -139,9 +139,9 @@ LED controls are also available on the portal page and via the HTTP API on port 
 ## Repository Structure
 
 ```
-PicoClaw/
+PicoCluster Claw/
 ├── docker-compose.yml              # All services (ThreadWeaver, OpenClaw, Portal, Caddy)
-├── portal/                         # PicoClaw landing page (nginx on port 80)
+├── portal/                         # PicoCluster Claw landing page (nginx on port 80)
 ├── openclaw/                       # OpenClaw Dockerfile + config
 ├── threadweaver/                   # ThreadWeaver Dockerfile + patches
 ├── leds/                           # Blinkt! LED driver, status daemon, MCP server
@@ -175,7 +175,7 @@ PicoClaw/
 - All services run on your local network — no cloud dependencies
 - OpenClaw in Docker container (isolated)
 - OpenClaw dashboard requires HTTPS + token authentication
-- Ollama restricted to picoclaw IP via firewall
+- Ollama restricted to picocluster-claw IP via firewall
 - SSH hardened (no root login)
 - UFW firewall on both nodes
 - fail2ban on SSH
@@ -185,16 +185,16 @@ PicoClaw/
 
 | Service | Node | Port | Container |
 |---------|------|------|-----------|
-| PicoClaw Portal | picoclaw | 80 | nginx |
-| ThreadWeaver UI | picoclaw | 5173 | threadweaver |
-| ThreadWeaver API | picoclaw | 8000 | threadweaver |
-| OpenClaw Gateway | picoclaw | 18789 | openclaw |
-| OpenClaw HTTPS | picoclaw | 18790 | caddy |
-| Blinkt! LEDs | picoclaw | GPIO | native |
-| LED API | picoclaw | 7777 | native |
-| LED MCP Server | picoclaw | stdio | native (auto-connected) |
-| OpenClaw LED Bridge | picoclaw | — | native (log monitor) |
-| Shutdown API | picoclaw | 8888 | python |
+| PicoCluster Claw Portal | picocluster-claw | 80 | nginx |
+| ThreadWeaver UI | picocluster-claw | 5173 | threadweaver |
+| ThreadWeaver API | picocluster-claw | 8000 | threadweaver |
+| OpenClaw Gateway | picocluster-claw | 18789 | openclaw |
+| OpenClaw HTTPS | picocluster-claw | 18790 | caddy |
+| Blinkt! LEDs | picocluster-claw | GPIO | native |
+| LED API | picocluster-claw | 7777 | native |
+| LED MCP Server | picocluster-claw | stdio | native (auto-connected) |
+| OpenClaw LED Bridge | picocluster-claw | — | native (log monitor) |
+| Shutdown API | picocluster-claw | 8888 | python |
 | Ollama | picocrush | 11434 | native |
 
 ## Default Credentials

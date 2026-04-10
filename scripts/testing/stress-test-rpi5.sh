@@ -1,5 +1,5 @@
 #!/bin/bash
-# stress-test-rpi5.sh — PicoClaw RPi5 (picoclaw) power/thermal stress testing
+# stress-test-rpi5.sh — PicoCluster Claw RPi5 (picocluster-claw) power/thermal stress testing
 # Run as root on the RPi5
 set -euo pipefail
 
@@ -236,7 +236,7 @@ fi
 
 echo "test,watts" > "$RESULTS_DIR/killawatt.csv"
 
-log "=== PicoClaw RPi5 Stress Test Suite ==="
+log "=== PicoCluster Claw RPi5 Stress Test Suite ==="
 log "Results: $RESULTS_DIR"
 log "iperf3 server: $IPERF_SERVER"
 log "CPU cores: $(nproc)"

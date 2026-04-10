@@ -1,10 +1,10 @@
 [Unit]
-Description=PicoClaw Shutdown/Restart API
+Description=PicoCluster Claw Shutdown/Restart API
 After=network.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /opt/picoclcaw/portal/shutdown-api.py
+ExecStart=/usr/bin/python3 /opt/picocluster-claw/portal/shutdown-api.py
 Restart=always
 RestartSec=5
 User=root

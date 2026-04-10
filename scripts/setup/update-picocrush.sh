@@ -1,5 +1,5 @@
 #!/bin/bash
-# update-picocrush.sh — Update PicoClaw software on Orin Nano
+# update-picocrush.sh — Update PicoCluster Claw software on Orin Nano
 # Usage: sudo bash update-picocrush.sh [component]
 #        sudo bash update-picocrush.sh             # Update Ollama + pull models
 #        sudo bash update-picocrush.sh ollama       # Update Ollama only

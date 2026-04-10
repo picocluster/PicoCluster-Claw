@@ -1,8 +1,8 @@
-# PicoClaw Deployment Plan
+# PicoCluster Claw Deployment Plan
 
 ## Overview
 
-Three deployment paths, all ending at the same result: a secured PicoClaw pair (claw + crush) running OpenClaw → llama-server.
+Three deployment paths, all ending at the same result: a secured PicoCluster Claw pair (claw + crush) running OpenClaw → llama-server.
 
 ---
 
@@ -85,9 +85,9 @@ Start with fresh JetPack 6.x install, then:
 
 ---
 
-## Part 2: PicoClaw Software Install
+## Part 2: PicoCluster Claw Software Install
 
-Runs on golden images (or community images after Part 3 hardening). Installs and configures the full PicoClaw stack.
+Runs on golden images (or community images after Part 3 hardening). Installs and configures the full PicoCluster Claw stack.
 
 ### 2A: RPi5 (claw) — OpenClaw Install
 
@@ -154,21 +154,21 @@ Run on both nodes to set IPs, hostnames, /etc/hosts, and update all config files
 
 For users who have their own RPi5 + Orin Nano (or similar) and their own OS images. Single script that does everything: harden + install + configure.
 
-**Script:** `picoclcaw-setup.sh`
+**Script:** `picocluster-claw-setup.sh`
 
 Usage:
 ```bash
 # On RPi5:
-curl -fsSL https://picocluster.com/picoclcaw/setup.sh | sudo bash -s claw
+curl -fsSL https://picocluster.com/picocluster-claw/setup.sh | sudo bash -s claw
 
 # On Orin Nano:
-curl -fsSL https://picocluster.com/picoclcaw/setup.sh | sudo bash -s crush
+curl -fsSL https://picocluster.com/picocluster-claw/setup.sh | sudo bash -s crush
 ```
 
 Or download and run:
 ```bash
-sudo ./picoclcaw-setup.sh claw --start-ip 192.168.1.50
-sudo ./picoclcaw-setup.sh crush --start-ip 192.168.1.50
+sudo ./picocluster-claw-setup.sh claw --start-ip 192.168.1.50
+sudo ./picocluster-claw-setup.sh crush --start-ip 192.168.1.50
 ```
 
 What it does:
@@ -202,10 +202,10 @@ Phase 2: Software install (runs on golden images)
   └── validate-pair.sh (both)
 
 Phase 3: Community installer (runs on any compatible hardware)
-  └── picoclcaw-setup.sh (detects hardware, does everything)
+  └── picocluster-claw-setup.sh (detects hardware, does everything)
 
 Phase 4: Power draw testing
-  └── Both nodes in PicoClaw acrylic case
+  └── Both nodes in PicoCluster Claw acrylic case
   └── Idle, inference, sustained load profiles
   └── Thermal validation in enclosure
   └── PDU load testing
@@ -223,7 +223,7 @@ Phase 4: Power draw testing
 | `install-crush.sh` | Orin Nano (crush) | Build llama.cpp, download models, deploy service |
 | `configure-pair.sh` | Both | Set IPs, hostnames, hook nodes together |
 | `validate-pair.sh` | Both | End-to-end health and connectivity checks |
-| `picoclcaw-setup.sh` | Both (community) | All-in-one: harden + install + configure |
+| `picocluster-claw-setup.sh` | Both (community) | All-in-one: harden + install + configure |
 | `jetson-shrink.sh` | NUC (imaging) | Shrink dd-captured Orin images |
 | `resize_ubuntu.sh` | Orin Nano | Expand rootfs after flashing |
 | `sd-to-nvme.sh` | Orin Nano | Migrate SD card boot to NVMe |
@@ -232,7 +232,7 @@ Phase 4: Power draw testing
 
 ## OpenClaw Security Hardening Checklist
 
-Applied by install-claw.sh and picoclcaw-setup.sh:
+Applied by install-claw.sh and picocluster-claw-setup.sh:
 
 - [ ] Run in Docker container (process isolation)
 - [ ] Gateway bound to loopback only (127.0.0.1)

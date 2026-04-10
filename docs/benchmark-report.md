@@ -259,10 +259,10 @@
 
 ---
 
-## PicoClaw Cluster Power Testing (In-Case, 2026-04-04)
+## PicoCluster Claw Cluster Power Testing (In-Case, 2026-04-04)
 
-**Configuration:** PicoClaw acrylic case, 80x25mm case fan, PDU, 50W PSU
-**Nodes:** picoclaw (RPi5 8GB, Raspbian) + picocrush (Orin Nano Super 8GB, MAXN)
+**Configuration:** PicoCluster Claw acrylic case, 80x25mm case fan, PDU, 50W PSU
+**Nodes:** picocluster-claw (RPi5 8GB, Raspbian) + picocrush (Orin Nano Super 8GB, MAXN)
 **Measurement:** Kill-A-Watt at wall, tegrastats on Orin, vcgencmd PMIC on RPi5
 
 ### In-Case Thermal Comparison (Orin Nano)
@@ -294,7 +294,7 @@ Case fan provides significant cooling benefit. No throttling in either configura
 
 | Component | Idle | Typical (agent workload) | Peak (kitchen sink) |
 |-----------|-----:|-------------------------:|--------------------:|
-| RPi5 (picoclaw) | ~3W | ~4W | 7.5W |
+| RPi5 (picocluster-claw) | ~3W | ~4W | 7.5W |
 | Orin Nano (picocrush) | ~6W | ~10W | 20W |
 | 12V fan | ~2W | ~2W | ~2W |
 | PDU | ~1W | ~1W | ~1W |
@@ -342,7 +342,7 @@ US average electricity: $0.16/kWh. PSU: 50W (15W headroom at peak).
 
 | Device | Typical Power | Annual Cost |
 |--------|-------------:|-----------:|
-| **PicoClaw cluster** | **15W** | **~$21/year** |
+| **PicoCluster Claw cluster** | **15W** | **~$21/year** |
 | Desktop PC (always on) | ~80W | ~$112/year |
 | Single GPU server (RTX 4090) | ~300W+ | ~$420+/year |
 | 60W light bulb (always on) | 60W | ~$84/year |
@@ -355,4 +355,4 @@ US average electricity: $0.16/kWh. PSU: 50W (15W headroom at peak).
 
 - Orin out-of-case benchmarks: `/mnt/nvme/results/` on picocrush
 - Orin in-case benchmarks: `/home/picocluster/results-incase/` on picocrush
-- RPi5 benchmarks: `/home/picocluster/results/` on picoclaw
+- RPi5 benchmarks: `/home/picocluster/results/` on picocluster-claw

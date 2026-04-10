@@ -5,13 +5,13 @@
 # Installs: Ollama (CUDA), pulls default model set
 # Configures: systemd service, firewall, MAXN power mode
 #
-# Usage: sudo bash install-picocrush.sh [picoclaw-ip]
+# Usage: sudo bash install-picocrush.sh [picocluster-claw-ip]
 set -euo pipefail
 
 CLAW_IP="${1:-10.1.10.220}"
 OLLAMA_PORT="11434"
 USER="picocluster"
-INSTALL_DIR="/opt/picoclcaw"
+INSTALL_DIR="/opt/picocluster-claw"
 
 # Models to pull (first one is the default)
 MODELS=(
@@ -93,18 +93,18 @@ if [[ -d "/home/${USER}/.ansible" ]]; then
 fi
 
 # ============================================================
-# Clone PicoClaw repo (for user-bin scripts + update scripts)
+# Clone PicoCluster Claw repo (for user-bin scripts + update scripts)
 # ============================================================
-log "--- PicoClaw repo ---"
+log "--- PicoCluster Claw repo ---"
 if ! command -v git &>/dev/null; then
   apt install -y git 2>/dev/null | tail -1
 fi
 if [[ ! -d "$INSTALL_DIR/.git" ]]; then
-  git clone --depth 1 https://github.com/picocluster/PicoClaw.git "$INSTALL_DIR"
-  log "PicoClaw repo cloned"
+  git clone --depth 1 https://github.com/picocluster/PicoCluster-Claw.git "$INSTALL_DIR"
+  log "PicoCluster Claw repo cloned"
 else
   cd "$INSTALL_DIR" && git pull --ff-only 2>&1 | tail -3
-  log "PicoClaw repo updated"
+  log "PicoCluster Claw repo updated"
 fi
 
 # ============================================================
@@ -211,7 +211,7 @@ log "MAXN power mode set and persisted"
 # 5. Firewall
 # ============================================================
 log "--- Step 5/6: Firewall ---"
-ufw allow from "${CLAW_IP}" to any port "${OLLAMA_PORT}" comment "Ollama from picoclaw" 2>/dev/null || true
+ufw allow from "${CLAW_IP}" to any port "${OLLAMA_PORT}" comment "Ollama from picocluster-claw" 2>/dev/null || true
 log "Firewall: port ${OLLAMA_PORT} open for ${CLAW_IP} only"
 
 # ============================================================
@@ -230,7 +230,7 @@ if [[ -d "$INSTALL_DIR/scripts/user-bin/picocrush" ]]; then
   if ! grep -q "HOME/bin" "/home/${USER}/.bashrc" 2>/dev/null; then
     cat >> "/home/${USER}/.bashrc" <<'BASHRC'
 
-# PicoClaw user scripts
+# PicoCluster Claw user scripts
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
