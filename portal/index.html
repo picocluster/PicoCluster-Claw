@@ -629,13 +629,13 @@
       </details>
 
       <details class="faq">
-        <summary>Why doesn't the chat respond when I pick gemma3, llava, or moondream?</summary>
+        <summary>Which models support MCP tool calling?</summary>
         <div class="answer">
-          <p>Some Ollama models don't support <strong>tool calling</strong>. ThreadWeaver sends the 28 MCP tool schemas on every request, and models that don't support them return a 400 error that looks like "no response" in the UI.</p>
-          <p><strong>Models that DO support tools:</strong> <code>llama3.2:3b</code> (default), <code>llama3.1:8b</code>, <code>phi3.5:3.8b</code>, <code>qwen2.5:3b</code>, <code>deepseek-r1:7b</code></p>
-          <p><strong>Models that DON'T support tools:</strong> <code>gemma3:4b</code>, <code>llava:7b</code>, <code>moondream:1.8b</code>, <code>starcoder2:3b</code></p>
-          <p>If you want to use gemma3 or the vision models, switch the provider to an external LLM (Claude, GPT-4) and keep the tool-capable behavior, or wait for a future ThreadWeaver release that auto-disables tools for non-tool models.</p>
-          <p>Check <code>sudo docker logs threadweaver --tail 40 | grep -v settings</code> for the actual error if you're not sure.</p>
+          <p>ThreadWeaver auto-detects whether each Ollama model supports tool calling. If you pick a model that doesn't (like <code>gemma3:4b</code> or the vision models), TW shows a notice and falls back to chat-only mode for that conversation:</p>
+          <p><em>"Model gemma3:4b doesn't support tool calling. Responding without tools."</em></p>
+          <p><strong>Models with tool calling:</strong> <code>llama3.2:3b</code> (default), <code>llama3.1:8b</code>, <code>phi3.5:3.8b</code>, <code>qwen2.5:3b</code>, <code>deepseek-r1:7b</code></p>
+          <p><strong>Models without tool calling (chat-only):</strong> <code>gemma3:4b</code>, <code>llava:7b</code>, <code>moondream:1.8b</code>, <code>starcoder2:3b</code></p>
+          <p>For vision (image understanding), pick <code>llava:7b</code> or <code>moondream:1.8b</code> — they don't need tools. For tool-heavy workflows, pick a tool-capable model or switch to Claude/GPT-4/Gemini in Settings (external models use the same MCP tools).</p>
         </div>
       </details>
 

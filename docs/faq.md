@@ -263,18 +263,15 @@ ThreadWeaver also supports connecting to **any stdio-based MCP server** dynamica
 
 ---
 
-### 16. Why doesn't the chat respond when I use gemma3, llava, or moondream?
+### 16. Which models support tool calling?
 
-Some Ollama models don't support **tool calling** — the structured JSON format ThreadWeaver uses to let the LLM invoke MCP tools. When you send a chat request, ThreadWeaver always includes the 28 tool schemas. If the model rejects tool schemas, Ollama returns a 400 error and the chat hangs with no visible reply.
+ThreadWeaver sends MCP tool schemas with every chat request. Some Ollama models don't accept tool schemas, and ThreadWeaver auto-detects this and falls back to chat-only mode for those models, showing you a notice like:
 
-Known models that **don't** support tools (as of the Beta ship):
+> *Model `gemma3:4b` doesn't support tool calling. Responding without tools.*
 
-- `gemma3:4b` — general chat, but no tool support
-- `llava:7b` — vision model, tools are secondary
-- `moondream:1.8b` — tiny vision model, no tool support
-- `starcoder2:3b` — code completion model, no tool support
+You'll still get a reply — you just won't get tool calls in that conversation.
 
-Known models that **do** support tools (safe defaults):
+Known models that **support tools** (full MCP tool calling):
 
 - `llama3.2:3b` ← **default local model**
 - `llama3.1:8b` — best quality, slower
@@ -282,9 +279,16 @@ Known models that **do** support tools (safe defaults):
 - `qwen2.5:3b`
 - `deepseek-r1:7b`
 
-**Fix:** open ThreadWeaver → Settings → Local provider → change the model to one of the tool-capable options. The default after install is `llama3.2:3b`, which is known to work.
+Known models that **don't support tools** (chat-only with auto-fallback):
 
-**Symptom to recognize:** you click Send, the spinner runs briefly, then stops, and no reply appears. Check the container logs with `sudo docker logs threadweaver --tail 40 | grep -v settings` and look for `openai.BadRequestError: ... does not support tools`. You can still use these models for vision (upload image + ask "describe this") or raw chat if you disable tool use in Settings (if that option is available in your ThreadWeaver version).
+- `gemma3:4b` — general chat
+- `llava:7b` — vision model (use it for image understanding instead)
+- `moondream:1.8b` — tiny vision model
+- `starcoder2:3b` — code completion model
+
+For vision tasks, use `llava:7b` or `moondream:1.8b` and attach an image — they'll just chat without tools, which is exactly what you want for "describe this picture." For tool-heavy workflows (running commands, controlling LEDs, reading files), pick one of the tool-capable models.
+
+If you want **excellent tool use AND a smarter conversation**, switch the provider to Claude, GPT-4, or Gemini in Settings. External LLMs use the same MCP tools just like local ones (see FAQ #9).
 
 ---
 
