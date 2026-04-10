@@ -66,45 +66,39 @@ def http_check(url, timeout=2):
 
 
 def check_inference_active():
-    """Check if Ollama is actively generating by monitoring /api/generate endpoint activity.
-    Uses /api/ps but compares expires_at to detect fresh vs stale model loading."""
+    """Check if Ollama is actively generating by detecting changes to expires_at.
+
+    Ollama refreshes expires_at = now + KEEP_ALIVE on every inference request.
+    We compare the current expires_at against the last-seen value. If it changed,
+    inference happened since our last poll. This works regardless of the
+    OLLAMA_KEEP_ALIVE value (5m, 30m, forever, etc.).
+    """
     try:
         resp = urllib.request.urlopen(OLLAMA_PS_URL, timeout=2)
         data = json.loads(resp.read())
         models = data.get("models", [])
         if not models:
+            _last_ollama_expires.clear()
             return False
-        # Check if expires_at was recently refreshed (within last 10 seconds)
-        # Ollama sets expires_at = now + 5min on each request
         for m in models:
+            name = m.get("name", "?")
             expires = m.get("expires_at", "")
             if expires:
-                try:
-                    from datetime import datetime, timezone
-                    # Parse ISO timestamp with timezone
-                    exp_str = expires.replace("Z", "+00:00")
-                    # Handle nanoseconds by truncating to microseconds
-                    if "." in exp_str:
-                        parts = exp_str.split(".")
-                        frac_and_tz = parts[1]
-                        # Find where the timezone starts (+ or -)
-                        for ti, c in enumerate(frac_and_tz):
-                            if c in "+-" and ti > 0:
-                                frac = frac_and_tz[:ti][:6]
-                                tz = frac_and_tz[ti:]
-                                exp_str = parts[0] + "." + frac + tz
-                                break
-                    exp_time = datetime.fromisoformat(exp_str)
-                    now = datetime.now(timezone.utc)
-                    # Ollama sets 5min expiry. If >4min50s remain, inference just happened
-                    remaining = (exp_time - now).total_seconds()
-                    if remaining > 290:  # More than 4:50 remaining = just used
-                        return True
-                except Exception:
+                prev = _last_ollama_expires.get(name)
+                _last_ollama_expires[name] = expires
+                if prev is not None and prev != expires:
+                    # expires_at just changed — inference is happening
+                    return True
+                if prev is None:
+                    # First time seeing this model — don't flash, wait for next poll
                     pass
         return False
     except Exception:
         return False
+
+
+# Tracks the last-seen expires_at per model for change detection.
+_last_ollama_expires = {}
 
 
 def check_network():
