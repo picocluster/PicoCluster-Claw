@@ -1,4 +1,4 @@
 #!/bin/bash
 # pc-update — Update all PicoCluster Claw components (containers + LEDs)
 set -euo pipefail
-sudo bash /opt/picocluster-claw/scripts/setup/update-picocluster-claw.sh "${1:-all}"
+sudo bash /opt/clusterclaw/scripts/setup/update-clusterclaw.sh "${1:-all}"

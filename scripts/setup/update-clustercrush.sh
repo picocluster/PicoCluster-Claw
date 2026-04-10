@@ -1,10 +1,10 @@
 #!/bin/bash
-# update-picocrush.sh — Update PicoCluster Claw software on Orin Nano
-# Usage: sudo bash update-picocrush.sh [component]
-#        sudo bash update-picocrush.sh             # Update Ollama + pull models
-#        sudo bash update-picocrush.sh ollama       # Update Ollama only
-#        sudo bash update-picocrush.sh models       # Pull any missing default models
-#        sudo bash update-picocrush.sh pull <model> # Pull a specific model
+# update-clustercrush.sh — Update PicoCluster Claw software on Orin Nano
+# Usage: sudo bash update-clustercrush.sh [component]
+#        sudo bash update-clustercrush.sh             # Update Ollama + pull models
+#        sudo bash update-clustercrush.sh ollama       # Update Ollama only
+#        sudo bash update-clustercrush.sh models       # Pull any missing default models
+#        sudo bash update-clustercrush.sh pull <model> # Pull a specific model
 set -euo pipefail
 
 if (( EUID != 0 )); then

@@ -8,7 +8,7 @@ echo "Docker containers:"
 sudo docker ps --format "  {{.Names}}: {{.Status}}" 2>/dev/null
 echo ""
 echo "Systemd services:"
-for svc in picocluster-claw-leds shutdown-api openclaw-led-bridge; do
+for svc in clusterclaw-leds shutdown-api openclaw-led-bridge; do
   state=$(systemctl is-active "$svc" 2>/dev/null || true)
   echo "  $svc: ${state:-unknown}"
 done

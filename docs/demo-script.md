@@ -9,8 +9,8 @@ A step-by-step walkthrough for live demos, videos, or trade shows. Total time: ~
 ## Setup (before the demo)
 
 1. Both nodes powered on and booted
-2. Blinkt! scanner animation running on picocluster-claw
-3. Browser open to `http://picocluster-claw` (portal)
+2. Blinkt! scanner animation running on clusterclaw
+3. Browser open to `http://clusterclaw` (portal)
 4. Second browser tab ready for ThreadWeaver
 
 ---
@@ -31,7 +31,7 @@ A step-by-step walkthrough for live demos, videos, or trade shows. Total time: ~
 
 ## Act 2: Chat with Your Local AI (~3 min)
 
-**Open ThreadWeaver:** `http://picocluster-claw:5173`
+**Open ThreadWeaver:** `http://clusterclaw:5173`
 
 > "This is ThreadWeaver — a chat interface that talks directly to the Llama 3.2 model running on the Jetson's GPU. No cloud. No API keys. Everything stays on your network."
 
@@ -89,7 +89,7 @@ A step-by-step walkthrough for live demos, videos, or trade shows. Total time: ~
 
 ## Act 4: The Portal (~1 min)
 
-**Show the portal:** `http://picocluster-claw`
+**Show the portal:** `http://clusterclaw`
 
 > "Every PicoCluster Claw comes with this portal. Live status of all services, model list, management commands, and these LED controls..."
 
@@ -144,7 +144,7 @@ Switch to `starcoder2:3b`:
 
 | Problem | Quick Fix |
 |---------|-----------|
-| LEDs not responding | `sudo systemctl restart picocluster-claw-leds` on picocluster-claw |
-| ThreadWeaver won't load | `sudo docker restart threadweaver` on picocluster-claw |
-| Model not responding | `ssh picocrush` then `ollama list` to verify |
+| LEDs not responding | `sudo systemctl restart clusterclaw-leds` on clusterclaw |
+| ThreadWeaver won't load | `sudo docker restart threadweaver` on clusterclaw |
+| Model not responding | `ssh clustercrush` then `ollama list` to verify |
 | LED MCP tools missing | Restart ThreadWeaver — auto-connects on startup |

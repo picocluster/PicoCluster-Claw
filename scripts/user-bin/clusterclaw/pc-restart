@@ -1,17 +1,17 @@
 #!/bin/bash
 # pc-restart — Restart the PicoCluster Claw cluster (or one node)
 # Usage: pc-restart           # Restart both nodes
-#        pc-restart picocluster-claw  # Restart picocluster-claw only
-#        pc-restart picocrush # Restart picocrush only
+#        pc-restart clusterclaw  # Restart clusterclaw only
+#        pc-restart clustercrush # Restart clustercrush only
 set -euo pipefail
 
 TARGET="${1:-all}"
 TOKEN="${SHUTDOWN_TOKEN:-picocluster-shutdown}"
 
 case "$TARGET" in
-  all|picocluster-claw|picocrush) ;;
+  all|clusterclaw|clustercrush) ;;
   *)
-    echo "Usage: pc-restart [all|picocluster-claw|picocrush]"
+    echo "Usage: pc-restart [all|clusterclaw|clustercrush]"
     exit 1
     ;;
 esac

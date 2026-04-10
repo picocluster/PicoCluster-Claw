@@ -1,8 +1,8 @@
 # PicoCluster Claw Appliance — Roadmap
 
 ## Architecture
-- **picocluster-claw — RPi5 (8GB)** — Portal, ThreadWeaver, OpenClaw, Blinkt! LEDs (Docker)
-- **picocrush — Orin Nano Super (8GB)** — Ollama with 9 LLM models, GPU-accelerated
+- **clusterclaw — RPi5 (8GB)** — Portal, ThreadWeaver, OpenClaw, Blinkt! LEDs (Docker)
+- **clustercrush — Orin Nano Super (8GB)** — Ollama with 9 LLM models, GPU-accelerated
 - Shared case, shared power, shared network, 50W PSU
 
 ## Phase 1: Benchmarking (COMPLETE ✅)
@@ -31,8 +31,8 @@
 - [x] L4T packages held to prevent apt upgrade breakage
 
 ## Phase 4: PicoCluster Claw Software Install (COMPLETE ✅)
-- [x] install-picocrush.sh — Ollama with CUDA, 9 default models, MAXN power mode
-- [x] install-picocluster-claw.sh — Docker containers (ThreadWeaver, OpenClaw, Portal, Caddy)
+- [x] install-clustercrush.sh — Ollama with CUDA, 9 default models, MAXN power mode
+- [x] install-clusterclaw.sh — Docker containers (ThreadWeaver, OpenClaw, Portal, Caddy)
 - [x] Blinkt! LED status daemon with scanner, blink, look-around behaviors
 - [x] ThreadWeaver chat UI with Ollama model discovery
 - [x] OpenClaw agent with all channel SDK dependencies
@@ -40,11 +40,11 @@
 - [x] PicoCluster Claw portal landing page (port 80) with live status
 - [x] validate-pair.sh — end-to-end health checks
 - [x] update-threadweaver.sh — version check + rebuild
-- [x] update-picocluster-claw.sh / update-picocrush.sh — update scripts
+- [x] update-clusterclaw.sh / update-clustercrush.sh — update scripts
 - [x] Auto-resize filesystem at install time
 
 ## Phase 5: Community Installer (PLANNED)
-- [ ] picocluster-claw-setup.sh — all-in-one for BYO hardware
+- [ ] clusterclaw-setup.sh — all-in-one for BYO hardware
 - [ ] Auto-detect hardware (RPi5 vs Jetson)
 - [ ] Interactive prompts for IP, models, options
 - [ ] Harden + install + configure in one script
@@ -53,7 +53,7 @@
 - [ ] Telegram/Discord channel integration for mobile access
 - [ ] Ollama model auto-discovery in OpenClaw (upstream feature request)
 - [ ] Blinkt! firework effects for specific actions
-- [ ] Blinkt! on picocrush (requires Jetson GPIO pinmux device tree overlay)
+- [ ] Blinkt! on clustercrush (requires Jetson GPIO pinmux device tree overlay)
 - [ ] Pre-built Docker images on Docker Hub (skip build on RPi5)
 - [ ] Production HTTPS with Let's Encrypt (for public-facing deployments)
 
@@ -87,4 +87,4 @@ PSU: 50W (15W headroom at peak)
 - Ollama replaced llama-server for native multi-model management and auto-discovery
 - ThreadWeaver requires patches for LAN access (API_BASE, Vite proxy, model discovery) — baked into Docker build
 - Orin Nano GPIO pinmux does not support Blinkt! on physical pins 16/18 — RPi5 only
-- 128GB+ microSD required for picocluster-claw (Docker + OpenClaw + ThreadWeaver)
+- 128GB+ microSD required for clusterclaw (Docker + OpenClaw + ThreadWeaver)

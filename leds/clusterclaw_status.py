@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PicoCluster Claw LED status daemon — runs on picocluster-claw (RPi5).
+PicoCluster Claw LED status daemon — runs on clusterclaw (RPi5).
 
 Boot sequence:
   Rainbow sweep → service discovery → green celebration
@@ -13,7 +13,7 @@ Runtime modes:
   - DEGRADED: Slow amber pulse
   - ERROR: Red pulse
 
-Monitors OpenClaw, ThreadWeaver, and Ollama on picocrush.
+Monitors OpenClaw, ThreadWeaver, and Ollama on clustercrush.
 """
 
 import sys

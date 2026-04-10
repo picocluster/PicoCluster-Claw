@@ -5,7 +5,7 @@ Wants=openclaw.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /opt/picocluster-claw/leds/picocluster_claw_status.py
+ExecStart=/usr/bin/python3 /opt/clusterclaw/leds/clusterclaw_status.py
 Restart=always
 RestartSec=5
 User=root

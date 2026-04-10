@@ -154,21 +154,21 @@ Run on both nodes to set IPs, hostnames, /etc/hosts, and update all config files
 
 For users who have their own RPi5 + Orin Nano (or similar) and their own OS images. Single script that does everything: harden + install + configure.
 
-**Script:** `picocluster-claw-setup.sh`
+**Script:** `clusterclaw-setup.sh`
 
 Usage:
 ```bash
 # On RPi5:
-curl -fsSL https://picocluster.com/picocluster-claw/setup.sh | sudo bash -s claw
+curl -fsSL https://picocluster.com/clusterclaw/setup.sh | sudo bash -s claw
 
 # On Orin Nano:
-curl -fsSL https://picocluster.com/picocluster-claw/setup.sh | sudo bash -s crush
+curl -fsSL https://picocluster.com/clusterclaw/setup.sh | sudo bash -s crush
 ```
 
 Or download and run:
 ```bash
-sudo ./picocluster-claw-setup.sh claw --start-ip 192.168.1.50
-sudo ./picocluster-claw-setup.sh crush --start-ip 192.168.1.50
+sudo ./clusterclaw-setup.sh claw --start-ip 192.168.1.50
+sudo ./clusterclaw-setup.sh crush --start-ip 192.168.1.50
 ```
 
 What it does:
@@ -202,7 +202,7 @@ Phase 2: Software install (runs on golden images)
   └── validate-pair.sh (both)
 
 Phase 3: Community installer (runs on any compatible hardware)
-  └── picocluster-claw-setup.sh (detects hardware, does everything)
+  └── clusterclaw-setup.sh (detects hardware, does everything)
 
 Phase 4: Power draw testing
   └── Both nodes in PicoCluster Claw acrylic case
@@ -223,7 +223,7 @@ Phase 4: Power draw testing
 | `install-crush.sh` | Orin Nano (crush) | Build llama.cpp, download models, deploy service |
 | `configure-pair.sh` | Both | Set IPs, hostnames, hook nodes together |
 | `validate-pair.sh` | Both | End-to-end health and connectivity checks |
-| `picocluster-claw-setup.sh` | Both (community) | All-in-one: harden + install + configure |
+| `clusterclaw-setup.sh` | Both (community) | All-in-one: harden + install + configure |
 | `jetson-shrink.sh` | NUC (imaging) | Shrink dd-captured Orin images |
 | `resize_ubuntu.sh` | Orin Nano | Expand rootfs after flashing |
 | `sd-to-nvme.sh` | Orin Nano | Migrate SD card boot to NVMe |
@@ -232,7 +232,7 @@ Phase 4: Power draw testing
 
 ## OpenClaw Security Hardening Checklist
 
-Applied by install-claw.sh and picocluster-claw-setup.sh:
+Applied by install-claw.sh and clusterclaw-setup.sh:
 
 - [ ] Run in Docker container (process isolation)
 - [ ] Gateway bound to loopback only (127.0.0.1)

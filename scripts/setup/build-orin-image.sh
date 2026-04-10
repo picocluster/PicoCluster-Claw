@@ -15,10 +15,10 @@ set -euo pipefail
 LOGFILE="/var/log/build-image.log"
 DRY_RUN=false
 PICOCLUSTER_USER="picocluster"
-HOSTNAME_DEFAULT="picocrush"
+HOSTNAME_DEFAULT="clustercrush"
 MY_IP="10.1.10.221"
 PARTNER_IP="10.1.10.220"
-PARTNER_HOSTNAME="picocluster-claw"
+PARTNER_HOSTNAME="clusterclaw"
 GATEWAY="10.1.10.1"
 DNS="8.8.8.8"
 SUBNET="24"
@@ -324,7 +324,7 @@ run "apt update -qq"
 run "apt install -y ufw fail2ban unattended-upgrades"
 
 if ! $DRY_RUN; then
-  # Configure UFW — SSH only for now. Port 8080 added in Phase 4 (restricted to picocluster-claw IP)
+  # Configure UFW — SSH only for now. Port 8080 added in Phase 4 (restricted to clusterclaw IP)
   ufw default deny incoming
   ufw default allow outgoing
   ufw allow 22/tcp comment 'SSH'

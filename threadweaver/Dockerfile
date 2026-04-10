@@ -44,7 +44,7 @@ RUN cat > /app/backend/threadweaver_config.json <<'JSON'
       "enabled": true,
       "api_key": "",
       "model": "llama3.1:8b",
-      "base_url": "http://picocrush:11434/v1",
+      "base_url": "http://clustercrush:11434/v1",
       "label": "Local (Ollama)"
     }
   }
@@ -76,9 +76,9 @@ RUN chmod +x /app/start.sh
 ENV LLM_PROVIDER=local
 # Default Ollama tag (valid tool-use model). Overridden by docker-compose via
 # LOCAL_BASE_URL / LOCAL_MODEL env vars. Must be an Ollama tag, not a .gguf
-# filename, since we use picocrush Ollama for inference. llama3.1:8b chains
+# filename, since we use clustercrush Ollama for inference. llama3.1:8b chains
 # tool calls reliably; see docs/faq.md #16 for the full tool-support matrix.
-ENV LOCAL_BASE_URL=http://picocrush:11434/v1
+ENV LOCAL_BASE_URL=http://clustercrush:11434/v1
 ENV LOCAL_MODEL=llama3.1:8b
 
 EXPOSE 5173 8000

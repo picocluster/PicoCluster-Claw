@@ -19,7 +19,7 @@ cat > "$CONFIG" <<EOF
         "http://127.0.0.1:18789",
         "https://localhost:18790",
         "https://127.0.0.1:18790",
-        "http://picocluster-claw:18789",
+        "http://clusterclaw:18789",
         "http://10.1.10.220:18789"
       ],
       "dangerouslyDisableDeviceAuth": true
@@ -28,7 +28,7 @@ cat > "$CONFIG" <<EOF
   "models": {
     "providers": {
       "local": {
-        "baseUrl": "${LOCAL_BASE_URL:-http://picocrush:11434/v1}",
+        "baseUrl": "${LOCAL_BASE_URL:-http://clustercrush:11434/v1}",
         "apiKey": "none",
         "models": [
           {"id": "llama3.2:3b", "name": "Llama 3.2 3B"},

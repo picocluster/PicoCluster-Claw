@@ -1,9 +1,9 @@
 #!/bin/bash
-# update-picocluster-claw.sh — Update PicoCluster Claw on RPi5
-# Usage: sudo bash update-picocluster-claw.sh [component]
-#        sudo bash update-picocluster-claw.sh           # Update all
-#        sudo bash update-picocluster-claw.sh openclaw   # Update OpenClaw only
-#        sudo bash update-picocluster-claw.sh threadweaver
+# update-clusterclaw.sh — Update PicoCluster Claw on RPi5
+# Usage: sudo bash update-clusterclaw.sh [component]
+#        sudo bash update-clusterclaw.sh           # Update all
+#        sudo bash update-clusterclaw.sh openclaw   # Update OpenClaw only
+#        sudo bash update-clusterclaw.sh threadweaver
 set -euo pipefail
 
 if (( EUID != 0 )); then
@@ -12,7 +12,7 @@ if (( EUID != 0 )); then
 fi
 
 COMPONENT="${1:-all}"
-INSTALL_DIR="/opt/picocluster-claw"
+INSTALL_DIR="/opt/clusterclaw"
 
 log() { echo "[$(date '+%H:%M:%S')] $*"; }
 
@@ -25,7 +25,7 @@ case "$COMPONENT" in
     log "Rebuilding all containers..."
     docker compose build --pull 2>&1 | tail -10
     docker compose up -d
-    systemctl restart picocluster-claw-leds 2>/dev/null || true
+    systemctl restart clusterclaw-leds 2>/dev/null || true
     ;;
   openclaw)
     log "Rebuilding OpenClaw container..."
@@ -39,8 +39,8 @@ case "$COMPONENT" in
     ;;
   leds)
     git pull --ff-only 2>&1 | tail -3
-    cp leds/apa102.py leds/picocluster_claw_status.py /opt/picocluster-claw/leds/ 2>/dev/null
-    systemctl restart picocluster-claw-leds
+    cp leds/apa102.py leds/clusterclaw_status.py /opt/clusterclaw/leds/ 2>/dev/null
+    systemctl restart clusterclaw-leds
     ;;
   *)
     echo "Usage: $0 [all|openclaw|threadweaver|leds]"
@@ -51,4 +51,4 @@ esac
 log ""
 log "=== Status ==="
 docker compose ps 2>/dev/null
-log "  Blinkt LEDs: $(systemctl is-active picocluster-claw-leds 2>/dev/null || echo 'n/a')"
+log "  Blinkt LEDs: $(systemctl is-active clusterclaw-leds 2>/dev/null || echo 'n/a')"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""System Info MCP Server — expose picocluster-claw system stats as AI tools."""
+"""System Info MCP Server — expose clusterclaw system stats as AI tools."""
 
 import os
 import sys
@@ -11,32 +11,32 @@ from mcp_base import run_server
 TOOLS = [
     {
         "name": "get_cpu_info",
-        "description": "Get CPU usage, load average, and core count for picocluster-claw.",
+        "description": "Get CPU usage, load average, and core count for clusterclaw.",
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
         "name": "get_memory_info",
-        "description": "Get RAM and swap usage for picocluster-claw.",
+        "description": "Get RAM and swap usage for clusterclaw.",
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
         "name": "get_disk_info",
-        "description": "Get disk usage for picocluster-claw's filesystem.",
+        "description": "Get disk usage for clusterclaw's filesystem.",
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
         "name": "get_temperature",
-        "description": "Get the CPU temperature in Celsius for picocluster-claw.",
+        "description": "Get the CPU temperature in Celsius for clusterclaw.",
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
         "name": "get_uptime",
-        "description": "Get how long picocluster-claw has been running.",
+        "description": "Get how long clusterclaw has been running.",
         "inputSchema": {"type": "object", "properties": {}},
     },
     {
         "name": "get_network_info",
-        "description": "Get network interface info and IP addresses for picocluster-claw.",
+        "description": "Get network interface info and IP addresses for clusterclaw.",
         "inputSchema": {"type": "object", "properties": {}},
     },
 ]
@@ -81,4 +81,4 @@ def handle_call(name, args):
 
 
 if __name__ == "__main__":
-    run_server("picocluster-claw-system-info", "1.0.0", TOOLS, handle_call)
+    run_server("clusterclaw-system-info", "1.0.0", TOOLS, handle_call)

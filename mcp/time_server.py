@@ -114,4 +114,4 @@ def handle_call(name, args):
 
 
 if __name__ == "__main__":
-    run_server("picocluster-claw-time", "1.0.0", TOOLS, handle_call)
+    run_server("clusterclaw-time", "1.0.0", TOOLS, handle_call)

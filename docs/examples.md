@@ -8,7 +8,7 @@ A collection of things to say to ThreadWeaver (or OpenClaw) to exercise the 28 M
 
 ## 💡 LED Control
 
-The `leds` MCP server has 5 tools. Every Blinkt! effect is visible on the physical strip attached to picocluster-claw's GPIO header.
+The `leds` MCP server has 5 tools. Every Blinkt! effect is visible on the physical strip attached to clusterclaw's GPIO header.
 
 ```
 Make the LEDs purple.
@@ -42,18 +42,18 @@ I'm about to run a long job. Show a progress bar starting at 0 and increase it t
 
 ## 🌡️ System Monitoring
 
-The `system` MCP server exposes 6 tools for picocluster-claw's system state. The LLM can combine these with LED and file tools for interesting workflows.
+The `system` MCP server exposes 6 tools for clusterclaw's system state. The LLM can combine these with LED and file tools for interesting workflows.
 
 ```
 What's the CPU temperature right now?
 ```
 
 ```
-How much memory is free on picocluster-claw?
+How much memory is free on clusterclaw?
 ```
 
 ```
-How long has picocluster-claw been running?
+How long has clusterclaw been running?
 ```
 
 ```
@@ -65,21 +65,21 @@ What's the 1-minute load average?
 ```
 
 ```
-What network interfaces does picocluster-claw have and what are their IP addresses?
+What network interfaces does clusterclaw have and what are their IP addresses?
 ```
 
 ```
-Give me a one-paragraph summary of picocluster-claw's current state: CPU, memory, disk, uptime, and temperature.
+Give me a one-paragraph summary of clusterclaw's current state: CPU, memory, disk, uptime, and temperature.
 ```
 
 ---
 
-## 🧠 Model Management (picocrush)
+## 🧠 Model Management (clustercrush)
 
-The `picocrush` MCP server has 4 tools for managing the Ollama inference server. These all talk to picocrush (10.1.10.221) from picocluster-claw via the LAN.
+The `clustercrush` MCP server has 4 tools for managing the Ollama inference server. These all talk to clustercrush (10.1.10.221) from clusterclaw via the LAN.
 
 ```
-What models are installed on picocrush?
+What models are installed on clustercrush?
 ```
 
 ```
@@ -87,7 +87,7 @@ Which model is currently loaded in GPU memory?
 ```
 
 ```
-How much GPU memory is picocrush using right now?
+How much GPU memory is clustercrush using right now?
 ```
 
 ```
@@ -124,7 +124,7 @@ Format 12345 seconds as days, hours, minutes, and seconds.
 
 ## 📁 Files (Sandboxed)
 
-The `files` MCP server gives the LLM read/write/list/delete access to `/tmp/picocluster-claw-sandbox` inside the ThreadWeaver container. Anything outside that directory is rejected.
+The `files` MCP server gives the LLM read/write/list/delete access to `/tmp/clusterclaw-sandbox` inside the ThreadWeaver container. Anything outside that directory is rejected.
 
 ```
 Write a file called greeting.txt containing "Hello from PicoCluster Claw".
@@ -165,7 +165,7 @@ Check the current memory usage. Write a report to status.txt containing the memo
 ```
 
 ```
-List the models installed on picocrush. Pick the smallest one. Write its name and size to a file called smallest-model.txt.
+List the models installed on clustercrush. Pick the smallest one. Write its name and size to a file called smallest-model.txt.
 ```
 
 ```
@@ -258,15 +258,15 @@ If a bat and a ball cost $1.10 in total, and the bat costs $1 more than the ball
 These work best with Claude/GPT-4/Gemini as the provider, showing how external models reach through to local tools. Switch providers in ThreadWeaver's settings, paste your API key, and try:
 
 ```
-You have access to tools running on a Raspberry Pi 5 called picocluster-claw. Check the current temperature, memory, and uptime. Then write a brief human-friendly status message to a file called status.md. Finally, do a green success pulse on the LEDs to signal you're done.
+You have access to tools running on a Raspberry Pi 5 called clusterclaw. Check the current temperature, memory, and uptime. Then write a brief human-friendly status message to a file called status.md. Finally, do a green success pulse on the LEDs to signal you're done.
 ```
 
 ```
-I'm setting up this PicoCluster Claw device for the first time. Walk me through a self-test: list the installed models on picocrush, check that the ThreadWeaver backend is healthy (via an HTTP call), verify the current time is correct, and flash the LEDs in the PicoCluster Claw theme colors (purple → cyan → green). Report any problems.
+I'm setting up this PicoCluster Claw device for the first time. Walk me through a self-test: list the installed models on clustercrush, check that the ThreadWeaver backend is healthy (via an HTTP call), verify the current time is correct, and flash the LEDs in the PicoCluster Claw theme colors (purple → cyan → green). Report any problems.
 ```
 
 ```
-Monitor picocluster-claw for the next 60 seconds. Every 10 seconds, check the CPU temperature and load. Show a progress bar based on time elapsed. If the temperature crosses 65°C, flash red and write an alert to alert.txt. Otherwise, do a success pulse at the end.
+Monitor clusterclaw for the next 60 seconds. Every 10 seconds, check the CPU temperature and load. Show a progress bar based on time elapsed. If the temperature crosses 65°C, flash red and write an alert to alert.txt. Otherwise, do a success pulse at the end.
 ```
 
 ---
@@ -299,8 +299,8 @@ If a prompt doesn't work:
 
 - **Tool call silently skipped** — switch to `llama3.1:8b` or an external provider. Small models occasionally hallucinate that they called the tool without actually calling it.
 - **"Tool not found"** — check the control panel MCP table; if a server is missing, restart ThreadWeaver with `sudo docker compose restart threadweaver`.
-- **LEDs don't respond** — check `~/bin/pc-led color blue` directly; if that fails, the Blinkt! daemon (`picocluster-claw-leds`) isn't running. `sudo systemctl restart picocluster-claw-leds`.
-- **File operations reject path** — the sandbox is `/tmp/picocluster-claw-sandbox` inside the container; relative paths work (`greeting.txt`), absolute paths outside the sandbox are rejected.
+- **LEDs don't respond** — check `~/bin/pc-led color blue` directly; if that fails, the Blinkt! daemon (`clusterclaw-leds`) isn't running. `sudo systemctl restart clusterclaw-leds`.
+- **File operations reject path** — the sandbox is `/tmp/clusterclaw-sandbox` inside the container; relative paths work (`greeting.txt`), absolute paths outside the sandbox are rejected.
 - **Vision model says "I can't see the image"** — make sure you're on `llava:7b` or `moondream:1.8b` and that the image is attached (not just pasted as a link). Small models like `llama3.2:3b` don't have vision.
 
 Share your favorite prompts with the PicoCluster Claw community by opening a PR against [docs/examples.md](https://github.com/picocluster/PicoCluster-Claw/blob/main/docs/examples.md).

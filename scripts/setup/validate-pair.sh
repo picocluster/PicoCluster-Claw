@@ -42,20 +42,20 @@ warn_check() {
 }
 
 echo "=== PicoCluster Claw Pair Validation ==="
-echo "  picocluster-claw: $CLAW_IP"
-echo "  picocrush: $CRUSH_IP"
+echo "  clusterclaw: $CLAW_IP"
+echo "  clustercrush: $CRUSH_IP"
 echo ""
 
 # --- Network ---
 echo "--- Network ---"
-check "Ping picocluster-claw ($CLAW_IP)" "ping -c 1 -W 2 $CLAW_IP"
-check "Ping picocrush ($CRUSH_IP)" "ping -c 1 -W 2 $CRUSH_IP"
-check "SSH picocluster-claw" "ssh -o ConnectTimeout=5 -o BatchMode=yes picocluster@$CLAW_IP true 2>/dev/null || timeout 5 bash -c 'echo | nc -w 2 $CLAW_IP 22'"
-check "SSH picocrush" "ssh -o ConnectTimeout=5 -o BatchMode=yes picocluster@$CRUSH_IP true 2>/dev/null || timeout 5 bash -c 'echo | nc -w 2 $CRUSH_IP 22'"
+check "Ping clusterclaw ($CLAW_IP)" "ping -c 1 -W 2 $CLAW_IP"
+check "Ping clustercrush ($CRUSH_IP)" "ping -c 1 -W 2 $CRUSH_IP"
+check "SSH clusterclaw" "ssh -o ConnectTimeout=5 -o BatchMode=yes picocluster@$CLAW_IP true 2>/dev/null || timeout 5 bash -c 'echo | nc -w 2 $CLAW_IP 22'"
+check "SSH clustercrush" "ssh -o ConnectTimeout=5 -o BatchMode=yes picocluster@$CRUSH_IP true 2>/dev/null || timeout 5 bash -c 'echo | nc -w 2 $CRUSH_IP 22'"
 echo ""
 
-# --- picocrush services ---
-echo "--- picocrush (Orin Nano) ---"
+# --- clustercrush services ---
+echo "--- clustercrush (Orin Nano) ---"
 check "Ollama health" "curl -sf --max-time 5 http://$CRUSH_IP:11434/api/tags | grep -q models"
 check "Ollama models" "curl -sf --max-time 5 http://$CRUSH_IP:11434/api/tags | grep -q name"
 warn_check "GPU accessible" "ssh -o ConnectTimeout=5 picocluster@$CRUSH_IP 'nvidia-smi' 2>/dev/null"
@@ -75,26 +75,26 @@ else
 fi
 echo ""
 
-# --- picocluster-claw services ---
-echo "--- picocluster-claw (RPi5) ---"
+# --- clusterclaw services ---
+echo "--- clusterclaw (RPi5) ---"
 check "OpenClaw gateway" "curl -sf --max-time 5 http://$CLAW_IP:18789/__openclaw__/canvas/ >/dev/null"
 warn_check "OpenClaw service enabled" "ssh -o ConnectTimeout=5 picocluster@$CLAW_IP 'systemctl is-enabled openclaw' 2>/dev/null"
 check "ThreadWeaver backend" "curl -sf --max-time 5 http://$CLAW_IP:8000/api/settings | grep -q provider"
 check "ThreadWeaver frontend" "curl -sf --max-time 5 http://$CLAW_IP:5173/ | grep -q html"
 warn_check "ThreadWeaver service enabled" "ssh -o ConnectTimeout=5 picocluster@$CLAW_IP 'systemctl is-enabled threadweaver' 2>/dev/null"
 check "ThreadWeaver model discovery" "curl -sf --max-time 5 http://$CLAW_IP:5173/api/models/local | grep -q models"
-warn_check "Blinkt! LED service" "ssh -o ConnectTimeout=5 picocluster@$CLAW_IP 'systemctl is-active picocluster-claw-leds' 2>/dev/null"
+warn_check "Blinkt! LED service" "ssh -o ConnectTimeout=5 picocluster@$CLAW_IP 'systemctl is-active clusterclaw-leds' 2>/dev/null"
 echo ""
 
 # --- Cross-node connectivity ---
 echo "--- Cross-node ---"
-check "picocluster-claw → picocrush inference" "curl -sf --max-time 10 http://$CLAW_IP:5173/api/models/local | grep -q models"
+check "clusterclaw → clustercrush inference" "curl -sf --max-time 10 http://$CLAW_IP:5173/api/models/local | grep -q models"
 echo ""
 
 # --- Firewall ---
 echo "--- Firewall ---"
-warn_check "picocrush UFW active" "ssh -o ConnectTimeout=5 picocluster@$CRUSH_IP 'sudo ufw status | grep -q active' 2>/dev/null"
-warn_check "picocluster-claw UFW active" "ssh -o ConnectTimeout=5 picocluster@$CLAW_IP 'sudo ufw status | grep -q active' 2>/dev/null"
+warn_check "clustercrush UFW active" "ssh -o ConnectTimeout=5 picocluster@$CRUSH_IP 'sudo ufw status | grep -q active' 2>/dev/null"
+warn_check "clusterclaw UFW active" "ssh -o ConnectTimeout=5 picocluster@$CLAW_IP 'sudo ufw status | grep -q active' 2>/dev/null"
 echo ""
 
 # --- Model info ---

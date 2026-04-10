@@ -7,8 +7,8 @@ PicoCluster Claw ships with 5 MCP (Model Context Protocol) servers that auto-con
 | Server | Tools | Description |
 |--------|------:|-------------|
 | [leds](#led-server) | 5 | Control the Blinkt! LED strip |
-| [system](#system-server) | 6 | picocluster-claw system stats |
-| [picocrush](#picocrush-server) | 4 | Ollama model management |
+| [system](#system-server) | 6 | clusterclaw system stats |
+| [clustercrush](#clustercrush-server) | 4 | Ollama model management |
 | [time](#time-server) | 4 | Current time and dates |
 | [files](#files-server) | 5 | Sandboxed file operations |
 
@@ -16,7 +16,7 @@ PicoCluster Claw ships with 5 MCP (Model Context Protocol) servers that auto-con
 
 ## LED Server
 
-Controls the 8-LED Pimoroni Blinkt! strip on picocluster-claw's GPIO header.
+Controls the 8-LED Pimoroni Blinkt! strip on clusterclaw's GPIO header.
 
 | Tool | Description |
 |------|-------------|
@@ -35,19 +35,19 @@ Controls the 8-LED Pimoroni Blinkt! strip on picocluster-claw's GPIO header.
 Also available as raw HTTP on port 7777 (reachable from your LAN):
 
 ```bash
-curl -X POST http://picocluster-claw:7777/set_status -H 'Content-Type: application/json' -d '{"color":"purple"}'
-curl -X POST http://picocluster-claw:7777/set_progress -H 'Content-Type: application/json' -d '{"percent":50,"color":"green"}'
-curl -X POST http://picocluster-claw:7777/pulse_success
-curl -X POST http://picocluster-claw:7777/pulse_error
-curl -X POST http://picocluster-claw:7777/clear
+curl -X POST http://clusterclaw:7777/set_status -H 'Content-Type: application/json' -d '{"color":"purple"}'
+curl -X POST http://clusterclaw:7777/set_progress -H 'Content-Type: application/json' -d '{"percent":50,"color":"green"}'
+curl -X POST http://clusterclaw:7777/pulse_success
+curl -X POST http://clusterclaw:7777/pulse_error
+curl -X POST http://clusterclaw:7777/clear
 ```
 
 Colors: `red`, `green`, `blue`, `amber`, `cyan`, `purple`, `white`, `off`
 
-Or use the `pc-led` wrapper from any SSH session on picocluster-claw:
+Or use the `pc-led` wrapper from any SSH session on clusterclaw:
 
 ```bash
-ssh picocluster@picocluster-claw
+ssh picocluster@clusterclaw
 pc-led color purple 10
 pc-led flash red
 pc-led progress 75 green
@@ -57,7 +57,7 @@ pc-led clear
 
 ### Portal Controls
 
-The [PicoCluster Claw portal](http://picocluster-claw) has an LED Control section with color buttons, pulse effects, and a progress slider.
+The [PicoCluster Claw portal](http://clusterclaw) has an LED Control section with color buttons, pulse effects, and a progress slider.
 
 ### OpenClaw Auto-LED
 
@@ -71,7 +71,7 @@ A log-monitoring bridge automatically triggers LED effects on OpenClaw agent eve
 
 ## System Server
 
-Reports picocluster-claw (RPi5) system statistics.
+Reports clusterclaw (RPi5) system statistics.
 
 | Tool | Description |
 |------|-------------|
@@ -83,14 +83,14 @@ Reports picocluster-claw (RPi5) system statistics.
 | `get_network_info` | Network interfaces and IP addresses |
 
 **Example chat:**
-> User: "How hot is picocluster-claw running?"
+> User: "How hot is clusterclaw running?"
 > LLM: *calls `get_temperature`* → "CPU temperature: 52.3C (126.1F)"
 
 ---
 
 ## Picocrush Server
 
-Manages the Ollama inference server on picocrush (Jetson Orin Nano).
+Manages the Ollama inference server on clustercrush (Jetson Orin Nano).
 
 | Tool | Description |
 |------|-------------|
@@ -124,7 +124,7 @@ Gives the LLM awareness of current date and time. Important because training dat
 
 ## Files Server
 
-Sandboxed file operations — the LLM can read/write/delete files only within `/tmp/picocluster-claw-sandbox` (mounted as a Docker volume so it persists across restarts).
+Sandboxed file operations — the LLM can read/write/delete files only within `/tmp/clusterclaw-sandbox` (mounted as a Docker volume so it persists across restarts).
 
 | Tool | Description |
 |------|-------------|
@@ -140,7 +140,7 @@ Sandboxed file operations — the LLM can read/write/delete files only within `/
 
 ### Security
 
-The sandbox uses Python's `Path.resolve()` + `relative_to()` to reject any path that escapes the sandbox directory. The LLM cannot read `/etc/passwd`, access containers, or touch anything outside `/tmp/picocluster-claw-sandbox`.
+The sandbox uses Python's `Path.resolve()` + `relative_to()` to reject any path that escapes the sandbox directory. The LLM cannot read `/etc/passwd`, access containers, or touch anything outside `/tmp/clusterclaw-sandbox`.
 
 ---
 
@@ -188,10 +188,10 @@ ThreadWeaver can connect to any stdio-based MCP server. Popular ones:
 - **@modelcontextprotocol/server-github** — GitHub API access
 - **@modelcontextprotocol/server-sqlite** — SQLite database queries
 
-Connect via the ThreadWeaver API. The API is bound to `127.0.0.1` only, so run this from picocluster-claw itself (via SSH or by opening ThreadWeaver in the browser and using its settings UI):
+Connect via the ThreadWeaver API. The API is bound to `127.0.0.1` only, so run this from clusterclaw itself (via SSH or by opening ThreadWeaver in the browser and using its settings UI):
 
 ```bash
-ssh picocluster@picocluster-claw
+ssh picocluster@clusterclaw
 curl -X POST http://127.0.0.1:8000/api/mcp/connect \
   -H "Content-Type: application/json" \
   -d '{"name":"filesystem","command":"npx","args":["-y","@modelcontextprotocol/server-filesystem","/tmp"]}'

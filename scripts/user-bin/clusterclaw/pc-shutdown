@@ -1,17 +1,17 @@
 #!/bin/bash
 # pc-shutdown — Shutdown the PicoCluster Claw cluster (or one node)
 # Usage: pc-shutdown           # Shutdown both nodes
-#        pc-shutdown picocluster-claw  # Shutdown picocluster-claw only
-#        pc-shutdown picocrush # Shutdown picocrush only
+#        pc-shutdown clusterclaw  # Shutdown clusterclaw only
+#        pc-shutdown clustercrush # Shutdown clustercrush only
 set -euo pipefail
 
 TARGET="${1:-all}"
 TOKEN="${SHUTDOWN_TOKEN:-picocluster-shutdown}"
 
 case "$TARGET" in
-  all|picocluster-claw|picocrush) ;;
+  all|clusterclaw|clustercrush) ;;
   *)
-    echo "Usage: pc-shutdown [all|picocluster-claw|picocrush]"
+    echo "Usage: pc-shutdown [all|clusterclaw|clustercrush]"
     exit 1
     ;;
 esac

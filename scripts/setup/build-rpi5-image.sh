@@ -12,10 +12,10 @@ set -euo pipefail
 LOGFILE="/var/log/build-image.log"
 DRY_RUN=false
 PICOCLUSTER_USER="picocluster"
-HOSTNAME_DEFAULT="picocluster-claw"
+HOSTNAME_DEFAULT="clusterclaw"
 MY_IP="10.1.10.220"
 PARTNER_IP="10.1.10.221"
-PARTNER_HOSTNAME="picocrush"
+PARTNER_HOSTNAME="clustercrush"
 GATEWAY="10.1.10.1"
 DNS="8.8.8.8"
 SUBNET="24"

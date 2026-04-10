@@ -1,5 +1,5 @@
 #!/bin/bash
-# pc-status — Show picocrush / Ollama status
+# pc-status — Show clustercrush / Ollama status
 set -euo pipefail
 
 echo "=== PicoCrush Status ==="

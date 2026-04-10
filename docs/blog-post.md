@@ -14,8 +14,8 @@ That's PicoCluster Claw — a two-board AI appliance that pairs a Raspberry Pi 5
 
 PicoCluster Claw is built on PicoCluster hardware:
 
-- **picocluster-claw (RPi5 8GB)** — Runs Docker containers for ThreadWeaver (chat UI), OpenClaw (AI agent), and a landing portal. A Pimoroni Blinkt! LED strip on the GPIO header provides visual feedback.
-- **picocrush (Orin Nano Super 8GB)** — Runs Ollama with 9 GGUF models on the Jetson's GPU. Inference at 12-18 tokens per second on 3B models.
+- **clusterclaw (RPi5 8GB)** — Runs Docker containers for ThreadWeaver (chat UI), OpenClaw (AI agent), and a landing portal. A Pimoroni Blinkt! LED strip on the GPIO header provides visual feedback.
+- **clustercrush (Orin Nano Super 8GB)** — Runs Ollama with 9 GGUF models on the Jetson's GPU. Inference at 12-18 tokens per second on 3B models.
 
 Total power draw: 14W idle, 20W typical. That's $2/month in electricity.
 
@@ -60,16 +60,16 @@ This is — as far as we know — the first MCP server that controls physical ha
 
 ## The Portal
 
-Every PicoCluster Claw ships with a landing page at `http://picocluster-claw`. Live service status, links to all interfaces, LED controls, cluster management, and shutdown buttons. One URL to manage everything.
+Every PicoCluster Claw ships with a landing page at `http://clusterclaw`. Live service status, links to all interfaces, LED controls, cluster management, and shutdown buttons. One URL to manage everything.
 
 ## One Command to Install
 
 ```bash
-# On picocrush (Orin Nano):
-sudo bash install-picocrush.sh
+# On clustercrush (Orin Nano):
+sudo bash install-clustercrush.sh
 
-# On picocluster-claw (RPi5):
-sudo bash install-picocluster-claw.sh
+# On clusterclaw (RPi5):
+sudo bash install-clusterclaw.sh
 ```
 
 That's it. Flash the golden images, run two scripts, and you have a private AI appliance with:

@@ -1,10 +1,10 @@
 #!/bin/bash
-# install-picocluster-claw.sh — Install full PicoCluster Claw stack on RPi5 via Docker
+# install-clusterclaw.sh — Install full PicoCluster Claw stack on RPi5 via Docker
 # Run on a golden image (after build-rpi5-image.sh + configure-pair.sh)
 #
 # Installs: OpenClaw (Docker), ThreadWeaver (Docker), Blinkt! LEDs (native)
 #
-# Usage: sudo bash install-picocluster-claw.sh [picocrush-ip]
+# Usage: sudo bash install-clusterclaw.sh [clustercrush-ip]
 set -euo pipefail
 
 CRUSH_IP="${1:-10.1.10.221}"
@@ -17,7 +17,7 @@ CRUSH_IP="${1:-10.1.10.221}"
 # support tool calling (ThreadWeaver auto-falls back to chat-only for those).
 DEFAULT_MODEL="${2:-llama3.1:8b}"
 OPENCLAW_TOKEN="${3:-picocluster-token}"
-INSTALL_DIR="/opt/picocluster-claw"
+INSTALL_DIR="/opt/clusterclaw"
 LED_DIR="$INSTALL_DIR/leds"
 USER="picocluster"
 
@@ -28,10 +28,33 @@ fi
 
 log() { echo "[$(date '+%H:%M:%S')] $*"; }
 
-log "=== PicoCluster Claw Install (picocluster-claw / RPi5) ==="
-log "  picocrush: ${CRUSH_IP}"
+log "=== PicoCluster Claw Install (clusterclaw / RPi5) ==="
+log "  clustercrush: ${CRUSH_IP}"
 log "  Model: ${DEFAULT_MODEL}"
 log ""
+
+# ============================================================
+# Set hostname (so golden images don't need it baked in)
+# ============================================================
+CURRENT_HOSTNAME=$(hostname)
+if [[ "$CURRENT_HOSTNAME" != "clusterclaw" ]]; then
+  log "--- Setting hostname: ${CURRENT_HOSTNAME} → clusterclaw ---"
+  hostnamectl set-hostname clusterclaw
+  sed -i "s/127\.0\.1\.1.*/127.0.1.1\tclusterclaw/" /etc/hosts
+  # Add cluster entries if not present
+  if ! grep -q "clusterclaw" /etc/hosts; then
+    cat >> /etc/hosts <<HOSTS
+
+# BEGIN PICOCLUSTER CLAW
+10.1.10.220  clusterclaw
+10.1.10.221  clustercrush
+# END PICOCLUSTER CLAW
+HOSTS
+  fi
+  log "  Hostname set to clusterclaw"
+else
+  log "Hostname already set: clusterclaw"
+fi
 
 # ============================================================
 # 0. Resize filesystem if needed
@@ -80,7 +103,7 @@ LEGACY_FILES=(
   "/home/${USER}/stopAllNodes.sh"
   "/home/${USER}/testAllNodes.sh"
   "/home/${USER}/build-rpi5-image.sh"
-  "/home/${USER}/install-picocluster-claw.sh"
+  "/home/${USER}/install-clusterclaw.sh"
 )
 for f in "${LEGACY_FILES[@]}"; do
   if [[ -f "$f" ]]; then
@@ -144,13 +167,13 @@ apt install -y python3-gpiod 2>/dev/null || pip3 install --break-system-packages
 
 mkdir -p "$LED_DIR"
 cp "$INSTALL_DIR/leds/apa102.py" "$LED_DIR/" 2>/dev/null || true
-cp "$INSTALL_DIR/leds/picocluster_claw_status.py" "$LED_DIR/" 2>/dev/null || true
+cp "$INSTALL_DIR/leds/clusterclaw_status.py" "$LED_DIR/" 2>/dev/null || true
 
-if [[ -f "$INSTALL_DIR/leds/picocluster-claw-leds.service" ]]; then
-  cp "$INSTALL_DIR/leds/picocluster-claw-leds.service" /etc/systemd/system/
+if [[ -f "$INSTALL_DIR/leds/clusterclaw-leds.service" ]]; then
+  cp "$INSTALL_DIR/leds/clusterclaw-leds.service" /etc/systemd/system/
   systemctl daemon-reload
-  systemctl enable picocluster-claw-leds
-  systemctl start picocluster-claw-leds
+  systemctl enable clusterclaw-leds
+  systemctl start clusterclaw-leds
   log "Blinkt! LED daemon started"
 else
   log "Blinkt! LED service file not found — skipping"
@@ -167,8 +190,8 @@ ufw allow 8888/tcp comment "Shutdown API" 2>/dev/null || true
 # Install host-based shutdown API (not in Docker — needs system shutdown access)
 if [[ -f "$INSTALL_DIR/portal/shutdown-api.service" ]]; then
   cp "$INSTALL_DIR/portal/shutdown-api.service" /etc/systemd/system/
-  echo "picocluster ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/reboot, /usr/sbin/shutdown, /usr/sbin/reboot" > /etc/sudoers.d/picocluster-claw-shutdown
-  chmod 440 /etc/sudoers.d/picocluster-claw-shutdown
+  echo "picocluster ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/reboot, /usr/sbin/shutdown, /usr/sbin/reboot" > /etc/sudoers.d/clusterclaw-shutdown
+  chmod 440 /etc/sudoers.d/clusterclaw-shutdown
   systemctl daemon-reload
   systemctl enable shutdown-api
   systemctl start shutdown-api
@@ -195,9 +218,9 @@ log "Firewall configured"
 # ============================================================
 log "--- Installing user management scripts ---"
 USER_BIN="/home/${USER}/bin"
-if [[ -d "$INSTALL_DIR/scripts/user-bin/picocluster-claw" ]]; then
+if [[ -d "$INSTALL_DIR/scripts/user-bin/clusterclaw" ]]; then
   mkdir -p "$USER_BIN"
-  cp "$INSTALL_DIR/scripts/user-bin/picocluster-claw/"* "$USER_BIN/"
+  cp "$INSTALL_DIR/scripts/user-bin/clusterclaw/"* "$USER_BIN/"
   chmod +x "$USER_BIN/"*
   chown -R "${USER}:${USER}" "$USER_BIN"
   log "  Installed: $(ls "$USER_BIN" | tr '\n' ' ')"
@@ -214,7 +237,7 @@ fi
 BASHRC
   fi
 else
-  log "  WARNING: user-bin/picocluster-claw not found in repo — skipping"
+  log "  WARNING: user-bin/clusterclaw not found in repo — skipping"
 fi
 
 # ============================================================
@@ -229,7 +252,7 @@ docker compose ps 2>/dev/null
 echo ""
 log "  ThreadWeaver:  $(curl -sf --max-time 5 http://127.0.0.1:8000/api/settings >/dev/null 2>&1 && echo 'OK' || echo 'STARTING')"
 log "  OpenClaw:      $(curl -sf --max-time 5 http://127.0.0.1:18789/__openclaw__/health >/dev/null 2>&1 && echo 'OK' || echo 'STARTING')"
-log "  Blinkt! LEDs:  $(systemctl is-active picocluster-claw-leds 2>/dev/null || echo 'n/a')"
+log "  Blinkt! LEDs:  $(systemctl is-active clusterclaw-leds 2>/dev/null || echo 'n/a')"
 log "  Ollama:        $(curl -sf --max-time 5 http://${CRUSH_IP}:11434/api/tags >/dev/null 2>&1 && echo 'OK' || echo 'NOT REACHABLE')"
 
 log ""
@@ -241,7 +264,7 @@ log "  ThreadWeaver:  https://localhost:5174   (via SSH tunnel)"
 log "  OpenClaw:      https://localhost:18790  (via SSH tunnel, token: ${OPENCLAW_TOKEN})"
 log ""
 log "  SSH tunnel command (run on your computer):"
-log "    ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@picocluster-claw"
+log "    ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@clusterclaw"
 log ""
 log "  Manage:  cd $INSTALL_DIR && docker compose [up -d|down|logs|ps]"
 log "  Update:  cd $INSTALL_DIR && git pull && docker compose build --pull && docker compose up -d"

@@ -55,7 +55,7 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         target = body.get("target", "all")
-        if target not in ("all", "picocluster-claw", "picocrush"):
+        if target not in ("all", "clusterclaw", "clustercrush"):
             self._respond(400, {"error": f"invalid target: {target}"})
             return
 
@@ -69,7 +69,7 @@ class Handler(BaseHTTPRequestHandler):
         # Execute after response is sent
         cmd = "reboot" if action == "restart" else "shutdown -h now"
 
-        if target in ("all", "picocrush"):
+        if target in ("all", "clustercrush"):
             subprocess.Popen(
                 ["sudo", "-u", "picocluster",
                  "ssh", "-o", "StrictHostKeyChecking=no", "-o", "ConnectTimeout=5",
@@ -77,8 +77,8 @@ class Handler(BaseHTTPRequestHandler):
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             )
 
-        if target in ("all", "picocluster-claw"):
-            # Delay 3 seconds so response goes out and picocrush command starts
+        if target in ("all", "clusterclaw"):
+            # Delay 3 seconds so response goes out and clustercrush command starts
             delay = "+1" if action == "shutdown" else ""
             if action == "shutdown":
                 subprocess.Popen(

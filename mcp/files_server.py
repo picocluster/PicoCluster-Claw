@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """File Operations MCP Server — sandboxed file access for the LLM.
 
-All operations are confined to SANDBOX_DIR (default: /tmp/picocluster-claw-sandbox).
+All operations are confined to SANDBOX_DIR (default: /tmp/clusterclaw-sandbox).
 This prevents the LLM from reading or modifying sensitive system files.
 """
 
@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from mcp_base import run_server
 
-SANDBOX_DIR = Path(os.environ.get("SANDBOX_DIR", "/tmp/picocluster-claw-sandbox")).resolve()
+SANDBOX_DIR = Path(os.environ.get("SANDBOX_DIR", "/tmp/clusterclaw-sandbox")).resolve()
 SANDBOX_DIR.mkdir(parents=True, exist_ok=True)
 
 TOOLS = [
@@ -150,4 +150,4 @@ def handle_call(name, args):
 
 
 if __name__ == "__main__":
-    run_server("picocluster-claw-files", "1.0.0", TOOLS, handle_call)
+    run_server("clusterclaw-files", "1.0.0", TOOLS, handle_call)

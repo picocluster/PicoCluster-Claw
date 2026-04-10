@@ -7,7 +7,7 @@ set -e
 # chains tool calls reliably across multi-turn conversations.
 cat > /app/backend/.env <<EOF
 LLM_PROVIDER=${LLM_PROVIDER:-local}
-LOCAL_BASE_URL=${LOCAL_BASE_URL:-http://picocrush:11434/v1}
+LOCAL_BASE_URL=${LOCAL_BASE_URL:-http://clustercrush:11434/v1}
 LOCAL_MODEL=${LOCAL_MODEL:-llama3.1:8b}
 EOF
 
@@ -63,7 +63,7 @@ connect_mcp() {
 
 connect_mcp "leds" "/opt/mcp/led_server.py"
 connect_mcp "system" "/opt/mcp/servers/system_info_server.py"
-connect_mcp "picocrush" "/opt/mcp/servers/picocrush_server.py"
+connect_mcp "clustercrush" "/opt/mcp/servers/clustercrush_server.py"
 connect_mcp "time" "/opt/mcp/servers/time_server.py"
 connect_mcp "files" "/opt/mcp/servers/files_server.py"
 
@@ -79,7 +79,7 @@ FRONTEND_PID=$!
 # --------------------------------------------------------------------------
 # Prime the default LLM model in the background.
 #
-# Loads the model into GPU memory on picocrush so the first user message
+# Loads the model into GPU memory on clustercrush so the first user message
 # gets a fast response instead of a 60-90 second cold start. Runs in the
 # background so it doesn't block the frontend from serving pages.
 #
@@ -92,7 +92,7 @@ FRONTEND_PID=$!
 LED_URL="${LED_API_URL:-http://host.docker.internal:7777}"
 
 prime_model() {
-  local base_url="${LOCAL_BASE_URL:-http://picocrush:11434/v1}"
+  local base_url="${LOCAL_BASE_URL:-http://clustercrush:11434/v1}"
   local model="${LOCAL_MODEL:-llama3.1:8b}"
 
   echo "Priming ${model} on ${base_url}..."

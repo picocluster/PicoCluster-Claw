@@ -103,7 +103,7 @@ class Blinkt:
             )
         }
         self._request = self._chip.request_lines(
-            consumer="picocluster-claw-leds",
+            consumer="clusterclaw-leds",
             config=line_config,
         )
 
@@ -115,8 +115,8 @@ class Blinkt:
         self._chip = gpiod.Chip(chip_name)
         self._data_line = self._chip.get_line(self._data_line_num)
         self._clock_line = self._chip.get_line(self._clock_line_num)
-        self._data_line.request(consumer="picocluster-claw-leds", type=gpiod.LINE_REQ_DIR_OUT, default_val=0)
-        self._clock_line.request(consumer="picocluster-claw-leds", type=gpiod.LINE_REQ_DIR_OUT, default_val=0)
+        self._data_line.request(consumer="clusterclaw-leds", type=gpiod.LINE_REQ_DIR_OUT, default_val=0)
+        self._clock_line.request(consumer="clusterclaw-leds", type=gpiod.LINE_REQ_DIR_OUT, default_val=0)
 
     def _set_pin(self, line_num, value):
         """Set a GPIO pin high or low."""

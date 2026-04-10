@@ -13,7 +13,7 @@ Tools:
   - clear_leds: Return to idle scanner animation
 
 Runs as a stdio MCP server. Connect via:
-  ThreadWeaver: /api/mcp/connect {"name": "leds", "command": "python3", "args": ["/opt/picocluster-claw/leds/mcp_server.py"]}
+  ThreadWeaver: /api/mcp/connect {"name": "leds", "command": "python3", "args": ["/opt/clusterclaw/leds/mcp_server.py"]}
 """
 
 import sys
@@ -175,7 +175,7 @@ def main():
                         "tools": {"listChanged": False},
                     },
                     "serverInfo": {
-                        "name": "picocluster-claw-leds",
+                        "name": "clusterclaw-leds",
                         "version": "1.0.0",
                     },
                 },

@@ -2,7 +2,7 @@
 """Patch ThreadWeaver server.py to support llama-server model discovery."""
 import sys
 
-server_py = sys.argv[1] if len(sys.argv) > 1 else "/opt/picocluster-claw/threadweaver/backend/server.py"
+server_py = sys.argv[1] if len(sys.argv) > 1 else "/opt/clusterclaw/threadweaver/backend/server.py"
 
 with open(server_py, "r") as f:
     content = f.read()

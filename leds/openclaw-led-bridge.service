@@ -1,11 +1,11 @@
 [Unit]
 Description=OpenClaw LED Bridge
-After=picocluster-claw-leds.service openclaw.service
-Wants=picocluster-claw-leds.service
+After=clusterclaw-leds.service openclaw.service
+Wants=clusterclaw-leds.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /opt/picocluster-claw/leds/openclaw_led_bridge.py
+ExecStart=/usr/bin/python3 /opt/clusterclaw/leds/openclaw_led_bridge.py
 Restart=always
 RestartSec=10
 User=root

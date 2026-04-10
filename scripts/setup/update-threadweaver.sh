@@ -9,7 +9,7 @@ if (( EUID != 0 )); then
   exit 1
 fi
 
-INSTALL_DIR="/opt/picocluster-claw"
+INSTALL_DIR="/opt/clusterclaw"
 FORCE="${1:-}"
 
 log() { echo "[$(date '+%H:%M:%S')] $*"; }

@@ -262,7 +262,7 @@
 ## PicoCluster Claw Cluster Power Testing (In-Case, 2026-04-04)
 
 **Configuration:** PicoCluster Claw acrylic case, 80x25mm case fan, PDU, 50W PSU
-**Nodes:** picocluster-claw (RPi5 8GB, Raspbian) + picocrush (Orin Nano Super 8GB, MAXN)
+**Nodes:** clusterclaw (RPi5 8GB, Raspbian) + clustercrush (Orin Nano Super 8GB, MAXN)
 **Measurement:** Kill-A-Watt at wall, tegrastats on Orin, vcgencmd PMIC on RPi5
 
 ### In-Case Thermal Comparison (Orin Nano)
@@ -294,8 +294,8 @@ Case fan provides significant cooling benefit. No throttling in either configura
 
 | Component | Idle | Typical (agent workload) | Peak (kitchen sink) |
 |-----------|-----:|-------------------------:|--------------------:|
-| RPi5 (picocluster-claw) | ~3W | ~4W | 7.5W |
-| Orin Nano (picocrush) | ~6W | ~10W | 20W |
+| RPi5 (clusterclaw) | ~3W | ~4W | 7.5W |
+| Orin Nano (clustercrush) | ~6W | ~10W | 20W |
 | 12V fan | ~2W | ~2W | ~2W |
 | PDU | ~1W | ~1W | ~1W |
 | PSU efficiency loss (~15%) | ~2W | ~2.5W | ~4.5W |
@@ -353,6 +353,6 @@ US average electricity: $0.16/kWh. PSU: 50W (15W headroom at peak).
 
 ## Raw Data Location
 
-- Orin out-of-case benchmarks: `/mnt/nvme/results/` on picocrush
-- Orin in-case benchmarks: `/home/picocluster/results-incase/` on picocrush
-- RPi5 benchmarks: `/home/picocluster/results/` on picocluster-claw
+- Orin out-of-case benchmarks: `/mnt/nvme/results/` on clustercrush
+- Orin in-case benchmarks: `/home/picocluster/results-incase/` on clustercrush
+- RPi5 benchmarks: `/home/picocluster/results/` on clusterclaw

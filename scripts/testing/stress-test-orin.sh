@@ -1,5 +1,5 @@
 #!/bin/bash
-# stress-test-orin.sh — PicoCluster Claw Orin Nano (picocrush) in-case thermal/power testing
+# stress-test-orin.sh — PicoCluster Claw Orin Nano (clustercrush) in-case thermal/power testing
 # Run as root on the Orin Nano
 # Compares in-case temps vs previous out-of-case benchmarks
 set -euo pipefail

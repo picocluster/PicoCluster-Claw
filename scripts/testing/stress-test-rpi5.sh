@@ -1,5 +1,5 @@
 #!/bin/bash
-# stress-test-rpi5.sh — PicoCluster Claw RPi5 (picocluster-claw) power/thermal stress testing
+# stress-test-rpi5.sh — PicoCluster Claw RPi5 (clusterclaw) power/thermal stress testing
 # Run as root on the RPi5
 set -euo pipefail
 

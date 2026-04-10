@@ -1,13 +1,13 @@
 #!/bin/bash
 # install-leds.sh — Install PicoCluster Claw LED status daemon on either node
-# Usage: sudo bash install-leds.sh picocluster-claw   (on RPi5)
-#        sudo bash install-leds.sh picocrush  (on Orin Nano)
+# Usage: sudo bash install-leds.sh clusterclaw   (on RPi5)
+#        sudo bash install-leds.sh clustercrush  (on Orin Nano)
 set -euo pipefail
 
-NODE="${1:-picocluster-claw}"
-if [[ "$NODE" != "picocluster-claw" ]]; then
-  echo "Usage: $0 picocluster-claw"
-  echo "Note: Blinkt! LEDs are only supported on RPi5 (picocluster-claw)."
+NODE="${1:-clusterclaw}"
+if [[ "$NODE" != "clusterclaw" ]]; then
+  echo "Usage: $0 clusterclaw"
+  echo "Note: Blinkt! LEDs are only supported on RPi5 (clusterclaw)."
   echo "      Orin Nano GPIO pinmux does not support the Blinkt! pin mapping."
   exit 1
 fi
@@ -18,7 +18,7 @@ if (( EUID != 0 )); then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-INSTALL_DIR="/opt/picocluster-claw/leds"
+INSTALL_DIR="/opt/clusterclaw/leds"
 
 echo "=== Installing PicoCluster Claw LED daemon ($NODE) ==="
 
@@ -28,15 +28,15 @@ apt install -y python3-gpiod 2>/dev/null || pip3 install --break-system-packages
 # Copy LED files
 mkdir -p "$INSTALL_DIR"
 cp "$SCRIPT_DIR/apa102.py" "$INSTALL_DIR/"
-cp "$SCRIPT_DIR/picocluster_claw_status.py" "$INSTALL_DIR/"
-cp "$SCRIPT_DIR/picocrush_status.py" "$INSTALL_DIR/"
+cp "$SCRIPT_DIR/clusterclaw_status.py" "$INSTALL_DIR/"
+cp "$SCRIPT_DIR/clustercrush_status.py" "$INSTALL_DIR/"
 chmod 644 "$INSTALL_DIR"/*.py
 
 # Install systemd service
-cp "$SCRIPT_DIR/picocluster-claw-leds.service" /etc/systemd/system/
+cp "$SCRIPT_DIR/clusterclaw-leds.service" /etc/systemd/system/
 systemctl daemon-reload
-systemctl enable picocluster-claw-leds.service
-systemctl start picocluster-claw-leds.service
+systemctl enable clusterclaw-leds.service
+systemctl start clusterclaw-leds.service
 
 echo "=== Done ==="
-systemctl status picocluster-claw-leds.service --no-pager | head -10
+systemctl status clusterclaw-leds.service --no-pager | head -10

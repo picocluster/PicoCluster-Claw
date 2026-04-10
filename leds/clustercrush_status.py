@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PicoCrush LED status daemon — runs on picocrush (Orin Nano).
+PicoCrush LED status daemon — runs on clustercrush (Orin Nano).
 
 Boot sequence:
   1. Rainbow sweep on startup

@@ -1,17 +1,17 @@
 #!/bin/bash
-# install-picocrush.sh — Install Ollama + models on Orin Nano
+# install-clustercrush.sh — Install Ollama + models on Orin Nano
 # Run on a golden image (after build-orin-image.sh + configure-pair.sh)
 #
 # Installs: Ollama (CUDA), pulls default model set
 # Configures: systemd service, firewall, MAXN power mode
 #
-# Usage: sudo bash install-picocrush.sh [picocluster-claw-ip]
+# Usage: sudo bash install-clustercrush.sh [clusterclaw-ip]
 set -euo pipefail
 
 CLAW_IP="${1:-10.1.10.220}"
 OLLAMA_PORT="11434"
 USER="picocluster"
-INSTALL_DIR="/opt/picocluster-claw"
+INSTALL_DIR="/opt/clusterclaw"
 
 # Models to pull (first one is the default)
 MODELS=(
@@ -34,10 +34,32 @@ fi
 log() { echo "[$(date '+%H:%M:%S')] $*"; }
 
 # ============================================================
-log "=== PicoCrush Install (picocrush / Orin Nano) ==="
+log "=== PicoCrush Install (clustercrush / Orin Nano) ==="
 log "  Allow inference from: ${CLAW_IP}"
 log "  Models: ${MODELS[*]}"
 log ""
+
+# ============================================================
+# Set hostname (so golden images don't need it baked in)
+# ============================================================
+CURRENT_HOSTNAME=$(hostname)
+if [[ "$CURRENT_HOSTNAME" != "clustercrush" ]]; then
+  log "--- Setting hostname: ${CURRENT_HOSTNAME} → clustercrush ---"
+  hostnamectl set-hostname clustercrush
+  sed -i "s/127\.0\.1\.1.*/127.0.1.1\tclustercrush/" /etc/hosts
+  if ! grep -q "clustercrush" /etc/hosts; then
+    cat >> /etc/hosts <<HOSTS
+
+# BEGIN PICOCLUSTER CLAW
+10.1.10.220  clusterclaw
+10.1.10.221  clustercrush
+# END PICOCLUSTER CLAW
+HOSTS
+  fi
+  log "  Hostname set to clustercrush"
+else
+  log "Hostname already set: clustercrush"
+fi
 
 # ============================================================
 # 0. Resize filesystem if needed
@@ -79,7 +101,7 @@ LEGACY_FILES=(
   "/home/${USER}/stopAllNodes.sh"
   "/home/${USER}/testAllNodes.sh"
   "/home/${USER}/build-orin-image.sh"
-  "/home/${USER}/install-picocrush.sh"
+  "/home/${USER}/install-clustercrush.sh"
 )
 for f in "${LEGACY_FILES[@]}"; do
   if [[ -f "$f" ]]; then
@@ -211,7 +233,7 @@ log "MAXN power mode set and persisted"
 # 5. Firewall
 # ============================================================
 log "--- Step 5/6: Firewall ---"
-ufw allow from "${CLAW_IP}" to any port "${OLLAMA_PORT}" comment "Ollama from picocluster-claw" 2>/dev/null || true
+ufw allow from "${CLAW_IP}" to any port "${OLLAMA_PORT}" comment "Ollama from clusterclaw" 2>/dev/null || true
 log "Firewall: port ${OLLAMA_PORT} open for ${CLAW_IP} only"
 
 # ============================================================
@@ -219,9 +241,9 @@ log "Firewall: port ${OLLAMA_PORT} open for ${CLAW_IP} only"
 # ============================================================
 log "--- Installing user management scripts ---"
 USER_BIN="/home/${USER}/bin"
-if [[ -d "$INSTALL_DIR/scripts/user-bin/picocrush" ]]; then
+if [[ -d "$INSTALL_DIR/scripts/user-bin/clustercrush" ]]; then
   mkdir -p "$USER_BIN"
-  cp "$INSTALL_DIR/scripts/user-bin/picocrush/"* "$USER_BIN/"
+  cp "$INSTALL_DIR/scripts/user-bin/clustercrush/"* "$USER_BIN/"
   chmod +x "$USER_BIN/"*
   chown -R "${USER}:${USER}" "$USER_BIN"
   log "  Installed: $(ls "$USER_BIN" | tr '\n' ' ')"
@@ -237,7 +259,7 @@ fi
 BASHRC
   fi
 else
-  log "  WARNING: user-bin/picocrush not found in repo — skipping"
+  log "  WARNING: user-bin/clustercrush not found in repo — skipping"
 fi
 
 # ============================================================
@@ -272,8 +294,8 @@ log "============================================"
 log "  PicoCrush Install Complete"
 log "============================================"
 log ""
-log "  Ollama: http://picocrush:${OLLAMA_PORT}"
-log "  OpenAI API: http://picocrush:${OLLAMA_PORT}/v1"
+log "  Ollama: http://clustercrush:${OLLAMA_PORT}"
+log "  OpenAI API: http://clustercrush:${OLLAMA_PORT}/v1"
 log ""
 log "  Manage models:"
 log "    ollama list              # Show installed models"

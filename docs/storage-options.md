@@ -4,15 +4,15 @@
 
 | Node | Boot Device | Storage | Size |
 |------|------------|---------|------|
-| **picocluster-claw** (RPi5) | MicroSD | OS + Docker + OpenClaw + ThreadWeaver | **128GB** |
-| **picocrush** (Orin Nano) | MicroSD | OS (JetPack) | **128GB** |
-| **picocrush** (Orin Nano) | NVMe M.2 | Models + llama.cpp | **256GB** |
+| **clusterclaw** (RPi5) | MicroSD | OS + Docker + OpenClaw + ThreadWeaver | **128GB** |
+| **clustercrush** (Orin Nano) | MicroSD | OS (JetPack) | **128GB** |
+| **clustercrush** (Orin Nano) | NVMe M.2 | Models + llama.cpp | **256GB** |
 
 Filesystem: **ext4** (default for both Raspbian and JetPack)
 
 ---
 
-## picocluster-claw (RPi5) — Storage Breakdown
+## clusterclaw (RPi5) — Storage Breakdown
 
 | Component | Size |
 |-----------|------|
@@ -39,7 +39,7 @@ Filesystem: **ext4** (default for both Raspbian and JetPack)
 
 ---
 
-## picocrush (Orin Nano) — Storage Breakdown
+## clustercrush (Orin Nano) — Storage Breakdown
 
 The Orin Nano uses **two storage devices**:
 
@@ -97,8 +97,8 @@ Only one model runs at a time on the 8GB Orin Nano (GPU VRAM limit). Use `model-
 
 ### Adding new models
 ```bash
-# On picocrush:
-sudo update-picocrush.sh add-model https://huggingface.co/.../model.gguf
+# On clustercrush:
+sudo update-clustercrush.sh add-model https://huggingface.co/.../model.gguf
 sudo model-switch new-model.gguf
 ```
 
