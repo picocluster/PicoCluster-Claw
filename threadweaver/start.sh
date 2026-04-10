@@ -76,5 +76,49 @@ cd /app/frontend
 npx vite --host 0.0.0.0 --port 5173 &
 FRONTEND_PID=$!
 
+# --------------------------------------------------------------------------
+# Prime the default LLM model in the background.
+#
+# Loads the model into GPU memory on picocrush so the first user message
+# gets a fast response instead of a 60-90 second cold start. Runs in the
+# background so it doesn't block the frontend from serving pages.
+#
+# Also exercises a tool call ("What time is it?") to validate end-to-end
+# MCP health, and signals progress via the Blinkt! LED strip.
+# --------------------------------------------------------------------------
+LED_URL="${LED_API_URL:-http://host.docker.internal:7777}"
+
+prime_model() {
+  local base_url="${LOCAL_BASE_URL:-http://picocrush:11434/v1}"
+  local model="${LOCAL_MODEL:-llama3.1:8b}"
+
+  echo "Priming ${model} on ${base_url}..."
+
+  # LED: amber pulse = "warming up"
+  curl -sf -X POST "${LED_URL}/set_status" \
+    -H "Content-Type: application/json" \
+    -d '{"color":"amber","duration":120}' > /dev/null 2>&1 || true
+
+  # Send a lightweight request that exercises tool calling.
+  # max_tokens=30 keeps it cheap; the point is loading the model weights
+  # into GPU memory, not generating a long answer.
+  PRIME_RESULT=$(curl -sf --max-time 180 "${base_url}/chat/completions" \
+    -H "Content-Type: application/json" \
+    -d "{\"model\":\"${model}\",\"messages\":[{\"role\":\"user\",\"content\":\"What time is it?\"}],\"max_tokens\":30,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"get_current_time\",\"description\":\"Get time\",\"parameters\":{\"type\":\"object\",\"properties\":{}}}}]}" 2>&1)
+
+  if echo "$PRIME_RESULT" | grep -q '"choices"'; then
+    echo "Model primed: ${model}"
+    # LED: green success burst = "ready"
+    curl -sf -X POST "${LED_URL}/pulse_success" > /dev/null 2>&1 || true
+  else
+    echo "Model prime failed — will load on first user request"
+    # LED: red flash = "prime failed" (non-fatal, model will cold-start later)
+    curl -sf -X POST "${LED_URL}/pulse_error" > /dev/null 2>&1 || true
+  fi
+}
+
+# Run in background so the frontend is immediately available
+prime_model &
+
 wait -n $BACKEND_PID $FRONTEND_PID
 kill $BACKEND_PID $FRONTEND_PID 2>/dev/null

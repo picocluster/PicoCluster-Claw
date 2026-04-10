@@ -131,12 +131,17 @@ else
   log "Ollama already installed: $(ollama --version 2>/dev/null)"
 fi
 
-# Configure Ollama to listen on all interfaces
+# Configure Ollama to listen on all interfaces.
+# OLLAMA_KEEP_ALIVE=30m keeps models loaded in GPU memory for 30 minutes after
+# the last request (default is 5m). This preserves the benefit of the startup
+# prime so the first real user message is fast even if they take a few minutes
+# to open the browser and set up the SSH tunnel.
 mkdir -p /etc/systemd/system/ollama.service.d
 cat > /etc/systemd/system/ollama.service.d/override.conf <<EOF
 [Service]
 Environment="OLLAMA_HOST=0.0.0.0:${OLLAMA_PORT}"
 Environment="OLLAMA_MODELS=/mnt/nvme/ollama/models"
+Environment="OLLAMA_KEEP_ALIVE=30m"
 EOF
 
 # Create model storage on NVMe if available
