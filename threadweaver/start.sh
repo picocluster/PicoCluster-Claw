@@ -16,18 +16,49 @@ cd /app/backend
 /app/venv/bin/python server.py &
 BACKEND_PID=$!
 
-sleep 3
+# Wait for the backend API to actually accept connections before trying to
+# connect MCP servers. On cold Docker starts (reboot, first deploy) the
+# `sleep 3` that was here before wasn't always enough — the backend process
+# was running but uvicorn hadn't bound the socket yet, so every connect_mcp
+# call got "connection refused" and silently failed.
+echo "Waiting for backend API..."
+for i in $(seq 1 30); do
+  if curl -sf --max-time 2 http://127.0.0.1:8000/api/settings > /dev/null 2>&1; then
+    echo "Backend ready (attempt $i)"
+    break
+  fi
+  if [ "$i" -eq 30 ]; then
+    echo "WARNING: Backend not ready after 30 attempts — MCP servers may fail to connect"
+  fi
+  sleep 1
+done
 
-# Auto-connect all PicoClaw MCP servers
+# Auto-connect all PicoClaw MCP servers with retry.
+# Each server gets up to 3 attempts with a 2-second pause between failures.
 connect_mcp() {
   local name="$1"
   local script="$2"
-  if [ -f "$script" ]; then
-    curl -sf -X POST http://127.0.0.1:8000/api/mcp/connect \
+  local max_retries=3
+  local attempt=1
+
+  if [ ! -f "$script" ]; then
+    echo "MCP skip: ${name} (${script} not found)"
+    return
+  fi
+
+  while [ "$attempt" -le "$max_retries" ]; do
+    if curl -sf -X POST http://127.0.0.1:8000/api/mcp/connect \
       -H "Content-Type: application/json" \
       -d "{\"name\":\"${name}\",\"command\":\"python3\",\"args\":[\"${script}\"]}" \
-      > /dev/null && echo "MCP connected: ${name}" || echo "MCP failed: ${name}"
-  fi
+      > /dev/null 2>&1; then
+      echo "MCP connected: ${name}"
+      return
+    fi
+    echo "MCP retry ${attempt}/${max_retries}: ${name}"
+    attempt=$((attempt + 1))
+    sleep 2
+  done
+  echo "MCP FAILED: ${name} (gave up after ${max_retries} attempts)"
 }
 
 connect_mcp "leds" "/opt/mcp/led_server.py"
@@ -35,6 +66,10 @@ connect_mcp "system" "/opt/mcp/servers/system_info_server.py"
 connect_mcp "picocrush" "/opt/mcp/servers/picocrush_server.py"
 connect_mcp "time" "/opt/mcp/servers/time_server.py"
 connect_mcp "files" "/opt/mcp/servers/files_server.py"
+
+# Verify all servers connected
+TOOL_COUNT=$(curl -sf http://127.0.0.1:8000/api/tools 2>/dev/null | python3 -c "import json,sys; print(len(json.load(sys.stdin)))" 2>/dev/null || echo "0")
+echo "MCP setup complete: ${TOOL_COUNT} tools available"
 
 # Start frontend
 cd /app/frontend
