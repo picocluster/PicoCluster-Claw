@@ -83,8 +83,11 @@ FRONTEND_PID=$!
 # gets a fast response instead of a 60-90 second cold start. Runs in the
 # background so it doesn't block the frontend from serving pages.
 #
-# Also exercises a tool call ("What time is it?") to validate end-to-end
-# MCP health, and signals progress via the Blinkt! LED strip.
+# Plain text prime only (no tools) — sending tool schemas during prime was
+# making the model "tool-happy" on subsequent requests, and the prime
+# doesn't need to validate tool calling, just load the weights.
+#
+# LED sequence: amber → (prime running) → green pulse → clear (back to scanner)
 # --------------------------------------------------------------------------
 LED_URL="${LED_API_URL:-http://host.docker.internal:7777}"
 
@@ -94,26 +97,28 @@ prime_model() {
 
   echo "Priming ${model} on ${base_url}..."
 
-  # LED: amber pulse = "warming up"
+  # LED: amber = "warming up"
   curl -sf -X POST "${LED_URL}/set_status" \
     -H "Content-Type: application/json" \
     -d '{"color":"amber","duration":120}' > /dev/null 2>&1 || true
 
-  # Send a lightweight request that exercises tool calling.
-  # max_tokens=30 keeps it cheap; the point is loading the model weights
-  # into GPU memory, not generating a long answer.
+  # Simple text-only request to load the model into GPU memory.
+  # No tools, no system prompt — just enough to force Ollama to load weights.
   PRIME_RESULT=$(curl -sf --max-time 180 "${base_url}/chat/completions" \
     -H "Content-Type: application/json" \
-    -d "{\"model\":\"${model}\",\"messages\":[{\"role\":\"user\",\"content\":\"What time is it?\"}],\"max_tokens\":30,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"get_current_time\",\"description\":\"Get time\",\"parameters\":{\"type\":\"object\",\"properties\":{}}}}]}" 2>&1)
+    -d "{\"model\":\"${model}\",\"messages\":[{\"role\":\"user\",\"content\":\"Say OK\"}],\"max_tokens\":5}" 2>&1)
 
   if echo "$PRIME_RESULT" | grep -q '"choices"'; then
     echo "Model primed: ${model}"
-    # LED: green success burst = "ready"
+    # LED: green success burst then back to idle scanner
     curl -sf -X POST "${LED_URL}/pulse_success" > /dev/null 2>&1 || true
+    sleep 3
+    curl -sf -X POST "${LED_URL}/clear" > /dev/null 2>&1 || true
   else
     echo "Model prime failed — will load on first user request"
-    # LED: red flash = "prime failed" (non-fatal, model will cold-start later)
     curl -sf -X POST "${LED_URL}/pulse_error" > /dev/null 2>&1 || true
+    sleep 3
+    curl -sf -X POST "${LED_URL}/clear" > /dev/null 2>&1 || true
   fi
 }
 
