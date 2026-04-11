@@ -1,0 +1,26 @@
+# PicoCluster Claw — Mac Mini Solo override
+# Usage: docker compose -f docker-compose.yml -f docker-compose.mac.yml up -d
+#
+# Ollama runs natively on macOS (Metal GPU). Docker containers connect
+# to it via host.docker.internal. No clustercrush node, no GPIO LEDs.
+
+services:
+  threadweaver:
+    environment:
+      - LLM_PROVIDER=local
+      - LOCAL_BASE_URL=http://host.docker.internal:11434/v1
+      - LOCAL_MODEL=${DEFAULT_MODEL:-llama3.2:3b}
+      - LED_API_URL=http://host.docker.internal:7777
+    extra_hosts:
+      - "clustercrush:host-gateway"
+
+  openclaw:
+    environment:
+      - LOCAL_BASE_URL=http://host.docker.internal:11434/v1
+      - LOCAL_MODEL=${DEFAULT_MODEL:-llama3.2:3b}
+    extra_hosts:
+      - "clustercrush:host-gateway"
+
+  portal:
+    extra_hosts:
+      - "clustercrush:host-gateway"
