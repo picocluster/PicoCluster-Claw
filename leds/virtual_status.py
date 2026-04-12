@@ -88,6 +88,87 @@ def set_state(**kwargs):
             _state["color_name"] = COLOR_NAMES[_state["color"]]
 
 
+def _run(cmd):
+    """Run a shell command and return stdout."""
+    try:
+        r = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=10)
+        return r.stdout.strip()
+    except Exception as e:
+        return f"error: {e}"
+
+
+def _handle_sysinfo(metric):
+    """Return macOS system info for the given metric."""
+    import re
+
+    if metric == "cpu":
+        cores = _run("sysctl -n hw.ncpu")
+        load = _run("sysctl -n vm.loadavg").strip("{ }")
+        cpu_brand = _run("sysctl -n machdep.cpu.brand_string")
+        return f"CPU: {cpu_brand}\nCores: {cores}\nLoad avg: {load}"
+
+    elif metric == "memory":
+        try:
+            page_size = int(_run("sysctl -n hw.pagesize"))
+            total = int(_run("sysctl -n hw.memsize"))
+            vm = _run("vm_stat")
+            pages = {}
+            for line in vm.split("\n"):
+                m = re.match(r'(.+?):\s+(\d+)', line)
+                if m:
+                    pages[m.group(1).strip().lower()] = int(m.group(2))
+            active = pages.get("pages active", 0) * page_size
+            wired = pages.get("pages wired down", 0) * page_size
+            compressed = pages.get("pages occupied by compressor", 0) * page_size
+            used = active + wired + compressed
+            avail = total - used
+            def fmt(b):
+                gb = b / (1024**3)
+                return f"{gb:.1f} GB" if gb >= 1 else f"{b / (1024**2):.0f} MB"
+            return f"Total: {fmt(total)}, Used: {fmt(used)}, Available: {fmt(avail)}"
+        except Exception as e:
+            return f"error: {e}"
+
+    elif metric == "disk":
+        return _run("df -h / | tail -1")
+
+    elif metric == "temperature":
+        # Try powermetrics (needs sudo)
+        try:
+            r = subprocess.run(
+                ["sudo", "-n", "powermetrics", "--samplers", "smc", "-n", "1", "-i", "1"],
+                capture_output=True, text=True, timeout=5
+            )
+            if r.returncode == 0:
+                for line in r.stdout.split("\n"):
+                    if "die temperature" in line.lower() or "cpu die" in line.lower():
+                        m = re.search(r'(\d+\.?\d*)\s*C', line)
+                        if m:
+                            c = float(m.group(1))
+                            return f"CPU temperature: {c:.1f}C ({c * 9/5 + 32:.1f}F)"
+        except Exception:
+            pass
+        return "CPU temperature: not available (requires sudo or osx-cpu-temp)"
+
+    elif metric == "uptime":
+        return _run("uptime")
+
+    elif metric == "network":
+        output = _run("ifconfig")
+        result = []
+        current_iface = None
+        for line in output.split("\n"):
+            if not line.startswith("\t") and ":" in line:
+                current_iface = line.split(":")[0]
+            elif "inet " in line and current_iface:
+                ip = line.strip().split()[1]
+                if not ip.startswith("127."):
+                    result.append(f"{current_iface}: {ip}")
+        return "\n".join(result) if result else "No active network interfaces"
+
+    return f"Unknown metric: {metric}"
+
+
 def macos_notify(title, message):
     """Send a macOS notification (non-blocking)."""
     if not _notify_enabled:
@@ -109,7 +190,6 @@ class VirtualLEDHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/status":
             state = get_state()
-            # Serialize color as name for JSON
             resp = {
                 "mode": state["mode"],
                 "color": state.get("color_name"),
@@ -122,6 +202,17 @@ class VirtualLEDHandler(BaseHTTPRequestHandler):
             self._respond(200, resp)
         elif self.path == "/health":
             self._respond(200, {"status": "ok", "type": "virtual"})
+        elif self.path.startswith("/sysinfo/"):
+            # System info endpoints — exposed so Docker containers can query
+            # macOS host stats via host.docker.internal:7777/sysinfo/{metric}
+            metric = self.path.split("/sysinfo/", 1)[1]
+            result = _handle_sysinfo(metric)
+            self._respond(200, {"metric": metric, "result": result})
+        elif self.path == "/sysinfo":
+            self._respond(200, {
+                "metrics": ["cpu", "memory", "disk", "temperature", "uptime", "network"],
+                "platform": "darwin",
+            })
         else:
             self._respond(404, {"error": "unknown endpoint"})
 

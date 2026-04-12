@@ -62,7 +62,15 @@ connect_mcp() {
 }
 
 connect_mcp "leds" "/opt/mcp/led_server.py"
-connect_mcp "system" "/opt/mcp/servers/system_info_server.py"
+
+# Use proxy system info server on Mac Solo (queries macOS host via HTTP)
+# or the native Linux server on the cluster variant
+if [ "${PICOCLUSTER_PLATFORM}" = "mac-solo" ]; then
+  connect_mcp "system" "/opt/mcp/servers/system_info_server_proxy.py"
+else
+  connect_mcp "system" "/opt/mcp/servers/system_info_server.py"
+fi
+
 connect_mcp "clustercrush" "/opt/mcp/servers/clustercrush_server.py"
 connect_mcp "time" "/opt/mcp/servers/time_server.py"
 connect_mcp "files" "/opt/mcp/servers/files_server.py"
