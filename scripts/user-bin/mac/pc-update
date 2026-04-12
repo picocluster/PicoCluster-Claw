@@ -1,0 +1,25 @@
+#!/bin/bash
+# pc-update — Update PicoCluster Claw (Mac Solo)
+set -euo pipefail
+
+INSTALL_DIR="${HOME}/picocluster-claw"
+cd "$INSTALL_DIR"
+
+echo "=== Updating PicoCluster Claw ==="
+echo ""
+echo "--- Pull latest ---"
+git pull --ff-only 2>&1 | tail -5
+echo ""
+echo "--- Rebuild containers ---"
+docker compose -f docker-compose.yml -f docker-compose.mac.yml build --pull 2>&1 | tail -10
+echo ""
+echo "--- Restart ---"
+docker compose -f docker-compose.yml -f docker-compose.mac.yml up -d 2>&1 | tail -10
+echo ""
+echo "--- Update Ollama models ---"
+for model in $(ollama list 2>/dev/null | tail -n +2 | awk '{print $1}'); do
+  echo "  Pulling $model..."
+  ollama pull "$model" 2>&1 | tail -1
+done
+echo ""
+echo "Update complete."

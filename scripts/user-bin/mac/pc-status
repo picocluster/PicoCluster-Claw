@@ -1,0 +1,48 @@
+#!/bin/bash
+# pc-status — Show PicoCluster Claw status (Mac Solo)
+set -euo pipefail
+
+INSTALL_DIR="${HOME}/picocluster-claw"
+
+echo "=== PicoCluster Claw Status (Mac Solo) ==="
+echo ""
+echo "Docker containers:"
+docker ps --format "  {{.Names}}: {{.Status}}" 2>/dev/null || echo "  Docker not running"
+echo ""
+
+echo "Services:"
+# Ollama
+if curl -sf --max-time 3 http://localhost:11434/api/tags >/dev/null 2>&1; then
+  echo "  Ollama: running"
+else
+  echo "  Ollama: not running"
+fi
+# Virtual LED daemon
+if curl -sf --max-time 2 http://localhost:7777/health >/dev/null 2>&1; then
+  echo "  Virtual LEDs: running"
+else
+  echo "  Virtual LEDs: not running"
+fi
+echo ""
+
+echo "Health checks:"
+check_http() {
+  local name="$1" url="$2"
+  if curl -sf --max-time 3 "$url" >/dev/null 2>&1; then
+    echo "  $name: OK"
+  else
+    echo "  $name: FAIL"
+  fi
+}
+check_http "ThreadWeaver" "http://127.0.0.1:8000/api/settings"
+check_http "OpenClaw    " "http://127.0.0.1:18789/__openclaw__/health"
+check_http "Portal      " "http://localhost:80/"
+check_http "Ollama      " "http://localhost:11434/api/tags"
+echo ""
+
+echo "Models:"
+ollama list 2>/dev/null | tail -n +2 | awk '{printf "  %s (%s)\n", $1, $3$4}' || echo "  (could not list)"
+echo ""
+
+echo "Disk: $(df -h / | awk 'NR==2 {printf "%s used / %s total (%s used)", $3, $2, $5}')"
+echo "Load: $(sysctl -n vm.loadavg 2>/dev/null | tr -d '{}')"

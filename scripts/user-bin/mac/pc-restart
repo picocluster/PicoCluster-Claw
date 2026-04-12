@@ -1,0 +1,28 @@
+#!/bin/bash
+# pc-restart — Restart PicoCluster Claw services (Mac Solo)
+set -euo pipefail
+
+INSTALL_DIR="${HOME}/picocluster-claw"
+TARGET="${1:-all}"
+
+case "$TARGET" in
+  all)
+    echo "Restarting all services..."
+    cd "$INSTALL_DIR"
+    docker compose -f docker-compose.yml -f docker-compose.mac.yml restart
+    brew services restart ollama 2>/dev/null || true
+    echo "Done."
+    ;;
+  threadweaver)
+    docker restart threadweaver
+    ;;
+  openclaw)
+    docker restart openclaw
+    ;;
+  ollama)
+    brew services restart ollama
+    ;;
+  *)
+    echo "Usage: pc-restart [all|threadweaver|openclaw|ollama]"
+    ;;
+esac

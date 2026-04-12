@@ -1,0 +1,31 @@
+#!/bin/bash
+# pc-led — Control virtual LEDs (Mac Solo)
+# Usage:
+#   pc-led color <name> [duration]
+#   pc-led flash <name> [duration]
+#   pc-led progress <percent>
+#   pc-led success
+#   pc-led error
+#   pc-led clear
+#   pc-led status
+set -euo pipefail
+
+API="http://127.0.0.1:7777"
+CMD="${1:-}"
+[[ -z "$CMD" ]] && { sed -n '2,10p' "$0"; exit 1; }
+
+call() {
+  curl -sf -X POST "$API/$1" -H "Content-Type: application/json" -d "$2"
+  echo ""
+}
+
+case "$CMD" in
+  color)   call "set_status" "{\"color\":\"${2:-blue}\",\"duration\":${3:-15}}" ;;
+  flash)   call "flash" "{\"color\":\"${2:-red}\",\"duration\":${3:-15}}" ;;
+  progress) call "set_progress" "{\"percent\":${2:-0},\"color\":\"${3:-green}\"}" ;;
+  success) call "pulse_success" "{}" ;;
+  error)   call "pulse_error" "{}" ;;
+  clear|reset) call "clear" "{}" ;;
+  status)  curl -sf "$API/status" | python3 -m json.tool 2>/dev/null || echo "Virtual LED daemon not running" ;;
+  *)       sed -n '2,10p' "$0" ;;
+esac
