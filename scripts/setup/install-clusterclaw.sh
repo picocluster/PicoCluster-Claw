@@ -186,6 +186,16 @@ mkdir -p "$FILES_DIR/openclaw" "$FILES_DIR/threadweaver"
 chown -R "${USER}:${USER}" "$FILES_DIR"
 log "File storage: $FILES_DIR (openclaw/, threadweaver/)"
 
+# Verify PKI files exist before starting Caddy — it fails silently without them
+PKI_DIR="/opt/picocluster/pki"
+for cert in ca.crt claw.local.crt claw.local.key threadweaver.local.crt threadweaver.local.key; do
+  if [[ ! -f "$PKI_DIR/$cert" ]]; then
+    log "ERROR: PKI file missing: $PKI_DIR/$cert — re-running generate-pki.sh"
+    bash "$INSTALL_DIR/scripts/generate-pki.sh"
+    break
+  fi
+done
+
 log "Building containers (this takes a few minutes on first run)..."
 docker compose build 2>&1 | tail -10
 docker compose up -d 2>&1
