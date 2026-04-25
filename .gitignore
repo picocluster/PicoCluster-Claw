@@ -26,6 +26,10 @@ node_modules/
 *.img.gz
 *.img.zst
 
+# Compiled binaries
+mcp/agentstategraph-mcp
+mcp/agentstategraph-mcp-*
+
 # Secrets
 *.key
 *.pem
