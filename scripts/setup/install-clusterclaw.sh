@@ -2,23 +2,22 @@
 # install-clusterclaw.sh — Install full PicoCluster Claw stack on RPi5 via Docker
 # Run on a golden image (after build-rpi5-image.sh + configure-pair.sh)
 #
-# Installs: OpenClaw (Docker), ThreadWeaver (Docker), Blinkt! LEDs (native)
+# Installs: OpenClaw (Docker), ThreadWeaver (Docker), Blinkt! LEDs (native),
+#           Avahi mDNS (claw.local, threadweaver.local), Local CA + TLS (Caddy)
 #
-# Usage: sudo bash install-clusterclaw.sh [clustercrush-ip]
+# Usage: sudo bash install-clusterclaw.sh [clustercrush-ip] [default-model] [openclaw-token]
 set -euo pipefail
 
 CRUSH_IP="${1:-10.1.10.221}"
-# Ollama tag (not a llamafile .gguf filename). Must be a model that supports
-# tool calling since ThreadWeaver sends MCP tool schemas on every request.
-# llama3.1:8b is the default because it reliably chains tool calls across
-# multi-turn conversations; the smaller llama3.2:3b works for 1-2 calls but
-# degrades on longer tool-heavy threads. Other tool-capable models:
-# phi3.5:3.8b, qwen2.5:3b, deepseek-r1:7b. Gemma3 and vision models do NOT
-# support tool calling (ThreadWeaver auto-falls back to chat-only for those).
+# Ollama model tag — must support tool calling for ThreadWeaver MCP.
+# llama3.1:8b is recommended; llama3.2:3b works for simple tasks.
+# Other tool-capable models: phi3.5:3.8b, qwen2.5:3b, deepseek-r1:7b.
+# Gemma3 and vision models do NOT support tool calling.
 DEFAULT_MODEL="${2:-llama3.1:8b}"
 OPENCLAW_TOKEN="${3:-picocluster-token}"
 INSTALL_DIR="/opt/clusterclaw"
 LED_DIR="$INSTALL_DIR/leds"
+PKI_DIR="/opt/picocluster/pki"
 USER="picocluster"
 
 if (( EUID != 0 )); then
@@ -34,27 +33,31 @@ log "  Model: ${DEFAULT_MODEL}"
 log ""
 
 # ============================================================
-# Set hostname (so golden images don't need it baked in)
+# Set hostname + /etc/hosts aliases
 # ============================================================
-CURRENT_HOSTNAME=$(hostname)
-if [[ "$CURRENT_HOSTNAME" != "clusterclaw" ]]; then
-  log "--- Setting hostname: ${CURRENT_HOSTNAME} → clusterclaw ---"
-  hostnamectl set-hostname clusterclaw
-  sed -i "s/127\.0\.1\.1.*/127.0.1.1\tclusterclaw/" /etc/hosts
-  # Add cluster entries if not present
-  if ! grep -q "clusterclaw" /etc/hosts; then
-    cat >> /etc/hosts <<HOSTS
+log "--- Hostname + /etc/hosts ---"
+hostnamectl set-hostname clusterclaw
+sed -i "s/127\.0\.1\.1.*/127.0.1.1\tclusterclaw/" /etc/hosts
+
+# Remove ALL legacy PicoCluster managed blocks (old format, new format)
+sed -i '/# BEGIN PICOCLUSTER/,/# END PICOCLUSTER/d' /etc/hosts
+
+# Remove stale pcN entries (pc0–pc9, pc10–pc99) from old multi-node images
+sed -i '/\bpc[0-9]\{1,2\}\b/d' /etc/hosts
+
+# Remove stale clusterclaw/clustercrush bare lines (we'll rewrite them cleanly)
+sed -i '/\bclusterclaw\b/d' /etc/hosts
+sed -i '/\bclustercrush\b/d' /etc/hosts
+
+# Write clean cluster host block with short aliases
+cat >> /etc/hosts <<HOSTS
 
 # BEGIN PICOCLUSTER CLAW
-10.1.10.220  clusterclaw
-10.1.10.221  clustercrush
+10.1.10.220  clusterclaw claw
+10.1.10.221  clustercrush crush
 # END PICOCLUSTER CLAW
 HOSTS
-  fi
-  log "  Hostname set to clusterclaw"
-else
-  log "Hostname already set: clusterclaw"
-fi
+log "Hostname: clusterclaw (alias: claw)"
 
 # ============================================================
 # 0. Resize filesystem if needed
@@ -65,7 +68,6 @@ DISK_SIZE=$(lsblk -b -n -o SIZE "$DISK" 2>/dev/null | head -1)
 PART_SIZE=$(lsblk -b -n -o SIZE "$PARTDEV" 2>/dev/null | head -1)
 
 if [[ -n "$DISK_SIZE" && -n "$PART_SIZE" ]]; then
-  # Resize if partition is less than 90% of disk
   THRESHOLD=$(( DISK_SIZE * 90 / 100 ))
   if (( PART_SIZE < THRESHOLD )); then
     log "--- Step 0: Resizing filesystem ---"
@@ -106,20 +108,14 @@ LEGACY_FILES=(
   "/home/${USER}/install-clusterclaw.sh"
 )
 for f in "${LEGACY_FILES[@]}"; do
-  if [[ -f "$f" ]]; then
-    rm -f "$f"
-    log "  Removed $f"
-  fi
+  [[ -f "$f" ]] && rm -f "$f" && log "  Removed $f"
 done
-if [[ -d "/home/${USER}/.ansible" ]]; then
-  rm -rf "/home/${USER}/.ansible"
-  log "  Removed .ansible/"
-fi
+[[ -d "/home/${USER}/.ansible" ]] && rm -rf "/home/${USER}/.ansible" && log "  Removed .ansible/"
 
 # ============================================================
 # 1. Docker
 # ============================================================
-log "--- Step 1/5: Docker ---"
+log "--- Step 1/6: Docker ---"
 if ! command -v docker &>/dev/null; then
   curl -fsSL https://get.docker.com | sh
   usermod -aG docker "$USER"
@@ -130,24 +126,54 @@ else
 fi
 
 # ============================================================
-# 2. Clone PicoCluster Claw repo (for Dockerfiles + compose)
+# 2. Clone PicoCluster Claw repo
 # ============================================================
-log "--- Step 2/5: PicoCluster Claw repo ---"
+log "--- Step 2/6: PicoCluster Claw repo ---"
 if [[ ! -d "$INSTALL_DIR/.git" ]]; then
   git clone --depth 1 https://github.com/picocluster/PicoCluster-Claw.git "$INSTALL_DIR"
-  log "PicoCluster Claw repo cloned"
+  log "Repo cloned to $INSTALL_DIR"
 else
   cd "$INSTALL_DIR" && git pull --ff-only 2>&1 | tail -3
-  log "PicoCluster Claw repo updated"
+  log "Repo updated"
 fi
 
 # ============================================================
-# 3. Build and start Docker containers
+# 3. Avahi mDNS — claw.local + threadweaver.local
 # ============================================================
-log "--- Step 3/5: Docker build + start ---"
+log "--- Step 3/6: Avahi mDNS ---"
+
+# Install avahi if golden image doesn't have it (older images removed it)
+if ! command -v avahi-daemon &>/dev/null; then
+  apt-get install -y avahi-daemon avahi-utils libnss-mdns
+  log "Avahi installed"
+else
+  log "Avahi already installed"
+fi
+
+# Announce claw.local + threadweaver.local as aliases for this machine's IP
+CLAW_IP=$(ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '^127\.' | head -1)
+cat > /etc/avahi/hosts <<AVAHI
+# PicoClaw mDNS aliases — managed by install-clusterclaw.sh
+${CLAW_IP}  claw.local
+${CLAW_IP}  threadweaver.local
+AVAHI
+
+systemctl enable avahi-daemon
+systemctl restart avahi-daemon
+log "mDNS: clusterclaw.local, claw.local, threadweaver.local → ${CLAW_IP}"
+
+# ============================================================
+# 4. PKI — Local CA + TLS certs for claw.local, threadweaver.local
+# ============================================================
+log "--- Step 4/6: PKI / TLS ---"
+bash "$INSTALL_DIR/scripts/generate-pki.sh"
+
+# ============================================================
+# 5. Build and start Docker containers
+# ============================================================
+log "--- Step 5/6: Docker build + start ---"
 cd "$INSTALL_DIR"
 
-# Write .env for docker-compose
 cat > "$INSTALL_DIR/.env" <<EOF
 CRUSH_IP=${CRUSH_IP}
 DEFAULT_MODEL=${DEFAULT_MODEL}
@@ -160,10 +186,11 @@ docker compose up -d 2>&1
 log "Containers started"
 
 # ============================================================
-# 4. Blinkt! LEDs (native — needs GPIO access)
+# 6. Blinkt! LEDs (native — needs GPIO access)
 # ============================================================
-log "--- Step 4/5: Blinkt! LEDs ---"
-apt install -y python3-gpiod 2>/dev/null || pip3 install --break-system-packages gpiod 2>/dev/null || true
+log "--- Step 6/6: Blinkt! LEDs ---"
+apt-get install -y python3-gpiod 2>/dev/null || \
+  pip3 install --break-system-packages gpiod 2>/dev/null || true
 
 mkdir -p "$LED_DIR"
 cp "$INSTALL_DIR/leds/apa102.py" "$LED_DIR/" 2>/dev/null || true
@@ -176,57 +203,50 @@ if [[ -f "$INSTALL_DIR/leds/clusterclaw-leds.service" ]]; then
   systemctl start clusterclaw-leds
   log "Blinkt! LED daemon started"
 else
-  log "Blinkt! LED service file not found — skipping"
+  log "LED service file not found — skipping"
 fi
 
 # ============================================================
-# 5. Firewall
+# Firewall
 # ============================================================
-log "--- Step 5/5: Firewall ---"
-ufw allow 80/tcp comment "PicoCluster Claw Portal" 2>/dev/null || true
-ufw allow 7777/tcp comment "LED API" 2>/dev/null || true
-ufw allow 8888/tcp comment "Shutdown API" 2>/dev/null || true
+log "--- Firewall ---"
+ufw allow 80/tcp   comment "PicoClaw portal + CA cert download"  2>/dev/null || true
+ufw allow 443/tcp  comment "PicoClaw HTTPS (claw.local, threadweaver.local)" 2>/dev/null || true
+ufw allow 7777/tcp comment "LED API"                              2>/dev/null || true
+ufw allow 8888/tcp comment "Shutdown API"                         2>/dev/null || true
 
-# Install host-based shutdown API (not in Docker — needs system shutdown access)
+# Block internal ports — all raw HTTP is localhost-only via Docker
+ufw deny 18789/tcp comment "OpenClaw raw HTTP (loopback only)"   2>/dev/null || true
+ufw deny 18791/tcp comment "OpenClaw control"                    2>/dev/null || true
+ufw deny 18792/tcp comment "OpenClaw CDP relay"                  2>/dev/null || true
+ufw deny 5173/tcp  comment "ThreadWeaver UI (loopback only)"     2>/dev/null || true
+ufw deny 8000/tcp  comment "ThreadWeaver API (loopback only)"    2>/dev/null || true
+
+# Remove stale SSH-tunnel-era rules (18790, 5174 no longer needed — LAN uses HTTPS)
+ufw delete allow 18790/tcp 2>/dev/null || true
+ufw delete allow 5174/tcp  2>/dev/null || true
+
 if [[ -f "$INSTALL_DIR/portal/shutdown-api.service" ]]; then
   cp "$INSTALL_DIR/portal/shutdown-api.service" /etc/systemd/system/
-  echo "picocluster ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/reboot, /usr/sbin/shutdown, /usr/sbin/reboot" > /etc/sudoers.d/clusterclaw-shutdown
+  echo "picocluster ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/reboot, /usr/sbin/shutdown, /usr/sbin/reboot" \
+    > /etc/sudoers.d/clusterclaw-shutdown
   chmod 440 /etc/sudoers.d/clusterclaw-shutdown
   systemctl daemon-reload
   systemctl enable shutdown-api
   systemctl start shutdown-api
   log "Shutdown API installed"
 fi
-ufw allow 18790/tcp comment "OpenClaw Dashboard (HTTPS via Caddy)" 2>/dev/null || true
-ufw allow 5174/tcp comment "ThreadWeaver HTTPS (via Caddy)" 2>/dev/null || true
-ufw deny 18791/tcp comment "OpenClaw control" 2>/dev/null || true
-ufw deny 18792/tcp comment "OpenClaw CDP relay" 2>/dev/null || true
-# All raw HTTP ports below are bound to 127.0.0.1 only via docker-compose;
-# LAN access goes through Caddy HTTPS (5174, 18790) via SSH tunnel.
-# Explicitly delete stale ALLOW rules and replace with DENY so the posture is
-# self-documenting and idempotent across reinstalls.
-for port in 5173 8000 18789; do
-  ufw delete allow "${port}/tcp" 2>/dev/null || true
-done
-ufw deny 18789/tcp comment "OpenClaw raw HTTP (localhost-only, tunnel via 18790)" 2>/dev/null || true
-ufw deny 5173/tcp  comment "ThreadWeaver UI (localhost-only, tunnel via 5174)" 2>/dev/null || true
-ufw deny 8000/tcp  comment "ThreadWeaver API (localhost-only)" 2>/dev/null || true
 log "Firewall configured"
 
 # ============================================================
-# Install user management scripts
+# User management scripts
 # ============================================================
-log "--- Installing user management scripts ---"
 USER_BIN="/home/${USER}/bin"
 if [[ -d "$INSTALL_DIR/scripts/user-bin/clusterclaw" ]]; then
   mkdir -p "$USER_BIN"
   cp "$INSTALL_DIR/scripts/user-bin/clusterclaw/"* "$USER_BIN/"
   chmod +x "$USER_BIN/"*
   chown -R "${USER}:${USER}" "$USER_BIN"
-  log "  Installed: $(ls "$USER_BIN" | tr '\n' ' ')"
-
-  # Ensure ~/bin is in PATH for the picocluster user (Raspbian default .profile handles this,
-  # but only if ~/bin exists at login time — we just created it, so force-source it)
   if ! grep -q "HOME/bin" "/home/${USER}/.bashrc" 2>/dev/null; then
     cat >> "/home/${USER}/.bashrc" <<'BASHRC'
 
@@ -236,8 +256,7 @@ if [ -d "$HOME/bin" ] ; then
 fi
 BASHRC
   fi
-else
-  log "  WARNING: user-bin/clusterclaw not found in repo — skipping"
+  log "User scripts installed: $(ls "$USER_BIN" | tr '\n' ' ')"
 fi
 
 # ============================================================
@@ -250,22 +269,30 @@ sleep 10
 log "=== Service Status ==="
 docker compose ps 2>/dev/null
 echo ""
-log "  ThreadWeaver:  $(curl -sf --max-time 5 http://127.0.0.1:8000/api/settings >/dev/null 2>&1 && echo 'OK' || echo 'STARTING')"
+log "  ThreadWeaver:  $(curl -sf --max-time 5 http://127.0.0.1:8000/api/settings  >/dev/null 2>&1 && echo 'OK' || echo 'STARTING')"
 log "  OpenClaw:      $(curl -sf --max-time 5 http://127.0.0.1:18789/__openclaw__/health >/dev/null 2>&1 && echo 'OK' || echo 'STARTING')"
 log "  Blinkt! LEDs:  $(systemctl is-active clusterclaw-leds 2>/dev/null || echo 'n/a')"
 log "  Ollama:        $(curl -sf --max-time 5 http://${CRUSH_IP}:11434/api/tags >/dev/null 2>&1 && echo 'OK' || echo 'NOT REACHABLE')"
+log "  Avahi:         $(systemctl is-active avahi-daemon 2>/dev/null)"
+log "  CA cert:       $PKI_DIR/ca.crt $([ -f "$PKI_DIR/ca.crt" ] && echo '(exists)' || echo 'MISSING')"
 
 log ""
 log "============================================"
 log "  PicoCluster Claw Install Complete"
 log "============================================"
 log ""
-log "  ThreadWeaver:  https://localhost:5174   (via SSH tunnel)"
-log "  OpenClaw:      https://localhost:18790  (via SSH tunnel, token: ${OPENCLAW_TOKEN})"
+log "  Step 1 — Install CA cert on each client device:"
+log "    Open in browser:  http://clusterclaw.local/ca.crt"
+log "    (or by IP):       http://${CLAW_IP}/ca.crt"
 log ""
-log "  SSH tunnel command (run on your computer):"
+log "  Step 2 — Access services (after CA cert installed):"
+log "    OpenClaw:      https://claw.local"
+log "    ThreadWeaver:  https://threadweaver.local"
+log ""
+log "  SSH tunnel (fallback, no CA cert needed):"
 log "    ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@clusterclaw"
+log "    Then: https://localhost:18790  https://localhost:5174"
 log ""
-log "  Manage:  cd $INSTALL_DIR && docker compose [up -d|down|logs|ps]"
-log "  Update:  cd $INSTALL_DIR && git pull && docker compose build --pull && docker compose up -d"
+log "  Manage: cd $INSTALL_DIR && docker compose [up -d|down|logs|ps]"
+log "  Update: cd $INSTALL_DIR && git pull && docker compose build --pull && docker compose up -d"
 log "============================================"

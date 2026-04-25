@@ -38,10 +38,7 @@
       -webkit-text-fill-color: transparent;
       margin-bottom: 0.5rem;
     }
-    header p {
-      color: var(--dim);
-      font-size: 1.1rem;
-    }
+    header p { color: var(--dim); font-size: 1.1rem; }
 
     .status-bar {
       display: flex;
@@ -66,6 +63,105 @@
     .dot.red { background: var(--red); }
     .dot.gray { background: #555; }
 
+    /* First-time setup banner */
+    .setup-banner {
+      background: #1a1200;
+      border: 1px solid var(--amber);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .setup-banner h2 {
+      font-size: 1.1rem;
+      color: var(--amber);
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .setup-banner .subtitle {
+      color: var(--dim);
+      font-size: 0.88rem;
+      margin-bottom: 1.2rem;
+    }
+    .setup-steps { display: flex; flex-direction: column; gap: 1rem; }
+    .setup-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--amber);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .step-body { flex: 1; }
+    .step-body strong { display: block; font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .step-body p { color: var(--dim); font-size: 0.85rem; line-height: 1.5; }
+    .ca-download {
+      display: inline-block;
+      margin-top: 0.5rem;
+      background: var(--amber);
+      color: #000;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.45rem 1.1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .ca-download:hover { opacity: 0.85; }
+    .platform-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
+    .platform-tabs button {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--dim);
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .platform-tabs button.active { border-color: var(--amber); color: var(--amber); }
+    .platform-inst { display: none; margin-top: 0.6rem; }
+    .platform-inst.active { display: block; }
+    .platform-inst code {
+      display: block;
+      background: #0d0d20;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.8rem;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+      word-break: break-all;
+    }
+    .platform-inst p { color: var(--dim); font-size: 0.82rem; margin-bottom: 0.4rem; }
+
+    .setup-trusted {
+      display: none;
+      background: #0a1a0d;
+      border: 1px solid var(--green);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+      color: var(--green);
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .setup-trusted.visible { display: flex; }
+
     .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
     .card {
       background: var(--card);
@@ -77,6 +173,7 @@
     .card:hover { border-color: var(--accent); }
     .card h3 { font-size: 1.1rem; margin-bottom: 0.3rem; }
     .card .desc { color: var(--dim); font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.4; }
+    .card .btn-row { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
     .card a {
       display: inline-block;
       background: var(--accent);
@@ -105,7 +202,6 @@
     table tr:last-child td { border-bottom: none; }
     code { background: #1a1a3a; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.82rem; }
 
-    /* FAQ — <details> collapsibles */
     details.faq {
       background: var(--card);
       border: 1px solid var(--border);
@@ -150,14 +246,8 @@
     .faq-category { color: var(--accent); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; margin: 1.2rem 0 0.5rem; font-weight: 600; }
     .faq-category:first-child { margin-top: 0; }
 
-    /* Examples — copy-to-clipboard cards */
     .example-group { margin-bottom: 1.6rem; }
-    .example-group h3 {
-      font-size: 0.95rem;
-      color: var(--text);
-      margin-bottom: 0.6rem;
-      font-weight: 600;
-    }
+    .example-group h3 { font-size: 0.95rem; color: var(--text); margin-bottom: 0.6rem; font-weight: 600; }
     .example-group .group-hint { color: var(--dim); font-size: 0.8rem; margin-bottom: 0.8rem; }
     .example {
       display: flex;
@@ -171,14 +261,7 @@
       transition: border-color 0.15s;
     }
     .example:hover { border-color: var(--accent); }
-    .example .prompt {
-      flex: 1;
-      font-family: inherit;
-      font-size: 0.85rem;
-      color: var(--text);
-      line-height: 1.45;
-      word-wrap: break-word;
-    }
+    .example .prompt { flex: 1; font-family: inherit; font-size: 0.85rem; color: var(--text); line-height: 1.45; word-wrap: break-word; }
     .example .copy-btn {
       background: transparent;
       border: 1px solid var(--border);
@@ -210,6 +293,10 @@
 
     .footer { text-align: center; color: var(--dim); font-size: 0.8rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
     .footer a { color: var(--accent); text-decoration: none; }
+
+    .tag { display: inline-block; font-size: 0.72rem; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600; margin-left: 0.4rem; vertical-align: middle; }
+    .tag.primary { background: #1a3a1a; color: var(--green); border: 1px solid #2a4a2a; }
+    .tag.fallback { background: #1a1a3a; color: var(--dim); border: 1px solid var(--border); }
   </style>
 </head>
 <body>
@@ -221,45 +308,121 @@
       <p style="margin-top: 0.8rem; font-size: 0.9rem;">
         <a href="https://picocluster.com" target="_blank" style="color: var(--accent); text-decoration: none; margin: 0 0.6rem;">PicoCluster</a>
         &middot;
-        <a href="https://github.com/picocluster/PicoCluster-Claw" target="_blank" style="color: var(--accent); text-decoration: none; margin: 0 0.6rem;">PicoCluster Claw on GitHub</a>
+        <a href="https://github.com/picocluster/PicoCluster-Claw" target="_blank" style="color: var(--accent); text-decoration: none; margin: 0 0.6rem;">PicoCluster-Claw on GitHub</a>
         &middot;
         <a href="https://github.com/nosqltips/ThreadWeaver" target="_blank" style="color: var(--accent); text-decoration: none; margin: 0 0.6rem;">ThreadWeaver</a>
       </p>
     </header>
 
+    <!-- ── Status bar ── -->
     <div class="status-bar" id="status-bar">
       <div class="status-item">
         <div class="label">ThreadWeaver</div>
-        <div class="value"><span class="dot gray" id="dot-tw"></span><span id="status-tw">checking...</span></div>
+        <div class="value"><span class="dot gray" id="dot-tw"></span><span id="status-tw">checking…</span></div>
       </div>
       <div class="status-item">
         <div class="label">OpenClaw</div>
-        <div class="value"><span class="dot gray" id="dot-oc"></span><span id="status-oc">checking...</span></div>
+        <div class="value"><span class="dot gray" id="dot-oc"></span><span id="status-oc">checking…</span></div>
       </div>
       <div class="status-item">
         <div class="label">Ollama</div>
-        <div class="value"><span class="dot gray" id="dot-ol"></span><span id="status-ol">checking...</span></div>
+        <div class="value"><span class="dot gray" id="dot-ol"></span><span id="status-ol">checking…</span></div>
+      </div>
+      <div class="status-item">
+        <div class="label">TLS Trusted</div>
+        <div class="value"><span class="dot gray" id="dot-tls"></span><span id="status-tls">checking…</span></div>
       </div>
     </div>
 
+    <!-- ── First-time setup (hidden once CA cert is trusted) ── -->
+    <div class="setup-banner" id="setup-banner">
+      <h2>⚠ One-time setup required on this device</h2>
+      <p class="subtitle">
+        Services are served over HTTPS using a private local CA. Install the CA cert once
+        and all PicoCluster HTTPS services will be trusted on this device — no more warnings, ever.
+      </p>
+      <div class="setup-steps">
+        <div class="setup-step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Download the CA cert</strong>
+            <p>Served over plain HTTP so it's reachable before the cert is trusted.</p>
+            <a class="ca-download" href="/ca.crt" download="picocluster-ca.crt">⬇ Download picocluster-ca.crt</a>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Install it on this device</strong>
+            <div class="platform-tabs">
+              <button class="active" onclick="showPlatform('mac', this)">macOS</button>
+              <button onclick="showPlatform('win', this)">Windows</button>
+              <button onclick="showPlatform('ios', this)">iOS</button>
+              <button onclick="showPlatform('android', this)">Android</button>
+              <button onclick="showPlatform('linux', this)">Linux</button>
+            </div>
+            <div id="inst-mac" class="platform-inst active">
+              <p>Open Terminal and run:</p>
+              <code>sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ~/Downloads/picocluster-ca.crt</code>
+              <p>Or: open <strong>Keychain Access</strong> → drag in the file → double-click → set to <em>Always Trust</em>. Restart your browser.</p>
+            </div>
+            <div id="inst-win" class="platform-inst">
+              <p>Double-click the downloaded <code>.crt</code> file → <strong>Install Certificate</strong> → Store Location: <em>Local Machine</em> → Place in: <em>Trusted Root Certification Authorities</em> → Finish. Restart your browser.</p>
+            </div>
+            <div id="inst-ios" class="platform-inst">
+              <p>Open <strong>Safari</strong> and tap the download link above. Tap <em>Allow</em> → <em>Close</em>. Go to <strong>Settings → General → VPN &amp; Device Management</strong> → tap the PicoClaw profile → <em>Install</em>. Then go to <strong>Settings → General → About → Certificate Trust Settings</strong> → enable <em>PicoClaw Local CA</em>.</p>
+            </div>
+            <div id="inst-android" class="platform-inst">
+              <p>Download the cert, then go to <strong>Settings → Security → Install from storage</strong> (path varies by manufacturer). Select the file, name it <em>PicoClaw CA</em>, and choose <em>VPN &amp; Apps</em> or <em>CA certificate</em>. Chrome requires the cert to be in the user store.</p>
+            </div>
+            <div id="inst-linux" class="platform-inst">
+              <code>sudo cp ~/Downloads/picocluster-ca.crt /usr/local/share/ca-certificates/picocluster.crt</code>
+              <code>sudo update-ca-certificates</code>
+              <p>For Chrome/Chromium on Linux: Settings → Privacy → Manage Certificates → Authorities → Import → select the file → check <em>Trust for websites</em>.</p>
+            </div>
+          </div>
+        </div>
+        <div class="setup-step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Open the services</strong>
+            <p>After installing and restarting your browser, use the links in the Services section below. The TLS indicator in the status bar will turn green.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Trusted confirmation (shown once CA cert is trusted) ── -->
+    <div class="setup-trusted" id="setup-trusted">
+      ✓ TLS trusted on this device &mdash; use the HTTPS links below for secure local access.
+    </div>
+
+    <!-- ── Service cards ── -->
     <div class="cards">
       <div class="card">
-        <h3>ThreadWeaver</h3>
-        <div class="desc">Chat with your local LLMs. Branching conversations, search, notebooks. Switch between 9 models. Requires SSH tunnel for HTTPS.</div>
-        <a href="https://localhost:5174" class="secondary">Open Chat</a>
+        <h3>ThreadWeaver <span class="tag primary">LAN</span></h3>
+        <div class="desc">Chat with your local LLMs. Branching conversations, search, notebooks. Switch between 9 models on the fly.</div>
+        <div class="btn-row">
+          <a href="https://threadweaver.local">Open Chat</a>
+          <a href="https://localhost:5174" class="secondary" title="Fallback: requires SSH tunnel">SSH tunnel</a>
+        </div>
       </div>
       <div class="card">
-        <h3>OpenClaw Dashboard</h3>
-        <div class="desc">AI agent with browser automation, tools, and messaging channels. Requires SSH tunnel for HTTPS.</div>
-        <a href="https://localhost:18790" class="secondary">Open Dashboard</a>
+        <h3>OpenClaw <span class="tag primary">LAN</span></h3>
+        <div class="desc">AI agent with browser automation, tools, and messaging channels. Token required.</div>
+        <div class="btn-row">
+          <a href="https://claw.local">Open Dashboard</a>
+          <a href="https://localhost:18790" class="secondary" title="Fallback: requires SSH tunnel">SSH tunnel</a>
+        </div>
       </div>
       <div class="card">
         <h3>Ollama (clustercrush)</h3>
-        <div class="desc">OpenAI-compatible inference endpoint. 9 models, GPU-accelerated. Access via SSH to clustercrush.</div>
+        <div class="desc">OpenAI-compatible inference endpoint. 9 models, GPU-accelerated. Default model pre-warmed into GPU on boot.</div>
         <a href="#" onclick="navigator.clipboard.writeText('http://clustercrush:11434/v1'); this.textContent='Copied!'; setTimeout(()=>this.textContent='Copy API URL',1500); return false;" class="secondary">Copy API URL</a>
       </div>
     </div>
 
+    <!-- ── Cluster Control ── -->
     <div class="section">
       <h2>Cluster Control</h2>
       <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
@@ -271,44 +434,50 @@
       <div id="control-msg" style="color: var(--dim); font-size: 0.85rem; margin-top: 0.8rem;"></div>
     </div>
 
+    <!-- ── LED Control ── -->
     <div class="section">
       <h2>LED Control</h2>
       <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.8rem;">
-        <button onclick="ledCall('set_status',{color:'blue'})" style="background: #2060ff; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Blue</button>
+        <button onclick="ledCall('set_status',{color:'blue'})"   style="background: #2060ff; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Blue</button>
         <button onclick="ledCall('set_status',{color:'purple'})" style="background: #7800ff; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Purple</button>
-        <button onclick="ledCall('set_status',{color:'cyan'})" style="background: #00c8ff; color: #000; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Cyan</button>
-        <button onclick="ledCall('set_status',{color:'green'})" style="background: #00cc44; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Green</button>
-        <button onclick="ledCall('set_status',{color:'amber'})" style="background: #ff8c00; color: #000; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Amber</button>
-        <button onclick="ledCall('set_status',{color:'red'})" style="background: #e03030; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Red</button>
-        <button onclick="ledCall('set_status',{color:'white'})" style="background: #fff; color: #000; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">White</button>
+        <button onclick="ledCall('set_status',{color:'cyan'})"   style="background: #00c8ff; color: #000; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Cyan</button>
+        <button onclick="ledCall('set_status',{color:'green'})"  style="background: #00cc44; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Green</button>
+        <button onclick="ledCall('set_status',{color:'amber'})"  style="background: #ff8c00; color: #000; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Amber</button>
+        <button onclick="ledCall('set_status',{color:'red'})"    style="background: #e03030; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Red</button>
+        <button onclick="ledCall('set_status',{color:'white'})"  style="background: #fff; color: #000; border: none; padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">White</button>
       </div>
       <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.8rem;">
         <button onclick="ledCall('pulse_success')" style="background: transparent; border: 1px solid var(--green); color: var(--green); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Pulse Success</button>
-        <button onclick="ledCall('pulse_error')" style="background: transparent; border: 1px solid var(--red); color: var(--red); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Pulse Error</button>
+        <button onclick="ledCall('pulse_error')"   style="background: transparent; border: 1px solid var(--red);   color: var(--red);   padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Pulse Error</button>
         <input type="range" id="led-progress" min="0" max="100" value="0" oninput="ledCall('set_progress',{percent:parseInt(this.value),color:'green'})" style="flex: 1; min-width: 120px; accent-color: var(--accent);">
         <span style="color: var(--dim); font-size: 0.8rem; align-self: center;" id="led-progress-label">Progress: 0%</span>
         <button onclick="ledCall('clear')" style="background: transparent; border: 1px solid var(--border); color: var(--dim); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;">Reset</button>
       </div>
     </div>
 
+    <!-- ── Installed Models ── -->
     <div class="section">
       <h2>Installed Models</h2>
       <table>
-        <thead><tr><th>Model</th><th>Type</th><th>Size</th></tr></thead>
+        <thead><tr><th>Model</th><th>Type</th><th>Size</th><th>Notes</th></tr></thead>
         <tbody>
-          <tr><td>llama3.2:3b</td><td>General</td><td>2.0 GB</td></tr>
-          <tr><td>llama3.1:8b</td><td>General</td><td>4.9 GB</td></tr>
-          <tr><td>gemma3:4b</td><td>General</td><td>3.3 GB</td></tr>
-          <tr><td>phi3.5:3.8b</td><td>Reasoning</td><td>2.2 GB</td></tr>
-          <tr><td>deepseek-r1:7b</td><td>Reasoning</td><td>4.7 GB</td></tr>
-          <tr><td>qwen2.5:3b</td><td>Code</td><td>1.9 GB</td></tr>
-          <tr><td>starcoder2:3b</td><td>Code generation</td><td>1.7 GB</td></tr>
-          <tr><td>llava:7b</td><td>Vision</td><td>4.7 GB</td></tr>
-          <tr><td>moondream:1.8b</td><td>Vision (lightweight)</td><td>1.7 GB</td></tr>
+          <tr><td><strong>llama3.1:8b</strong></td><td>General</td><td>4.9 GB</td><td>Default — pre-warmed on boot, best tool calling</td></tr>
+          <tr><td>llama3.2:3b</td><td>General</td><td>2.0 GB</td><td>Fast, limited multi-turn tool chains</td></tr>
+          <tr><td>gemma3:4b</td><td>General</td><td>3.3 GB</td><td>No tool calling</td></tr>
+          <tr><td>phi3.5:3.8b</td><td>Reasoning</td><td>2.2 GB</td><td>Tool calling supported</td></tr>
+          <tr><td>deepseek-r1:7b</td><td>Reasoning</td><td>4.7 GB</td><td>Shows reasoning steps</td></tr>
+          <tr><td>qwen2.5:3b</td><td>Code</td><td>1.9 GB</td><td>Tool calling supported</td></tr>
+          <tr><td>starcoder2:3b</td><td>Code generation</td><td>1.7 GB</td><td>No tool calling</td></tr>
+          <tr><td>llava:7b</td><td>Vision</td><td>4.7 GB</td><td>No tool calling</td></tr>
+          <tr><td>moondream:1.8b</td><td>Vision (lightweight)</td><td>1.7 GB</td><td>No tool calling</td></tr>
         </tbody>
       </table>
+      <p style="color: var(--dim); font-size: 0.82rem; margin-top: 0.6rem;">
+        Switching models in ThreadWeaver pre-warms the new model into GPU memory automatically — the first response after a switch will still be fast.
+      </p>
     </div>
 
+    <!-- ── MCP Tools ── -->
     <div class="section">
       <h2>MCP Tools (for AI)</h2>
       <p style="color: var(--dim); font-size: 0.9rem; margin-bottom: 0.8rem;">
@@ -327,34 +496,73 @@
       </table>
     </div>
 
+    <!-- ── Access Methods ── -->
     <div class="section">
       <h2>Access Methods</h2>
       <table>
         <thead><tr><th>Method</th><th>URL / Command</th><th>Notes</th></tr></thead>
         <tbody>
-          <tr><td>ThreadWeaver (Chat)</td><td><code>https://localhost:5174</code></td><td>Requires SSH tunnel first</td></tr>
-          <tr><td>OpenClaw Dashboard</td><td><code>https://localhost:18790</code></td><td>Requires SSH tunnel first</td></tr>
-          <tr><td>OpenClaw TUI</td><td><code>ssh picocluster@clusterclaw</code> then <code>openclaw tui</code></td><td>Terminal chat</td></tr>
-          <tr><td>Ollama API</td><td><code>http://clustercrush:11434/v1</code></td><td>OpenAI-compatible endpoint</td></tr>
+          <tr>
+            <td>ThreadWeaver <span class="tag primary">primary</span></td>
+            <td><code>https://threadweaver.local</code></td>
+            <td>Requires CA cert installed once on each device</td>
+          </tr>
+          <tr>
+            <td>OpenClaw <span class="tag primary">primary</span></td>
+            <td><code>https://claw.local</code></td>
+            <td>Requires CA cert installed once on each device</td>
+          </tr>
+          <tr>
+            <td>This portal</td>
+            <td><code>http://clusterclaw.local</code></td>
+            <td>Always available over plain HTTP — no cert needed</td>
+          </tr>
+          <tr>
+            <td>CA cert download</td>
+            <td><code>http://clusterclaw.local/ca.crt</code></td>
+            <td>HTTP so it's reachable before cert is installed</td>
+          </tr>
+          <tr>
+            <td>ThreadWeaver <span class="tag fallback">fallback</span></td>
+            <td><code>https://localhost:5174</code></td>
+            <td>Requires SSH tunnel — use if mDNS unavailable</td>
+          </tr>
+          <tr>
+            <td>OpenClaw <span class="tag fallback">fallback</span></td>
+            <td><code>https://localhost:18790</code></td>
+            <td>Requires SSH tunnel — use if mDNS unavailable</td>
+          </tr>
+          <tr>
+            <td>OpenClaw TUI</td>
+            <td><code>ssh picocluster@clusterclaw</code> → <code>openclaw tui</code></td>
+            <td>Terminal chat, no browser needed</td>
+          </tr>
+          <tr>
+            <td>Ollama API</td>
+            <td><code>http://clustercrush:11434/v1</code></td>
+            <td>OpenAI-compatible — firewall-restricted to clusterclaw</td>
+          </tr>
         </tbody>
       </table>
     </div>
 
+    <!-- ── Fallback: SSH Tunnel ── -->
     <div class="section">
-      <h2>SSH Tunnel (for ThreadWeaver &amp; OpenClaw)</h2>
+      <h2>Fallback Access — SSH Tunnel</h2>
       <p style="color: var(--dim); font-size: 0.9rem; margin-bottom: 0.8rem;">
-        Both ThreadWeaver and OpenClaw are served over HTTPS via Caddy and are not exposed directly on the LAN. Run this on your computer to tunnel both:
+        Use the SSH tunnel if mDNS (<code>*.local</code>) doesn't resolve on your network — for example, on some corporate networks or behind certain routers. Primary access is via <code>claw.local</code> and <code>threadweaver.local</code> after installing the CA cert above.
       </p>
       <code style="display: block; padding: 0.8rem; background: #1a1a3a; border-radius: 8px; font-size: 0.85rem;">
         ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@clusterclaw
       </code>
       <p style="color: var(--dim); font-size: 0.85rem; margin-top: 0.6rem;">
         Then open:<br>
-        &bull; <code>https://localhost:5174</code> &mdash; ThreadWeaver chat<br>
-        &bull; <code>https://localhost:18790</code> &mdash; OpenClaw dashboard (token: <code>picocluster-token</code>)
+        &bull; <code>https://localhost:5174</code> &mdash; ThreadWeaver (accept self-signed cert warning once)<br>
+        &bull; <code>https://localhost:18790</code> &mdash; OpenClaw (token: <code>picocluster-token</code>)
       </p>
     </div>
 
+    <!-- ── Management ── -->
     <div class="section">
       <h2>Management</h2>
       <table>
@@ -362,212 +570,140 @@
         <tbody>
           <tr><td>Update ThreadWeaver</td><td><code>sudo bash /opt/clusterclaw/scripts/setup/update-threadweaver.sh</code></td></tr>
           <tr><td>Update all containers</td><td><code>sudo bash /opt/clusterclaw/scripts/setup/update-clusterclaw.sh</code></td></tr>
-          <tr><td>View container status</td><td><code>cd /opt/clusterclaw && sudo docker compose ps</code></td></tr>
-          <tr><td>View logs</td><td><code>cd /opt/clusterclaw && sudo docker compose logs -f</code></td></tr>
-          <tr><td>Restart all services</td><td><code>cd /opt/clusterclaw && sudo docker compose restart</code></td></tr>
+          <tr><td>View container status</td><td><code>cd /opt/clusterclaw &amp;&amp; sudo docker compose ps</code></td></tr>
+          <tr><td>View logs</td><td><code>cd /opt/clusterclaw &amp;&amp; sudo docker compose logs -f</code></td></tr>
+          <tr><td>Restart all services</td><td><code>cd /opt/clusterclaw &amp;&amp; sudo docker compose restart</code></td></tr>
+          <tr><td>Reconfigure network IPs</td><td><code>sudo bash /opt/clusterclaw/scripts/network-config.sh --crush-ip &lt;ip&gt;</code></td></tr>
           <tr><td>Add a new model</td><td><code>ssh clustercrush</code> then <code>ollama pull &lt;model&gt;</code></td></tr>
           <tr><td>List models</td><td><code>ssh clustercrush</code> then <code>ollama list</code></td></tr>
         </tbody>
       </table>
     </div>
 
+    <!-- ── Example Prompts ── -->
     <div class="section">
       <h2>Example Prompts</h2>
       <p style="color: var(--dim); font-size: 0.9rem; margin-bottom: 1rem;">
-        Copy any prompt and paste it into ThreadWeaver. For tool-heavy workflows, use <code>llama3.1:8b</code> or switch to an external model like Claude or GPT-4.
+        Copy any prompt and paste it into ThreadWeaver. For tool-heavy workflows, use <code>llama3.1:8b</code> (the default) or switch to an external model like Claude or GPT-4.
       </p>
 
       <div class="example-group">
         <h3>💡 LED Control</h3>
         <div class="group-hint">5 tools in the <code>leds</code> MCP server</div>
-        <div class="example">
-          <div class="prompt">Make the LEDs purple.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">Flash the LEDs red three times.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">Show a progress bar at 75% in green.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">Celebrate — do a success pulse.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">Cycle through red, green, and blue, pausing one second between each color.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
+        <div class="example"><div class="prompt">Make the LEDs purple.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">Flash the LEDs red three times.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">Show a progress bar at 75% in green.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">Celebrate — do a success pulse.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">Cycle through red, green, and blue, pausing one second between each color.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
       </div>
 
       <div class="example-group">
         <h3>🌡️ System Monitoring</h3>
         <div class="group-hint">6 tools in the <code>system</code> MCP server</div>
-        <div class="example">
-          <div class="prompt">What's the CPU temperature right now?</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">How much memory is free on clusterclaw?</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">How long has clusterclaw been running?</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">Give me a one-paragraph summary of clusterclaw's current state: CPU, memory, disk, uptime, and temperature.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
+        <div class="example"><div class="prompt">What's the CPU temperature right now?</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">How much memory is free on clusterclaw?</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">How long has clusterclaw been running?</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">Give me a one-paragraph summary of clusterclaw's current state: CPU, memory, disk, uptime, and temperature.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
       </div>
 
       <div class="example-group">
         <h3>🧠 Model Management</h3>
         <div class="group-hint">4 tools in the <code>clustercrush</code> MCP server</div>
-        <div class="example">
-          <div class="prompt">What models are installed on clustercrush?</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">Which model is currently loaded in GPU memory?</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">List all the models and tell me which one is the smallest.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
+        <div class="example"><div class="prompt">What models are installed on clustercrush?</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">Which model is currently loaded in GPU memory?</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">List all the models and tell me which one is the smallest.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
       </div>
 
       <div class="example-group">
         <h3>🕒 Time and Dates</h3>
         <div class="group-hint">4 tools in the <code>time</code> MCP server</div>
-        <div class="example">
-          <div class="prompt">What time is it right now and what day of the week?</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">How many days until New Year's Eve?</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">Format 12345 seconds as days, hours, minutes, and seconds.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
+        <div class="example"><div class="prompt">What time is it right now and what day of the week?</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">How many days until New Year's Eve?</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">Format 12345 seconds as days, hours, minutes, and seconds.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
       </div>
 
       <div class="example-group">
         <h3>📁 Files (Sandboxed)</h3>
         <div class="group-hint">5 tools in the <code>files</code> MCP server, sandboxed to <code>/tmp/clusterclaw-sandbox</code></div>
-        <div class="example">
-          <div class="prompt">Write a file called greeting.txt containing "Hello from PicoCluster Claw".</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">Create a shopping list file with apples, bread, milk, eggs, and coffee, one per line.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">List all files in the sandbox.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">Write a JSON config file called config.json containing keys "name" (PicoCluster Claw), "version" (1.0), and "features" (a list with chat, tools, and LEDs).</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
+        <div class="example"><div class="prompt">Write a file called greeting.txt containing "Hello from PicoCluster Claw".</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">Create a shopping list file with apples, bread, milk, eggs, and coffee, one per line.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">List all files in the sandbox.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">Write a JSON config file called config.json containing keys "name" (PicoCluster Claw), "version" (1.0), and "features" (a list with chat, tools, and LEDs).</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
       </div>
 
       <div class="example-group">
         <h3>🎯 Multi-Tool Workflows</h3>
         <div class="group-hint">These chain several tools. Use <code>llama3.1:8b</code> or an external provider for best results.</div>
-        <div class="example">
-          <div class="prompt">Check the CPU temperature. If it's above 60°C, flash the LEDs red. If it's below 50°C, do a green success pulse. Otherwise set the LEDs to amber.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">Write a status report to status.txt containing the current CPU temperature, memory usage, uptime, and installed models on clustercrush.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">Tell me the current time, the uptime, the 5-minute load average, and the disk usage. Format it as a markdown table.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">Celebrate a successful task: do a green success pulse, wait one second, then write a file called celebration.txt containing "completed at " followed by the current time.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
+        <div class="example"><div class="prompt">Check the CPU temperature. If it's above 60°C, flash the LEDs red. If it's below 50°C, do a green success pulse. Otherwise set the LEDs to amber.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">Write a status report to status.txt containing the current CPU temperature, memory usage, uptime, and installed models on clustercrush.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">Tell me the current time, the uptime, the 5-minute load average, and the disk usage. Format it as a markdown table.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">Celebrate a successful task: do a green success pulse, wait one second, then write a file called celebration.txt containing "completed at " followed by the current time.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
       </div>
 
       <div class="example-group">
         <h3>💻 Code &amp; Reasoning</h3>
         <div class="group-hint">Switch to <code>qwen2.5:3b</code> or <code>starcoder2:3b</code> for code, <code>deepseek-r1:7b</code> for reasoning.</div>
-        <div class="example">
-          <div class="prompt">Write a Python function that takes a list of numbers and returns the two largest without using sort() or max().</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">A farmer has chickens and cows. There are 30 heads and 74 legs total. How many of each? Show your reasoning.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">If a bat and a ball cost $1.10 total, and the bat costs $1 more than the ball, how much does the ball cost? Explain your reasoning.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
+        <div class="example"><div class="prompt">Write a Python function that takes a list of numbers and returns the two largest without using sort() or max().</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">A farmer has chickens and cows. There are 30 heads and 74 legs total. How many of each? Show your reasoning.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">If a bat and a ball cost $1.10 total, and the bat costs $1 more than the ball, how much does the ball cost? Explain your reasoning.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
       </div>
 
       <div class="example-group">
         <h3>🖼️ Vision (with <code>llava:7b</code> or <code>moondream:1.8b</code>)</h3>
         <div class="group-hint">Attach an image via ThreadWeaver's upload button before sending these.</div>
-        <div class="example">
-          <div class="prompt">Describe what you see in this image in two sentences.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
-        <div class="example">
-          <div class="prompt">What text is visible in this image? Just the text, no commentary.</div>
-          <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
-        </div>
+        <div class="example"><div class="prompt">Describe what you see in this image in two sentences.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
+        <div class="example"><div class="prompt">What text is visible in this image? Just the text, no commentary.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
       </div>
 
       <a class="docs-link" href="https://github.com/picocluster/PicoCluster-Claw/blob/main/docs/examples.md" target="_blank">More examples in docs/examples.md →</a>
     </div>
 
+    <!-- ── FAQ ── -->
     <div class="section">
       <h2>Frequently Asked Questions</h2>
 
       <div class="faq-category">Getting started</div>
 
       <details class="faq">
-        <summary>How do I start chatting with ThreadWeaver?</summary>
+        <summary>How do I open ThreadWeaver or OpenClaw?</summary>
         <div class="answer">
-          <p>ThreadWeaver is served over HTTPS through an SSH tunnel. Open a terminal on your computer and run:</p>
-          <p><code>ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@clusterclaw</code></p>
-          <p>Leave that terminal open. Then in your browser, visit <code>https://localhost:5174</code>. Accept the self-signed cert warning on first visit — the cert is issued by Caddy on clusterclaw and your traffic is already encrypted by SSH.</p>
+          <p><strong>Step 1 (once per device):</strong> Download and install the PicoClaw CA cert from <code>http://clusterclaw.local/ca.crt</code>. See the First-Time Setup section at the top of this page for platform-specific instructions.</p>
+          <p><strong>Step 2:</strong> After installing and restarting your browser:</p>
+          <ul>
+            <li><a href="https://threadweaver.local" style="color: var(--accent);">https://threadweaver.local</a> — ThreadWeaver chat</li>
+            <li><a href="https://claw.local" style="color: var(--accent);">https://claw.local</a> — OpenClaw agent dashboard</li>
+          </ul>
+          <p>No SSH tunnel needed. Both are served directly over your LAN via HTTPS.</p>
         </div>
       </details>
 
       <details class="faq">
-        <summary>Why do I need an SSH tunnel?</summary>
+        <summary>Why do I need to install a CA cert?</summary>
         <div class="answer">
-          <p>For security. ThreadWeaver and OpenClaw are bound only to clusterclaw's loopback interface (<code>127.0.0.1</code>), so nothing on your LAN can reach them directly without authenticating via SSH first.</p>
-          <p>The tunnel forwards two local ports (<code>5174</code>, <code>18790</code>) to clusterclaw's Caddy HTTPS wrapper, which reverse-proxies to the raw HTTP ports inside clusterclaw.</p>
+          <p>PicoCluster Claw serves all services over HTTPS using TLS certificates signed by its own private Certificate Authority (CA). This gives you real encrypted HTTPS on your local network without depending on an internet-based CA like Let's Encrypt.</p>
+          <p>Installing the CA cert tells your device to trust certificates issued by PicoCluster Claw. You do this once per device — after that, <code>claw.local</code> and <code>threadweaver.local</code> load like any normal HTTPS site, with no warnings.</p>
+          <p>The CA cert never leaves your LAN and only signs certs for <code>claw.local</code> and <code>threadweaver.local</code>.</p>
         </div>
       </details>
 
       <details class="faq">
-        <summary>My browser says the certificate is invalid. Is that safe?</summary>
+        <summary>*.local doesn't resolve on my network. What do I do?</summary>
         <div class="answer">
-          <p>Yes, for this setup. Caddy uses a locally-issued certificate for <code>localhost</code>, not one from a public CA (public CAs won't issue for <code>localhost</code>). Your traffic is already encrypted twice: once by SSH (the tunnel) and once by TLS (Caddy). The warning is about trust, not encryption.</p>
-          <p>Click "Advanced → Proceed to localhost" and you're good.</p>
+          <p><code>*.local</code> names are announced via mDNS (Avahi/Bonjour). Some networks block multicast traffic, preventing mDNS from working. Workarounds:</p>
+          <ul>
+            <li><strong>By IP:</strong> Use the cluster IP directly — <code>https://10.1.10.220</code> — but the TLS cert won't match the IP (browser warning). You'll need to add the CA cert and either use the hostname or get a cert with the IP SAN.</li>
+            <li><strong>SSH tunnel:</strong> <code>ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@clusterclaw</code> then <code>https://localhost:5174</code> and <code>https://localhost:18790</code>.</li>
+            <li><strong>Tailscale:</strong> Install Tailscale on clusterclaw and your devices. Get a stable hostname that works anywhere without mDNS.</li>
+            <li><strong>Add to your hosts file:</strong> On your computer add <code>10.1.10.220 claw.local threadweaver.local clusterclaw.local</code> to <code>/etc/hosts</code> (macOS/Linux) or <code>C:\Windows\System32\drivers\etc\hosts</code> (Windows).</li>
+          </ul>
         </div>
       </details>
 
       <details class="faq">
         <summary>Can I access PicoCluster Claw from outside my home network?</summary>
         <div class="answer">
-          <p>Not by default. For remote access, install <a href="https://tailscale.com" style="color: var(--accent);" target="_blank">Tailscale</a> on clusterclaw and your remote devices. Then use the Tailscale IP instead of the LAN IP in your SSH tunnel command:</p>
-          <p><code>ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@&lt;tailscale-ip&gt;</code></p>
-          <p>Tailscale wraps everything in a WireGuard VPN and handles NAT traversal automatically.</p>
+          <p>Not by default. For remote access, install <a href="https://tailscale.com" style="color: var(--accent);" target="_blank">Tailscale</a> on clusterclaw and your remote devices. Tailscale provides a stable hostname, works through NAT and firewalls, and optionally issues real TLS certificates via <code>tailscale cert</code> — no CA cert install needed on your devices.</p>
+          <p><code>ssh picocluster@&lt;tailscale-hostname&gt;</code> then use the same SSH tunnel if you haven't set up Tailscale HTTPS certs.</p>
         </div>
       </details>
 
@@ -576,23 +712,21 @@
       <details class="faq">
         <summary>Which model should I use for what?</summary>
         <div class="answer">
-          <p><strong>General chat + tools (default):</strong> <code>llama3.1:8b</code> — reliable multi-turn tool use<br>
+          <p><strong>General chat + tools (default):</strong> <code>llama3.1:8b</code> — reliable multi-turn tool use, pre-warmed on boot<br>
           <strong>Fast one-shots, no tools:</strong> <code>llama3.2:3b</code> — 3× faster but degrades on tool chains<br>
           <strong>Reasoning/math:</strong> <code>deepseek-r1:7b</code> — shows its work<br>
           <strong>Code:</strong> <code>qwen2.5:3b</code> or <code>starcoder2:3b</code><br>
           <strong>Images:</strong> <code>llava:7b</code> or <code>moondream:1.8b</code></p>
-          <p>Switch models from the ThreadWeaver settings panel (top right). See FAQ below for the multi-turn tool-use limitation of smaller models.</p>
+          <p>Switch models from the ThreadWeaver settings panel (top right). Switching pre-warms the new model automatically so your first reply after a switch is fast.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>Why does llama3.2:3b stop using tools after a few messages?</summary>
         <div class="answer">
-          <p>Small models (3B parameters) handle 1-2 tool calls in a conversation cleanly, but after the third or fourth they start <strong>hallucinating tool calls as plain text</strong> instead of making real ones. You'll see something like:</p>
-          <p><code>```json { "name": "system__get_temperature", "parameters": {...} } ```</code></p>
-          <p>...printed in the message body, followed by a hallucinated "result" that didn't actually happen. The LEDs don't change, the file doesn't get written, the temperature reading is made up.</p>
-          <p><strong>How to spot it:</strong> real tool calls show up as <strong>🔧 Tool call:</strong> markers. If you see a <code>```json</code> block in the plain text without that marker, the model is faking it.</p>
-          <p><strong>Fix:</strong> switch to <code>llama3.1:8b</code> in Settings → Local → Model. It's slower per reply but it won't fake tool calls. This is why llama3.1:8b is the Beta default.</p>
+          <p>Small models (3B parameters) handle 1–2 tool calls cleanly but after the third or fourth they start <strong>hallucinating tool calls as plain text</strong> instead of making real ones. You'll see a <code>```json</code> block in the message body with a fabricated result that didn't actually happen.</p>
+          <p><strong>How to spot it:</strong> real tool calls show up as <strong>🔧 Tool call:</strong> markers. Plain-text JSON without that marker is the model faking it.</p>
+          <p><strong>Fix:</strong> switch to <code>llama3.1:8b</code> in Settings → Local → Model. This is why it's the default.</p>
         </div>
       </details>
 
@@ -600,30 +734,30 @@
         <summary>Can I use Claude, GPT, Gemini, or Grok instead of the local models?</summary>
         <div class="answer">
           <p>Yes. ThreadWeaver supports five providers: <code>local</code> (Ollama), <code>anthropic</code>, <code>openai</code>, <code>gemini</code>, and <code>grok</code>.</p>
-          <p>Open ThreadWeaver → Settings → paste your API key → pick a model → chat. You can switch providers mid-conversation. Your API keys are stored on clusterclaw and only used to authenticate with that provider.</p>
+          <p>Open ThreadWeaver → Settings → paste your API key → pick a model → chat. You can switch providers mid-conversation. Your API keys are stored encrypted on clusterclaw.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>If I use an external LLM, can it still use the local MCP tools?</summary>
         <div class="answer">
-          <p><strong>Yes, fully.</strong> Tool execution always happens on clusterclaw. The external LLM only sees tool schemas and decides <em>when</em> to call them. The flow is:</p>
+          <p><strong>Yes, fully.</strong> Tool execution always happens on clusterclaw. The external LLM only sees tool schemas and decides when to call them. The flow:</p>
           <ul>
-            <li>You ask the LLM "make the LEDs purple"</li>
-            <li>ThreadWeaver sends your message plus the 28 tool schemas to the external API</li>
-            <li>The LLM replies with a tool call: <code>{"tool": "set_led_color", "args": {"color": "purple"}}</code></li>
-            <li>ThreadWeaver executes the tool locally on clusterclaw</li>
-            <li>Tool result goes back to the LLM, which writes its final text reply</li>
+            <li>You ask "make the LEDs purple"</li>
+            <li>ThreadWeaver sends the message + 28 tool schemas to the external API</li>
+            <li>The LLM replies with a tool call</li>
+            <li>ThreadWeaver executes it locally on clusterclaw</li>
+            <li>Result goes back to the LLM, which writes its reply</li>
           </ul>
-          <p>The external LLM never touches your hardware directly — clusterclaw acts as the trusted executor. All 28 tools work with every provider. In practice, external models like Claude and GPT-4 are often <em>better</em> at multi-step tool workflows than the smaller local models.</p>
+          <p>The external LLM never touches your hardware. In practice, Claude and GPT-4 are often better at multi-step tool workflows than the smaller local models.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>What gets sent to external LLM providers?</summary>
         <div class="answer">
-          <p>When you use an external provider, the entire conversation flows through that provider's API, including: your prompts, the LLM's replies, all 28 tool schemas, tool call results (CPU temp, file contents, model lists, etc.), and any attached images.</p>
-          <p><strong>Not sent:</strong> your API keys (used only to authenticate), files outside the sandbox, anything on your LAN that the tools don't explicitly fetch, other conversations, raw local model inference.</p>
+          <p>When you use an external provider: your prompts, the LLM's replies, all 28 tool schemas, tool call results (CPU temp, file contents, model lists), and any attached images.</p>
+          <p><strong>Not sent:</strong> your API keys (used only to authenticate), files outside the sandbox, other conversations, raw local inference traffic.</p>
           <p>For strict privacy, stick with the <code>local</code> provider. Everything stays on clusterclaw/clustercrush.</p>
         </div>
       </details>
@@ -634,18 +768,16 @@
           <p>SSH to clustercrush and use <code>pc-pull</code>:</p>
           <p><code>ssh picocluster@clustercrush</code><br>
           <code>pc-pull llama3.3:70b-instruct-q4_K_M</code></p>
-          <p>Browse <a href="https://ollama.com/library" style="color: var(--accent);" target="_blank">ollama.com/library</a> to find model tags. You can also ask the LLM to do it: "Pull the moondream model from the Ollama library."</p>
+          <p>Browse <a href="https://ollama.com/library" style="color: var(--accent);" target="_blank">ollama.com/library</a> for model tags. You can also ask the LLM to do it: "Pull the moondream model from the Ollama library."</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>Which models support MCP tool calling?</summary>
         <div class="answer">
-          <p>ThreadWeaver auto-detects whether each Ollama model supports tool calling. If you pick a model that doesn't (like <code>gemma3:4b</code> or the vision models), TW shows a notice and falls back to chat-only mode for that conversation:</p>
-          <p><em>"Model gemma3:4b doesn't support tool calling. Responding without tools."</em></p>
-          <p><strong>Models with tool calling:</strong> <code>llama3.2:3b</code> (default), <code>llama3.1:8b</code>, <code>phi3.5:3.8b</code>, <code>qwen2.5:3b</code>, <code>deepseek-r1:7b</code></p>
-          <p><strong>Models without tool calling (chat-only):</strong> <code>gemma3:4b</code>, <code>llava:7b</code>, <code>moondream:1.8b</code>, <code>starcoder2:3b</code></p>
-          <p>For vision (image understanding), pick <code>llava:7b</code> or <code>moondream:1.8b</code> — they don't need tools. For tool-heavy workflows, pick a tool-capable model or switch to Claude/GPT-4/Gemini in Settings (external models use the same MCP tools).</p>
+          <p>ThreadWeaver auto-detects tool support. If a model doesn't support it, TW shows a notice and falls back to chat-only.</p>
+          <p><strong>Tool calling:</strong> <code>llama3.1:8b</code>, <code>llama3.2:3b</code>, <code>phi3.5:3.8b</code>, <code>qwen2.5:3b</code>, <code>deepseek-r1:7b</code></p>
+          <p><strong>Chat-only:</strong> <code>gemma3:4b</code>, <code>llava:7b</code>, <code>moondream:1.8b</code>, <code>starcoder2:3b</code></p>
         </div>
       </details>
 
@@ -656,27 +788,24 @@
         <div class="answer">
           <p><strong>LEDs (5):</strong> colors, animations, progress bars, success/error pulses<br>
           <strong>System (6):</strong> CPU temp, memory, disk, uptime, network, load<br>
-          <strong>Picocrush (4):</strong> list/pull Ollama models, GPU memory, loaded models<br>
+          <strong>Clustercrush (4):</strong> list/pull Ollama models, GPU memory, loaded models<br>
           <strong>Time (4):</strong> current time, day of week, durations, countdowns<br>
           <strong>Files (5):</strong> sandboxed read/write/list/delete in <code>/tmp/clusterclaw-sandbox</code><br>
           <strong>Built-in (4):</strong> ThreadWeaver's own file/directory/command tools</p>
-          <p>Try the <strong>Example Prompts</strong> section above or see <a href="https://github.com/picocluster/PicoCluster-Claw/blob/main/docs/mcp-tools.md" style="color: var(--accent);" target="_blank">docs/mcp-tools.md</a> for the full reference.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>Can the LLM read files on my computer?</summary>
         <div class="answer">
-          <p><strong>No.</strong> The <code>files</code> MCP server is sandboxed to <code>/tmp/clusterclaw-sandbox</code> inside the ThreadWeaver container. Python's <code>Path.resolve()</code> + <code>relative_to()</code> checks reject any path that escapes the sandbox, so attempts like <code>../../../etc/passwd</code> fail loudly.</p>
-          <p>Your computer's filesystem is never exposed. The LLM talks to tools on clusterclaw; clusterclaw talks to its own sandbox. There's no path from the LLM to your laptop unless you paste the contents yourself.</p>
+          <p><strong>No.</strong> The <code>files</code> MCP server is sandboxed to <code>/tmp/clusterclaw-sandbox</code> inside the ThreadWeaver container. Path traversal attempts fail loudly. Your computer's filesystem is never exposed.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>Can I add my own MCP tools?</summary>
         <div class="answer">
-          <p>Yes. There's a ~20-line Python template in <a href="https://github.com/picocluster/PicoCluster-Claw/blob/main/docs/mcp-tools.md" style="color: var(--accent);" target="_blank">docs/mcp-tools.md</a>. Drop a new file in <code>/opt/clusterclaw/mcp/</code>, add one line to <code>threadweaver/start.sh</code>, and rebuild the ThreadWeaver container with <code>sudo docker compose build threadweaver &amp;&amp; sudo docker compose up -d threadweaver</code>.</p>
-          <p>ThreadWeaver also supports connecting to any stdio-based MCP server dynamically via its API — no rebuild required for third-party servers.</p>
+          <p>Yes. Drop a new Python file in <code>/opt/clusterclaw/mcp/</code>, add one line to <code>threadweaver/start.sh</code>, and rebuild: <code>sudo docker compose build threadweaver &amp;&amp; sudo docker compose up -d threadweaver</code>. See <a href="https://github.com/picocluster/PicoCluster-Claw/blob/main/docs/mcp-tools.md" style="color: var(--accent);" target="_blank">docs/mcp-tools.md</a> for the ~20-line template.</p>
         </div>
       </details>
 
@@ -686,10 +815,9 @@
         <summary>How do I shut down or restart the cluster?</summary>
         <div class="answer">
           <p><strong>From this control panel:</strong> use the Cluster Control buttons above.</p>
-          <p><strong>From the terminal:</strong></p>
-          <p><code>ssh picocluster@clusterclaw</code><br>
-          <code>pc-restart</code> or <code>pc-shutdown</code><br>
-          <code>pc-restart clusterclaw</code> (one node only)</p>
+          <p><strong>From the terminal:</strong><br>
+          <code>ssh picocluster@clusterclaw</code><br>
+          <code>pc-restart</code> or <code>pc-shutdown</code> or <code>pc-restart clusterclaw</code></p>
           <p>Blue LED pulses signal the shutdown before the node goes down.</p>
         </div>
       </details>
@@ -697,12 +825,11 @@
       <details class="faq">
         <summary>How do I update ThreadWeaver or OpenClaw?</summary>
         <div class="answer">
-          <p><code>ssh picocluster@clusterclaw</code>, then one of:</p>
+          <p><code>ssh picocluster@clusterclaw</code>, then:</p>
           <p><code>pc-update-threadweaver</code> — rebuild ThreadWeaver from latest main<br>
           <code>pc-update-openclaw</code> — rebuild OpenClaw with latest npm package<br>
-          <code>pc-update</code> — update everything (containers + portal + models)<br>
+          <code>pc-update</code> — update everything<br>
           <code>pc-update-models</code> — update Ollama models on clustercrush</p>
-          <p>All scripts <code>git pull</code> the PicoCluster Claw repo first. They're safe to run on a live cluster — individual containers restart with brief downtime.</p>
         </div>
       </details>
 
@@ -717,25 +844,22 @@
           <strong>Blue progress bar:</strong> long operation in progress<br>
           <strong>Amber solid:</strong> warning (high temp, degraded service)<br>
           <strong>Blue pulse then fade:</strong> system shutting down</p>
-          <p>Drive the LEDs manually via the control panel above, via <code>pc-led</code> on the terminal, or via the LED API at <code>http://clusterclaw:7777/</code>.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>How do I check if everything is healthy?</summary>
         <div class="answer">
-          <p>The status bar at the top of this page updates every 30 seconds.</p>
-          <p>For a full snapshot, SSH in and run <code>pc-status</code> on either node. It shows container state, systemd services, HTTP health checks, disk, and load. On clustercrush it also shows Ollama state, loaded models, and unified memory usage.</p>
+          <p>The status bar at the top of this page updates every 30 seconds. Run <code>pc-status</code> over SSH for a detailed snapshot: containers, systemd services, HTTP health checks, disk, load, and on clustercrush: Ollama state, loaded models, memory.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>A service isn't responding — what do I do?</summary>
         <div class="answer">
-          <p>First, run <code>pc-status</code> to see which service is actually down.</p>
+          <p>Run <code>pc-status</code> to identify which service is down.</p>
           <p><strong>Container unhealthy:</strong> <code>cd /opt/clusterclaw &amp;&amp; sudo docker compose logs &lt;service&gt;</code> then <code>sudo docker compose restart &lt;service&gt;</code></p>
-          <p><strong>Systemd service:</strong> <code>sudo systemctl restart clusterclaw-leds</code> or <code>shutdown-api</code></p>
-          <p><strong>Ollama unreachable:</strong> <code>ssh picocluster@clustercrush</code>, then <code>sudo systemctl restart ollama</code></p>
+          <p><strong>Ollama unreachable:</strong> <code>ssh picocluster@clustercrush</code> then <code>sudo systemctl restart ollama</code></p>
           <p><strong>Nuclear option:</strong> <code>pc-restart all</code></p>
         </div>
       </details>
@@ -745,42 +869,41 @@
       <details class="faq">
         <summary>Is my data private when I use the local LLM?</summary>
         <div class="answer">
-          <p>Yes. The <code>local</code> provider runs inference on clustercrush (Jetson Orin Nano) using Ollama. The data path is entirely inside your LAN: browser → SSH tunnel → ThreadWeaver on clusterclaw → Ollama on clustercrush. Nothing leaves your network.</p>
-          <p>Model weights are stored locally on clustercrush's NVMe. Conversations are stored in ThreadWeaver's database on clusterclaw. External API calls only happen if you explicitly switch to an external provider.</p>
+          <p>Yes. The <code>local</code> provider runs inference on clustercrush (Jetson Orin Nano) using Ollama. Data path: browser → HTTPS (your LAN) → ThreadWeaver on clusterclaw → Ollama on clustercrush. Nothing leaves your network. Model weights and conversations are stored locally.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>What's the difference between ThreadWeaver and OpenClaw?</summary>
         <div class="answer">
-          <p><strong>ThreadWeaver</strong> is chat-first. Conversations you can branch, save, search, and switch models in mid-thread. Best for talking to the model and occasionally using tools.</p>
-          <p><strong>OpenClaw</strong> is an agent framework. You give it a goal and it autonomously plans, uses tools, browses the web, and reports back. Also integrates with Telegram/Discord/Slack for mobile access.</p>
-          <p>Both run simultaneously, both use the same Ollama backend, and both access the same MCP tools.</p>
+          <p><strong>ThreadWeaver</strong> is chat-first. Branching conversations, model switching mid-thread, search, notebooks. Best for talking to the model and using tools interactively.</p>
+          <p><strong>OpenClaw</strong> is an agent framework. Give it a goal, it autonomously plans, uses tools, browses the web, and reports back. Integrates with Telegram/Discord/Slack for mobile access.</p>
+          <p>Both run simultaneously, share the same Ollama backend, and access the same MCP tools.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>How do I change the default passwords and tokens?</summary>
         <div class="answer">
-          <p><strong>SSH password</strong> (do this first):</p>
-          <p><code>passwd</code> — on each node after SSH login</p>
-          <p><strong>OpenClaw gateway token:</strong></p>
-          <p><code>openclaw config set gateway.auth.token "new-token"</code><br>
-          <code>sudo docker restart openclaw</code></p>
-          <p><strong>Shutdown API token:</strong> edit <code>/etc/systemd/system/shutdown-api.service.d/override.conf</code> and set <code>Environment=SHUTDOWN_TOKEN=new-token</code>, then <code>sudo systemctl daemon-reload &amp;&amp; sudo systemctl restart shutdown-api</code>.</p>
+          <p><strong>SSH password</strong> (do this first on each node):</p>
+          <p><code>passwd</code></p>
+          <p><strong>OpenClaw gateway token:</strong><br>
+          Edit <code>/opt/clusterclaw/.env</code> → set <code>OPENCLAW_TOKEN=new-token</code><br>
+          <code>cd /opt/clusterclaw &amp;&amp; sudo docker compose up -d openclaw</code></p>
         </div>
       </details>
 
-      <a class="docs-link" href="https://github.com/picocluster/PicoCluster-Claw/blob/main/docs/faq.md" target="_blank">Full FAQ with 26 questions in docs/faq.md →</a>
+      <a class="docs-link" href="https://github.com/picocluster/PicoCluster-Claw/blob/main/docs/faq.md" target="_blank">Full FAQ in docs/faq.md →</a>
     </div>
 
+    <!-- ── Hardware ── -->
     <div class="section">
       <h2>Hardware</h2>
       <table>
-        <thead><tr><th>Node</th><th>Hardware</th><th>Role</th></tr></thead>
+        <thead><tr><th>Node</th><th>Hostname</th><th>Hardware</th><th>Role</th></tr></thead>
         <tbody>
-          <tr><td>clusterclaw</td><td>Raspberry Pi 5 (8GB/16GB)</td><td>Agent orchestrator, web UIs, LED status</td></tr>
-          <tr><td>clustercrush</td><td>NVIDIA Jetson Orin Nano Super (8GB)</td><td>GPU-accelerated LLM inference (Ollama)</td></tr>
+          <tr><td>claw</td><td><code>clusterclaw</code> / <code>claw.local</code></td><td>Raspberry Pi 5 (8GB/16GB)</td><td>Agent orchestrator, web UIs, LED status</td></tr>
+          <tr><td>crush</td><td><code>clustercrush</code> / <code>crush.local</code></td><td>NVIDIA Jetson Orin Nano Super (8GB)</td><td>GPU-accelerated LLM inference (Ollama)</td></tr>
         </tbody>
       </table>
       <p style="color: var(--dim); font-size: 0.85rem; margin-top: 0.8rem;">
@@ -788,6 +911,7 @@
       </p>
     </div>
 
+    <!-- ── Default Credentials ── -->
     <div class="section">
       <h2>Default Credentials</h2>
       <table>
@@ -799,7 +923,7 @@
         </tbody>
       </table>
       <p style="color: var(--amber); font-size: 0.85rem; margin-top: 0.8rem;">
-        Change these after initial setup for security.
+        ⚠ Change SSH passwords and the OpenClaw token after initial setup.
       </p>
     </div>
 
@@ -813,90 +937,123 @@
       </p>
     </div>
 
-  </div>
+  </div><!-- /container -->
 
   <script>
-    // Live status checks
-    async function checkService(url, dotId, statusId, label) {
-      const dot = document.getElementById(dotId);
+    // ── CA cert trust detection ───────────────────────────────────────────────
+    // Try fetching a known HTTPS endpoint. If the CA cert is trusted by this
+    // device the fetch succeeds (or fails with non-TLS error). If not trusted
+    // the browser throws a network error before the request reaches the server.
+    async function checkTLSTrust() {
+      try {
+        // no-cors: we don't need the body, just confirmation the TLS handshake worked
+        await fetch('https://claw.local/__openclaw__/health', {
+          mode: 'no-cors',
+          signal: AbortSignal.timeout(5000),
+        });
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    async function updateTLSStatus() {
+      const dot    = document.getElementById('dot-tls');
+      const status = document.getElementById('status-tls');
+      const banner = document.getElementById('setup-banner');
+      const trusted = document.getElementById('setup-trusted');
+
+      const ok = await checkTLSTrust();
+      if (ok) {
+        dot.className = 'dot green';
+        status.textContent = 'trusted';
+        banner.style.display = 'none';
+        trusted.classList.add('visible');
+      } else {
+        dot.className = 'dot amber';
+        status.textContent = 'not installed';
+        banner.style.display = 'block';
+        trusted.classList.remove('visible');
+      }
+    }
+
+    // ── Service health checks (via nginx proxy on same origin) ────────────────
+    async function checkService(url, dotId, statusId) {
+      const dot    = document.getElementById(dotId);
       const status = document.getElementById(statusId);
       try {
-        const controller = new AbortController();
-        setTimeout(() => controller.abort(), 5000);
-        const resp = await fetch(url, { signal: controller.signal, mode: 'no-cors' });
-        dot.className = 'dot green';
-        status.textContent = 'online';
-      } catch {
-        // no-cors requests don't give status, but if they don't throw network error, service is up
-        // For same-origin we can check properly
-        try {
-          const resp = await fetch(url, { signal: AbortSignal.timeout(5000) });
-          if (resp.ok || resp.status === 401) {
-            dot.className = 'dot green';
-            status.textContent = 'online';
-          } else {
-            dot.className = 'dot amber';
-            status.textContent = 'error';
-          }
-        } catch {
-          dot.className = 'dot red';
-          status.textContent = 'offline';
+        const resp = await fetch(url, { signal: AbortSignal.timeout(5000) });
+        if (resp.ok || resp.status === 401) {
+          dot.className = 'dot green';
+          status.textContent = 'online';
+        } else {
+          dot.className = 'dot amber';
+          status.textContent = 'error ' + resp.status;
         }
+      } catch {
+        dot.className = 'dot red';
+        status.textContent = 'offline';
       }
     }
 
     function checkAll() {
-      // These hit nginx proxy endpoints on the same origin so the browser
-      // doesn't need to reach the localhost-only ThreadWeaver/OpenClaw ports.
-      checkService('/healthz/threadweaver', 'dot-tw', 'status-tw', 'ThreadWeaver');
-      checkService('/healthz/openclaw',    'dot-oc', 'status-oc', 'OpenClaw');
-      checkService('/healthz/ollama',      'dot-ol', 'status-ol', 'Ollama');
+      checkService('/healthz/threadweaver', 'dot-tw', 'status-tw');
+      checkService('/healthz/openclaw',     'dot-oc', 'status-oc');
+      checkService('/healthz/ollama',       'dot-ol', 'status-ol');
+      updateTLSStatus();
     }
 
     checkAll();
     setInterval(checkAll, 30000);
 
-    // Copy-to-clipboard for example prompts
+    // ── Platform tabs for CA cert install instructions ────────────────────────
+    function showPlatform(id, btn) {
+      document.querySelectorAll('.platform-inst').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.platform-tabs button').forEach(el => el.classList.remove('active'));
+      document.getElementById('inst-' + id).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // ── Copy-to-clipboard for example prompts ─────────────────────────────────
     function copyPrompt(btn) {
       const text = btn.parentElement.querySelector('.prompt').textContent.trim();
       navigator.clipboard.writeText(text).then(() => {
         btn.textContent = 'Copied!';
         btn.classList.add('copied');
-        setTimeout(() => {
-          btn.textContent = 'Copy';
-          btn.classList.remove('copied');
-        }, 1500);
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
       }).catch(() => {
         btn.textContent = 'Failed';
         setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
       });
     }
 
+    // ── LED control ───────────────────────────────────────────────────────────
     async function ledCall(endpoint, data) {
       try {
         await fetch('http://' + location.hostname + ':7777/' + endpoint, {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(data || {})
+          body: JSON.stringify(data || {}),
         });
         if (data && data.percent !== undefined) {
           document.getElementById('led-progress-label').textContent = 'Progress: ' + data.percent + '%';
         }
-      } catch(e) {}
+      } catch {}
     }
 
+    // ── Cluster shutdown / restart ────────────────────────────────────────────
     async function clusterAction(action, target) {
-      const msg = document.getElementById('control-msg');
+      const msg   = document.getElementById('control-msg');
       const label = action === 'shutdown' ? 'SHUT DOWN' : 'RESTART';
       const scope = target === 'all' ? 'the entire cluster' : target;
       if (!confirm(`Are you sure you want to ${label} ${scope}?`)) return;
 
-      msg.textContent = `${action === 'shutdown' ? 'Shutting down' : 'Restarting'} ${scope}...`;
+      msg.textContent = `${action === 'shutdown' ? 'Shutting down' : 'Restarting'} ${scope}…`;
       try {
         const resp = await fetch('http://' + location.hostname + ':8888/' + action, {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({token: 'picocluster-shutdown', target: target})
+          body: JSON.stringify({ token: 'picocluster-shutdown', target }),
         });
         const data = await resp.json();
         msg.textContent = data.status + ' (' + data.target + '). Page will become unavailable shortly.';
