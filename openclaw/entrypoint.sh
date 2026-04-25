@@ -15,12 +15,15 @@ cat > "$CONFIG" <<EOF
     "trustedProxies": ["172.16.0.0/12", "127.0.0.1", "::1"],
     "controlUi": {
       "allowedOrigins": [
-        "http://localhost:18789",
-        "http://127.0.0.1:18789",
+        "https://claw.local",
+        "https://clusterclaw.local",
+        "https://threadweaver.local",
+        "http://clusterclaw.local",
+        "http://clusterclaw:18789",
         "https://localhost:18790",
         "https://127.0.0.1:18790",
-        "http://clusterclaw:18789",
-        "http://10.1.10.220:18789"
+        "http://localhost:18789",
+        "http://127.0.0.1:18789"
       ],
       "dangerouslyDisableDeviceAuth": true
     }
