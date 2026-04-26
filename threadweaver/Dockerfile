@@ -13,49 +13,7 @@ RUN if [ -n "$(ls -A /tmp/tw-src 2>/dev/null)" ]; then \
     fi && rm -rf /tmp/tw-src
 
 # Ensure threadweaver_config.json ships with a valid Ollama tool-use model.
-# Whatever the upstream repo ships (gemma3:4b, a llamafile tag, etc.) gets
-# replaced here so fresh installs start in a working state out of the box.
-RUN cat > /app/backend/threadweaver_config.json <<'JSON'
-{
-  "default_provider": "local",
-  "providers": {
-    "anthropic": {
-      "enabled": true,
-      "api_key": "",
-      "model": "claude-sonnet-4-20250514",
-      "label": "Claude (Anthropic)"
-    },
-    "openai": {
-      "enabled": true,
-      "api_key": "",
-      "model": "gpt-4",
-      "base_url": "https://api.openai.com/v1",
-      "label": "GPT (OpenAI)"
-    },
-    "gemini": {
-      "enabled": true,
-      "api_key": "",
-      "model": "gemini-2.0-flash",
-      "base_url": "https://generativelanguage.googleapis.com/v1beta/openai",
-      "label": "Gemini (Google)"
-    },
-    "grok": {
-      "enabled": true,
-      "api_key": "",
-      "model": "grok-3",
-      "base_url": "https://api.x.ai/v1",
-      "label": "Grok (xAI)"
-    },
-    "local": {
-      "enabled": true,
-      "api_key": "",
-      "model": "llama3.1:8b",
-      "base_url": "http://clustercrush:11434/v1",
-      "label": "Local (Ollama)"
-    }
-  }
-}
-JSON
+COPY threadweaver_config.json /app/backend/threadweaver_config.json
 
 # Patch API_BASE for LAN access
 RUN sed -i "s|const API_BASE = 'http://localhost:8000/api'|const API_BASE = '/api'|g" \
