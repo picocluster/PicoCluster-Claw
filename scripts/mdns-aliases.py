@@ -15,6 +15,10 @@ import signal
 import dbus
 import avahi
 
+# DNS constants not exported by all python3-avahi versions
+DNS_CLASS_IN = 1
+DNS_TYPE_CNAME = 5
+
 ALIASES = sys.argv[1:] if len(sys.argv) > 1 else ["claw.local", "threadweaver.local"]
 
 
@@ -56,8 +60,8 @@ def main():
             avahi.PROTO_UNSPEC,
             dbus.UInt32(0),
             alias,
-            dbus.UInt16(avahi.CLASS_IN),
-            dbus.UInt16(avahi.TYPE_CNAME),
+            dbus.UInt16(DNS_CLASS_IN),
+            dbus.UInt16(DNS_TYPE_CNAME),
             dbus.UInt32(60),
             rdata,
         )
