@@ -53,7 +53,7 @@ sed -i '/\bclustercrush\b/d' /etc/hosts
 cat >> /etc/hosts <<HOSTS
 
 # BEGIN PICOCLUSTER CLAW
-10.1.10.220  clusterclaw clusterclaw.local claw claw.local
+10.1.10.220  clusterclaw clusterclaw.local claw claw.local threadweaver.local
 10.1.10.221  clustercrush clustercrush.local crush crush.local
 # END PICOCLUSTER CLAW
 HOSTS
