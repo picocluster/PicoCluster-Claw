@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y git python3 python3-pip python3-venv cu
 # ThreadWeaver source — CI: pre-populated tw-src/ from actions/checkout (no credentials needed)
 # Local dev: tw-src/ is empty, falls back to git clone (requires network access to private repo)
 COPY tw-src/ /tmp/tw-src/
-RUN if [ -n "$(ls -A /tmp/tw-src 2>/dev/null)" ]; then \
+RUN if [ -f "/tmp/tw-src/package.json" ]; then \
       cp -rT /tmp/tw-src /app; \
     else \
       git clone --depth 1 https://github.com/nosqltips/ThreadWeaver.git /app; \
@@ -21,7 +21,8 @@ RUN find frontend/src -name "*.ts" -o -name "*.svelte" | \
     xargs -r sed -i "s|http://localhost:8000/api|/api|g" || true
 
 # Patch vite config: allow LAN hosts + proxy /api to backend
-RUN printf 'import { sveltekit } from "@sveltejs/kit/vite";\nimport { defineConfig } from "vite";\n\nexport default defineConfig({\n\tplugins: [sveltekit()],\n\tserver: {\n\t\tallowedHosts: true,\n\t\tproxy: {\n\t\t\t"/api": {\n\t\t\t\ttarget: "http://127.0.0.1:8000",\n\t\t\t\tchangeOrigin: true\n\t\t\t}\n\t\t}\n\t}\n});\n' > frontend/vite.config.js
+# Writes to both .ts and .js to cover either extension in the source tree
+RUN printf 'import { sveltekit } from "@sveltejs/kit/vite";\nimport { defineConfig } from "vite";\n\nexport default defineConfig({\n\tplugins: [sveltekit()],\n\tserver: {\n\t\tallowedHosts: true,\n\t\tproxy: {\n\t\t\t"/api": {\n\t\t\t\ttarget: "http://127.0.0.1:8000",\n\t\t\t\tchangeOrigin: true\n\t\t\t}\n\t\t}\n\t}\n});\n' | tee frontend/vite.config.ts frontend/vite.config.js > /dev/null
 
 # Patch model discovery for llama-server
 COPY patch-llama-server.py /tmp/patch-llama-server.py
