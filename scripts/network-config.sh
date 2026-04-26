@@ -103,17 +103,12 @@ apply "printf '\n# BEGIN PICOCLUSTER CLAW\n%s  clusterclaw clusterclaw.local cla
   '${CLAW_HOST_IP}' '${CRUSH_HOST_IP}' >> /etc/hosts"
 
 # ---------------------------------------------------------------------------
-# 3. Update /etc/avahi/hosts (claw.local + threadweaver.local aliases)
+# 3. Restart mDNS alias service (CNAME records via avahi-publish + D-Bus)
 # ---------------------------------------------------------------------------
-if [ -n "$CLAW_IP" ] && [ -f "$AVAHI_HOSTS" ]; then
-    log "Updating $AVAHI_HOSTS ..."
-    apply "cat > \"$AVAHI_HOSTS\" <<'EOF'
-# PicoClaw mDNS aliases — managed by network-config.sh
-${CLAW_IP}  claw.${DOMAIN}
-${CLAW_IP}  threadweaver.${DOMAIN}
-EOF"
-    apply "systemctl restart avahi-daemon"
-fi
+# /etc/avahi/hosts is intentionally empty — aliases are published as CNAME
+# records by picocluster-mdns-aliases.service so macOS Bonjour resolves them.
+apply "systemctl restart avahi-daemon"
+apply "systemctl restart picocluster-mdns-aliases 2>/dev/null || true"
 
 # ---------------------------------------------------------------------------
 # 4. Restart Docker services to pick up new .env
