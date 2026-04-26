@@ -15,9 +15,10 @@ RUN if [ -n "$(ls -A /tmp/tw-src 2>/dev/null)" ]; then \
 # Ensure threadweaver_config.json ships with a valid Ollama tool-use model.
 COPY threadweaver_config.json /app/backend/threadweaver_config.json
 
-# Patch API_BASE for LAN access
-RUN sed -i "s|const API_BASE = 'http://localhost:8000/api'|const API_BASE = '/api'|g" \
-    frontend/src/lib/api.ts frontend/src/routes/+page.svelte
+# Patch API_BASE for LAN access — use find so missing files don't fail the build
+RUN find frontend/src -name "*.ts" -o -name "*.svelte" | \
+    xargs grep -rl "localhost:8000/api" 2>/dev/null | \
+    xargs -r sed -i "s|http://localhost:8000/api|/api|g" || true
 
 # Patch vite config: allow LAN hosts + proxy /api to backend
 RUN printf 'import { sveltekit } from "@sveltejs/kit/vite";\nimport { defineConfig } from "vite";\n\nexport default defineConfig({\n\tplugins: [sveltekit()],\n\tserver: {\n\t\tallowedHosts: true,\n\t\tproxy: {\n\t\t\t"/api": {\n\t\t\t\ttarget: "http://127.0.0.1:8000",\n\t\t\t\tchangeOrigin: true\n\t\t\t}\n\t\t}\n\t}\n});\n' > frontend/vite.config.js
