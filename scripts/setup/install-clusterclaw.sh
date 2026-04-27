@@ -53,7 +53,7 @@ sed -i '/\bclustercrush\b/d' /etc/hosts
 cat >> /etc/hosts <<HOSTS
 
 # BEGIN PICOCLUSTER CLAW
-10.1.10.220  clusterclaw clusterclaw.local claw claw.local threadweaver.local
+10.1.10.220  clusterclaw clusterclaw.local claw claw.local threadweaver.local control.local
 10.1.10.221  clustercrush clustercrush.local crush crush.local
 # END PICOCLUSTER CLAW
 HOSTS
@@ -175,13 +175,13 @@ chmod +x /usr/local/bin/picocluster-mdns-aliases
 
 cat > /etc/systemd/system/picocluster-mdns-aliases.service <<'UNIT'
 [Unit]
-Description=PicoClaw mDNS CNAME aliases (claw.local, threadweaver.local)
+Description=PicoClaw mDNS CNAME aliases (claw.local, threadweaver.local, control.local)
 After=avahi-daemon.service
 Requires=avahi-daemon.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /usr/local/bin/picocluster-mdns-aliases claw.local threadweaver.local
+ExecStart=/usr/bin/python3 /usr/local/bin/picocluster-mdns-aliases claw.local threadweaver.local control.local
 Restart=on-failure
 RestartSec=5
 

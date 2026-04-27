@@ -77,12 +77,12 @@ The portal page at `http://clusterclaw.local` has full platform-specific instruc
 
 | Interface | URL | Notes |
 |-----------|-----|-------|
-| **PicoCluster Claw Portal** | `http://clusterclaw.local` | Status, setup guide, management |
+| **PicoCluster Claw Portal** | `http://control.local` | Status, setup guide, CA cert download |
 | **OpenClaw** | `https://claw.local` | Agent dashboard (token: `picocluster-token`) |
 | **ThreadWeaver** | `https://threadweaver.local` | Chat UI |
 | **Ollama API** | `http://clustercrush:11434/v1` | OpenAI-compatible endpoint |
 
-Both `claw.local` and `threadweaver.local` require the CA cert installed (step 4) — no browser warnings after that. The portal is always available over HTTP for first-time setup.
+`claw.local` and `threadweaver.local` are HTTPS and require the CA cert installed (step 4). `control.local` is always HTTP — use it for first-time setup and CA cert download.
 
 **SSH tunnel (fallback — no CA cert needed):**
 ```bash
