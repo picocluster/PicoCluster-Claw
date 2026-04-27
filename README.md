@@ -96,7 +96,7 @@ The cluster uses **static IPs** and **mDNS** (`.local` hostnames) for LAN access
 
 ### Option A — LAN (default)
 
-`claw.local` and `threadweaver.local` resolve via mDNS on the same subnet. The cluster publishes them as CNAME records so they work without any client configuration:
+`claw.local`, `threadweaver.local`, and `control.local` resolve via mDNS on the same subnet. The cluster publishes them as CNAME records pointing to `clusterclaw.local`, so they work without any client configuration:
 
 | Platform | Status |
 |---|---|
@@ -106,7 +106,7 @@ The cluster uses **static IPs** and **mDNS** (`.local` hostnames) for LAN access
 
 **Fallback:** if mDNS is blocked on your network, add to your system hosts file:
 ```
-10.1.10.220  claw.local threadweaver.local
+10.1.10.220  clusterclaw clusterclaw.local claw.local threadweaver.local control.local
 ```
 - macOS/Linux: `/etc/hosts`
 - Windows: `C:\Windows\System32\drivers\etc\hosts`
