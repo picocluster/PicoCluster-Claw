@@ -1,0 +1,31 @@
+# PicoCluster Claw — Windows Solo override
+# Usage: docker compose -f docker-compose.yml -f docker-compose.windows.yml up -d
+#
+# Ollama runs natively on Windows (NVIDIA/AMD GPU or CPU). Docker Desktop
+# (WSL2 backend) connects to it via host.docker.internal automatically.
+# No clustercrush node, no GPIO LEDs.
+
+services:
+  threadweaver:
+    environment:
+      - LLM_PROVIDER=local
+      - LOCAL_BASE_URL=http://host.docker.internal:11434/v1
+      - LOCAL_MODEL=${DEFAULT_MODEL:-llama3.2:3b}
+      - LED_API_URL=http://host.docker.internal:7777
+      - PICOCLUSTER_PLATFORM=windows-solo
+    extra_hosts:
+      - "clustercrush:host-gateway"
+      - "crush:host-gateway"
+
+  openclaw:
+    environment:
+      - LOCAL_BASE_URL=http://host.docker.internal:11434/v1
+      - LOCAL_MODEL=${DEFAULT_MODEL:-llama3.2:3b}
+    extra_hosts:
+      - "clustercrush:host-gateway"
+      - "crush:host-gateway"
+
+  portal:
+    volumes:
+      - ./portal/index-windows.html:/usr/share/nginx/html/index.html:ro
+      - ./portal/nginx.conf:/etc/nginx/conf.d/default.conf:ro

@@ -1,6 +1,6 @@
 #!/bin/bash
-# update-mac.sh — Update PicoCluster Claw on Mac Solo
-# Usage: bash update-mac.sh [--force]
+# update-linux.sh — Update PicoCluster Claw on Linux Solo
+# Usage: bash update-linux.sh [--force]
 set -euo pipefail
 
 INSTALL_DIR="${HOME}/picocluster-claw"
@@ -29,13 +29,13 @@ git pull --ff-only 2>&1 | tail -5
 
 # Update containers
 log "Pulling ThreadWeaver image from GHCR..."
-docker compose -f docker-compose.yml -f docker-compose.mac.yml pull threadweaver 2>&1 | tail -5
+docker compose -f docker-compose.yml -f docker-compose.linux.yml pull threadweaver 2>&1 | tail -5
 log "Rebuilding local containers..."
-docker compose -f docker-compose.yml -f docker-compose.mac.yml build --pull openclaw portal 2>&1 | tail -10
+docker compose -f docker-compose.yml -f docker-compose.linux.yml build --pull openclaw portal 2>&1 | tail -10
 
 # Restart
 log "Restarting..."
-docker compose -f docker-compose.yml -f docker-compose.mac.yml up -d 2>&1 | tail -10
+docker compose -f docker-compose.yml -f docker-compose.linux.yml up -d threadweaver openclaw portal 2>&1 | tail -10
 
 # Wait for health
 log "Waiting for services..."
@@ -48,8 +48,8 @@ for i in $(seq 1 20); do
 done
 
 # Update user scripts
-if [[ -d "$INSTALL_DIR/scripts/user-bin/mac" ]]; then
-  cp "$INSTALL_DIR/scripts/user-bin/mac/"* "${HOME}/bin/" 2>/dev/null
+if [[ -d "$INSTALL_DIR/scripts/user-bin/linux" ]]; then
+  cp "$INSTALL_DIR/scripts/user-bin/linux/"* "${HOME}/bin/" 2>/dev/null
   chmod +x "${HOME}/bin/"*
   log "User scripts updated"
 fi

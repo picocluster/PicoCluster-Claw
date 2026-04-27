@@ -90,6 +90,50 @@ ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@clusterclaw
 # Then: https://localhost:18790 (OpenClaw)  https://localhost:5174 (ThreadWeaver)
 ```
 
+## Solo Installs
+
+Don't have the hardware yet? PicoCluster Claw runs as a single-machine stack on Mac, Linux, and Windows. Ollama runs natively (Metal GPU on Mac, NVIDIA/AMD/CPU on Linux and Windows); Docker containers provide ThreadWeaver, OpenClaw, and the Portal.
+
+### Mac (Apple Silicon)
+
+```bash
+bash scripts/setup/install-mac.sh [model]
+# Default model: llama3.2:3b
+```
+
+Requires Docker Desktop and Ollama (auto-installed via Homebrew if missing).
+
+| URL | Service |
+|-----|---------|
+| `http://localhost:5173` | ThreadWeaver |
+| `http://localhost:18789` | OpenClaw |
+| `http://localhost/` | Portal |
+
+### Linux (Ubuntu 22.04+ / Debian 12+)
+
+```bash
+bash scripts/setup/install-linux.sh [model]
+```
+
+Installs Docker via `get.docker.com` and Ollama via the official install script. NVIDIA and AMD GPUs are auto-detected.
+
+### Windows 10/11
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+.\scripts\setup\install-windows.ps1 [model]
+```
+
+Requires winget (included in Windows 10/11). Docker Desktop and Ollama are installed automatically. If Docker Desktop was just installed, the script will prompt you to open it and complete first-time setup, then re-run.
+
+### Updating (all solo platforms)
+
+```bash
+bash scripts/setup/update-mac.sh        # Mac
+bash scripts/setup/update-linux.sh      # Linux
+.\scripts\setup\update-windows.ps1      # Windows (PowerShell)
+```
+
 ## Networking
 
 The cluster uses **static IPs** and **mDNS** (`.local` hostnames) for LAN access. Three access options are supported:
@@ -246,9 +290,16 @@ Raw ports (18789, 5173, 8000) are localhost-only; all external access goes throu
 
 ```
 PicoCluster-Claw/
-├── docker-compose.yml              # All services (ThreadWeaver, OpenClaw, Portal, Caddy)
+├── docker-compose.yml              # Base services (ThreadWeaver, OpenClaw, Portal, Caddy)
+├── docker-compose.mac.yml          # Mac Solo overlay (Ollama via Metal GPU)
+├── docker-compose.linux.yml        # Linux Solo overlay (Ollama native, GPU or CPU)
+├── docker-compose.windows.yml      # Windows Solo overlay (Ollama native, GPU or CPU)
 ├── .env                            # CRUSH_IP, DEFAULT_MODEL, OPENCLAW_TOKEN
-├── portal/                         # Landing page (nginx :80) + nginx config
+├── portal/                         # Landing pages (nginx :80) + nginx config
+│   ├── index.html                  # Cluster edition portal
+│   ├── index-mac.html              # Mac Solo portal
+│   ├── index-linux.html            # Linux Solo portal
+│   └── index-windows.html          # Windows Solo portal
 ├── openclaw/                       # OpenClaw Dockerfile + Caddyfile
 ├── threadweaver/                   # ThreadWeaver Dockerfile + patches
 ├── leds/                           # Blinkt! driver, status daemon, MCP server
@@ -261,6 +312,13 @@ PicoCluster-Claw/
     └── setup/
         ├── install-clusterclaw.sh  # Full RPi5 installer
         ├── install-clustercrush.sh # Full Orin installer
+        ├── install-mac.sh          # Mac Solo installer
+        ├── install-linux.sh        # Linux Solo installer
+        ├── install-windows.ps1     # Windows Solo installer (PowerShell)
+        ├── update-clusterclaw.sh   # Update cluster (RPi5)
+        ├── update-mac.sh           # Update Mac Solo
+        ├── update-linux.sh         # Update Linux Solo
+        ├── update-windows.ps1      # Update Windows Solo (PowerShell)
         └── validate-pair.sh        # Verify cluster is healthy
 ```
 

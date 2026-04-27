@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PicoCluster Claw — Mac Solo</title>
+  <title>PicoCluster Claw — Windows Solo</title>
   <style>
     :root {
       --bg: #0a0a1a;
@@ -113,7 +113,6 @@
     .example .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
     .example .copy-btn.copied { background: var(--green); border-color: var(--green); color: #000; }
 
-    /* Virtual LED strip */
     .virtual-leds {
       background: var(--card); border: 1px solid var(--border); border-radius: 12px;
       padding: 1.2rem; margin-bottom: 2rem; text-align: center;
@@ -124,7 +123,6 @@
       width: 18px; height: 18px; border-radius: 50%; background: #333;
       transition: background 0.3s, box-shadow 0.3s;
     }
-    .led-strip .led.on { box-shadow: 0 0 10px currentColor; }
     .virtual-leds .mode-text { font-size: 0.8rem; color: var(--dim); }
 
     .footer { text-align: center; color: var(--dim); font-size: 0.8rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
@@ -135,9 +133,9 @@
   <div class="container">
 
     <header>
-      <div class="badge">Mac Solo Edition</div>
+      <div class="badge">Windows Solo Edition</div>
       <h1>PicoCluster Claw</h1>
-      <p>Private AI on your Mac &mdash; Ollama (Metal GPU) + ThreadWeaver + OpenClaw + 28 MCP tools</p>
+      <p>Private AI on your Windows PC &mdash; Ollama (GPU or CPU) + ThreadWeaver + OpenClaw + 28 MCP tools</p>
     </header>
 
     <div class="status-bar">
@@ -173,11 +171,11 @@
       <div class="card">
         <h3>OpenClaw Dashboard</h3>
         <div class="desc">AI agent with autonomous planning, tool use, and messaging channel integrations (Telegram, Discord, Slack).</div>
-        <a href="https://localhost:18790">Open Dashboard</a>
+        <a href="http://localhost:18789">Open Dashboard</a>
       </div>
       <div class="card">
         <h3>Ollama</h3>
-        <div class="desc">OpenAI-compatible inference endpoint running on Apple Silicon (Metal GPU). Manage models from the terminal.</div>
+        <div class="desc">OpenAI-compatible inference endpoint running natively. Auto-detects NVIDIA and AMD GPUs, falls back to CPU.</div>
         <a href="#" onclick="navigator.clipboard.writeText('http://localhost:11434/v1'); this.textContent='Copied!'; setTimeout(()=>this.textContent='Copy API URL',1500); return false;" class="secondary">Copy API URL</a>
       </div>
     </div>
@@ -185,7 +183,7 @@
     <div class="section">
       <h2>Installed Models</h2>
       <p style="color: var(--dim); font-size: 0.9rem; margin-bottom: 1rem;">
-        Manage models from your terminal: <code>ollama list</code>, <code>ollama pull &lt;model&gt;</code>, <code>ollama rm &lt;model&gt;</code>
+        Manage models from PowerShell: <code>ollama list</code>, <code>ollama pull &lt;model&gt;</code>, <code>ollama rm &lt;model&gt;</code>
       </p>
       <div id="models-table">
         <p style="color: var(--dim); font-size: 0.85rem;">Loading models...</p>
@@ -252,7 +250,7 @@
           <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
         </div>
         <div class="example">
-          <div class="prompt">Write a file called hello.txt containing "Hello from PicoCluster Claw on Mac".</div>
+          <div class="prompt">Write a file called hello.txt containing "Hello from PicoCluster Claw on Windows".</div>
           <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
         </div>
         <div class="example">
@@ -266,55 +264,56 @@
       <h2>Frequently Asked Questions</h2>
 
       <details class="faq">
-        <summary>How is the Mac Solo different from the cluster version?</summary>
+        <summary>How do I run the install script?</summary>
         <div class="answer">
-          <p>The cluster version uses two nodes: a Raspberry Pi 5 (orchestrator) and an NVIDIA Jetson Orin Nano (GPU inference). The Mac Solo runs everything on a single Apple Silicon Mac: Ollama runs natively using Metal GPU, and the web services run in Docker containers. Same software, same MCP tools, same ThreadWeaver &mdash; just one machine instead of two.</p>
+          <p>Open PowerShell as Administrator, then run:</p>
+          <p><code>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</code></p>
+          <p><code>.\install-windows.ps1</code></p>
+          <p>winget handles all dependencies (Git, Docker Desktop, Ollama) automatically.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>Will Ollama use my GPU?</summary>
+        <div class="answer">
+          <p>Ollama auto-detects NVIDIA GPUs (requires CUDA drivers) and AMD GPUs (requires ROCm). Install the latest drivers from your GPU vendor, then restart Ollama. Check with <code>ollama run llama3.2:3b</code> and look for "GPU" in the output.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>Can I use Claude, GPT-4, Gemini, or Grok?</summary>
         <div class="answer">
-          <p>Yes. Open ThreadWeaver &rarr; Settings &rarr; paste your API key for the provider you want. You can switch providers mid-conversation. External providers use the same MCP tools as local models (when tools are enabled).</p>
+          <p>Yes. Open ThreadWeaver &rarr; Settings &rarr; paste your API key for the provider you want. You can switch providers mid-conversation.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>Why are tools off by default for local models?</summary>
         <div class="answer">
-          <p>Sending 28 tool schemas on every request slows down small local models and makes them "tool-happy" &mdash; they try to use tools even for general knowledge questions. With tools off, local chat is fast (~1-2 seconds). Turn them on in Settings when you need the model to check sensors, write files, or control things.</p>
-          <p>External providers (Claude, GPT-4) handle tools natively and don't have this issue.</p>
+          <p>Sending 28 tool schemas on every request slows down small local models. With tools off, local chat is fast. Turn them on in Settings when you need the model to check sensors, write files, or control things. External providers (Claude, GPT-4) handle tools natively.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>How do I add more models?</summary>
         <div class="answer">
-          <p>From your terminal: <code>ollama pull &lt;model-name&gt;</code>. Browse <a href="https://ollama.com/library" style="color: var(--accent);" target="_blank">ollama.com/library</a> for available models. Apple Silicon Macs with 16GB+ RAM can run larger models like <code>llama3.1:70b</code> or <code>qwen2.5:32b</code>.</p>
+          <p>From PowerShell: <code>ollama pull &lt;model-name&gt;</code>. Browse <a href="https://ollama.com/library" style="color: var(--accent);" target="_blank">ollama.com/library</a> for available models. Machines with 16GB+ RAM can run larger models like <code>llama3.1:70b</code>.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>Is my data private?</summary>
         <div class="answer">
-          <p>With the <code>local</code> provider, everything stays on your Mac. Model weights are stored by Ollama in <code>~/.ollama/models</code>. Conversations are in the ThreadWeaver Docker volume. Nothing leaves your machine unless you switch to an external provider.</p>
+          <p>With the <code>local</code> provider, everything stays on your machine. Model weights are stored by Ollama in <code>%USERPROFILE%\.ollama\models</code>. Conversations are in the ThreadWeaver Docker volume. Nothing leaves your machine unless you switch to an external provider.</p>
         </div>
       </details>
 
       <details class="faq">
         <summary>How do I stop or restart everything?</summary>
         <div class="answer">
-          <p><strong>Stop containers:</strong> <code>cd ~/picocluster-claw && docker compose -f docker-compose.yml -f docker-compose.mac.yml down</code></p>
-          <p><strong>Start containers:</strong> <code>cd ~/picocluster-claw && docker compose -f docker-compose.yml -f docker-compose.mac.yml up -d</code></p>
-          <p><strong>Stop Ollama:</strong> <code>brew services stop ollama</code></p>
-          <p><strong>Start Ollama:</strong> <code>brew services start ollama</code></p>
-        </div>
-      </details>
-
-      <details class="faq">
-        <summary>What about the certificate warning on https://localhost?</summary>
-        <div class="answer">
-          <p>Caddy generates a self-signed certificate for <code>localhost</code>. Your browser will warn you &mdash; click "Advanced &rarr; Proceed" and it's fine. The connection is encrypted. You can also just use <code>http://localhost:5173</code> directly since it's your own machine.</p>
+          <p><strong>Stop containers:</strong> <code>cd $env:USERPROFILE\picocluster-claw; docker compose -f docker-compose.yml -f docker-compose.windows.yml down</code></p>
+          <p><strong>Start containers:</strong> <code>docker compose -f docker-compose.yml -f docker-compose.windows.yml up -d threadweaver openclaw portal</code></p>
+          <p><strong>Restart Ollama:</strong> Close the Ollama tray icon, then reopen it from the Start menu.</p>
         </div>
       </details>
 
@@ -324,14 +323,14 @@
     <div class="section">
       <h2>Management</h2>
       <table>
-        <thead><tr><th>Task</th><th>Command</th></tr></thead>
+        <thead><tr><th>Task</th><th>Command (PowerShell)</th></tr></thead>
         <tbody>
           <tr><td>List models</td><td><code>ollama list</code></td></tr>
           <tr><td>Pull a model</td><td><code>ollama pull &lt;model&gt;</code></td></tr>
           <tr><td>Remove a model</td><td><code>ollama rm &lt;model&gt;</code></td></tr>
-          <tr><td>View logs</td><td><code>cd ~/picocluster-claw && docker compose logs -f</code></td></tr>
+          <tr><td>View logs</td><td><code>cd $env:USERPROFILE\picocluster-claw; docker compose logs -f</code></td></tr>
           <tr><td>Restart ThreadWeaver</td><td><code>docker restart threadweaver</code></td></tr>
-          <tr><td>Update everything</td><td><code>cd ~/picocluster-claw && git pull && docker compose -f docker-compose.yml -f docker-compose.mac.yml pull threadweaver && docker compose -f docker-compose.yml -f docker-compose.mac.yml build openclaw portal && docker compose -f docker-compose.yml -f docker-compose.mac.yml up -d</code></td></tr>
+          <tr><td>Update everything</td><td><code>cd $env:USERPROFILE\picocluster-claw; .\scripts\setup\update-windows.ps1</code></td></tr>
         </tbody>
       </table>
     </div>
@@ -344,13 +343,12 @@
         <a href="https://github.com/openclaw/openclaw">OpenClaw</a> &middot;
         <a href="https://ollama.com">Ollama</a>
       </p>
-      <p>PicoCluster Claw &mdash; Mac Solo Edition &mdash; built by <a href="https://picocluster.com">PicoCluster LLC</a></p>
+      <p>PicoCluster Claw &mdash; Windows Solo Edition &mdash; built by <a href="https://picocluster.com">PicoCluster LLC</a></p>
     </div>
 
   </div>
 
   <script>
-    // Live status checks (same-origin via nginx proxy)
     async function checkService(url, dotId, statusId) {
       const dot = document.getElementById(dotId);
       const status = document.getElementById(statusId);
@@ -378,7 +376,6 @@
     checkAll();
     setInterval(checkAll, 30000);
 
-    // Load models from Ollama
     async function loadModels() {
       try {
         const resp = await fetch('/healthz/ollama');
@@ -401,7 +398,6 @@
     }
     loadModels();
 
-    // Virtual LED strip — polls the virtual daemon's GET /status
     const LED_COLORS = {
       red: '#f87171', green: '#4ade80', blue: '#4a9eff', amber: '#fbbf24',
       orange: '#fb923c', cyan: '#22d3ee', purple: '#a78bfa', white: '#e2e8f0', off: '#333'
@@ -417,16 +413,14 @@
         const mode = state.mode;
 
         if (mode === 'idle') {
-          // Teal scanner simulation
           const t = Date.now() / 400;
           leds.forEach((led, i) => {
             const dist = Math.abs((t % 8) - i);
             const brightness = Math.max(0, 1 - dist * 0.35);
-            const r = Math.round(0 * brightness);
             const g = Math.round(200 * brightness);
             const b = Math.round(200 * brightness);
-            led.style.background = brightness > 0.1 ? `rgb(${r},${g},${b})` : '#222';
-            led.style.boxShadow = brightness > 0.5 ? `0 0 8px rgb(${r},${g},${b})` : 'none';
+            led.style.background = brightness > 0.1 ? `rgb(0,${g},${b})` : '#222';
+            led.style.boxShadow = brightness > 0.5 ? `0 0 8px rgb(0,${g},${b})` : 'none';
           });
           modeEl.textContent = 'idle — scanner';
         } else if (mode === 'status' || mode === 'flash') {
@@ -457,10 +451,8 @@
       }
     }
 
-    // Fast poll for smooth animation when active, slower when idle
     setInterval(updateLEDs, 100);
 
-    // Copy-to-clipboard
     function copyPrompt(btn) {
       const text = btn.parentElement.querySelector('.prompt').textContent.trim();
       navigator.clipboard.writeText(text).then(() => {

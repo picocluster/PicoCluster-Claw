@@ -1,0 +1,37 @@
+# PicoCluster Claw — Linux Solo override
+# Usage: docker compose -f docker-compose.yml -f docker-compose.linux.yml up -d
+#
+# Ollama runs natively on Linux (NVIDIA/AMD GPU or CPU). Docker containers
+# connect to it via host.docker.internal. No clustercrush node, no GPIO LEDs.
+
+services:
+  threadweaver:
+    environment:
+      - LLM_PROVIDER=local
+      - LOCAL_BASE_URL=http://host.docker.internal:11434/v1
+      - LOCAL_MODEL=${DEFAULT_MODEL:-llama3.2:3b}
+      - LED_API_URL=http://host.docker.internal:7777
+      - PICOCLUSTER_PLATFORM=linux-solo
+    extra_hosts:
+      - "clustercrush:host-gateway"
+      - "crush:host-gateway"
+    volumes:
+      - ./leds/mcp_server.py:/opt/mcp/led_server.py:ro
+      - ./mcp:/opt/mcp/servers:ro
+      - ${HOME}/claw-files/threadweaver:/workspace
+
+  openclaw:
+    environment:
+      - LOCAL_BASE_URL=http://host.docker.internal:11434/v1
+      - LOCAL_MODEL=${DEFAULT_MODEL:-llama3.2:3b}
+    extra_hosts:
+      - "clustercrush:host-gateway"
+      - "crush:host-gateway"
+    volumes:
+      - openclaw-data:/home/openclaw/.openclaw
+      - ${HOME}/claw-files/openclaw:/home/openclaw/files
+
+  portal:
+    volumes:
+      - ./portal/index-linux.html:/usr/share/nginx/html/index.html:ro
+      - ./portal/nginx.conf:/etc/nginx/conf.d/default.conf:ro
