@@ -402,12 +402,23 @@ if ! $DRY_RUN; then
   sed -i '/^# BEGIN PICOCLUSTER/,/^# END PICOCLUSTER/d' /etc/hosts
   cat >> /etc/hosts <<EOF
 
-# BEGIN PICOCLUSTER
-${MY_IP}  ${HOSTNAME_DEFAULT}
-${PARTNER_IP}  ${PARTNER_HOSTNAME}
-# END PICOCLUSTER
+# BEGIN PICOCLUSTER CLAW
+${MY_IP}  clusterclaw clusterclaw.local claw claw.local threadweaver.local control.local
+${PARTNER_IP}  clustercrush clustercrush.local crush crush.local
+# END PICOCLUSTER CLAW
 EOF
-  log "Updated /etc/hosts: $HOSTNAME_DEFAULT=$MY_IP, $PARTNER_HOSTNAME=$PARTNER_IP"
+  log "Updated /etc/hosts with full cluster aliases"
+
+  # Disable IPv6 — prevents Avahi hostname conflict storms on boot
+  # (SLAAC address churn causes another device to respond to the mDNS probe,
+  # forcing Avahi to rename clusterclaw → clusterclaw-N in a loop)
+  cat > /etc/sysctl.d/60-disable-ipv6.conf <<EOF
+net.ipv6.conf.all.disable_ipv6=1
+net.ipv6.conf.default.disable_ipv6=1
+net.ipv6.conf.eth0.disable_ipv6=1
+EOF
+  sysctl -p /etc/sysctl.d/60-disable-ipv6.conf 2>/dev/null || true
+  log "IPv6 disabled (sysctl.d)"
 fi
 
 # ============================================================
