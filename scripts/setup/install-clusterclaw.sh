@@ -153,13 +153,28 @@ fi
 
 # Restrict Avahi to the physical LAN interface — prevents Docker bridge interfaces
 # from confusing mDNS announcements and causing macOS to miss them.
-# Disable IPv6 — churn from SLAAC address changes triggers hostname conflicts.
+# Disable IPv6 — SLAAC address churn on eth0 causes hostname conflict storms
+# (another device sees the IPv6 probe and responds, forcing Avahi to rename
+# clusterclaw → clusterclaw-2 → clusterclaw-3 … ad infinitum).
 ETH_IF=$(ip -o link show | awk -F': ' '/^[0-9]+: (eth|en)[0-9]/{print $2; exit}')
 ETH_IF=${ETH_IF:-eth0}
+
+# Disable IPv6 at the kernel level so Avahi never sees or publishes an IPv6 address
+cat > /etc/sysctl.d/60-disable-ipv6.conf <<EOF
+net.ipv6.conf.all.disable_ipv6=1
+net.ipv6.conf.default.disable_ipv6=1
+net.ipv6.conf.${ETH_IF}.disable_ipv6=1
+EOF
+sysctl -p /etc/sysctl.d/60-disable-ipv6.conf 2>/dev/null || true
+
 if ! grep -q "^allow-interfaces" /etc/avahi/avahi-daemon.conf 2>/dev/null; then
   sed -i "s/^\[server\]/[server]\nallow-interfaces=${ETH_IF}/" /etc/avahi/avahi-daemon.conf
 fi
+# Lock hostname so Avahi never renames on probe conflict
+sed -i "s/#host-name=foo/host-name=clusterclaw/" /etc/avahi/avahi-daemon.conf
 sed -i 's/^use-ipv6=yes/use-ipv6=no/' /etc/avahi/avahi-daemon.conf
+# Don't publish AAAA records over IPv4 — suppresses IPv6 conflict triggers
+sed -i 's/#publish-aaaa-on-ipv4=yes/publish-aaaa-on-ipv4=no/' /etc/avahi/avahi-daemon.conf
 
 # Clear /etc/avahi/hosts — CNAME aliases are published via the Python service
 # below. A-records from /etc/avahi/hosts work on Linux but macOS Bonjour ignores
@@ -333,7 +348,7 @@ log "============================================"
 log ""
 log "  Step 1 — Install CA cert on each client device:"
 log "    Open in browser:  http://clusterclaw.local/ca.crt"
-log "    (or by IP):       http://${CLAW_IP}/ca.crt"
+log "    (or by IP):       http://$(hostname -I | awk '{print $1}')/ca.crt"
 log ""
 log "  Step 2 — Access services (after CA cert installed):"
 log "    OpenClaw:      https://claw.local"
