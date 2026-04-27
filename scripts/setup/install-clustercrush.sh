@@ -66,11 +66,21 @@ sed -i '/\bclustercrush\b/d' /etc/hosts
 cat >> /etc/hosts <<HOSTS
 
 # BEGIN PICOCLUSTER CLAW
-10.1.10.220  clusterclaw clusterclaw.local claw claw.local
+10.1.10.220  clusterclaw clusterclaw.local claw claw.local threadweaver.local control.local
 10.1.10.221  clustercrush clustercrush.local crush crush.local
 # END PICOCLUSTER CLAW
 HOSTS
 log "Hostname: clustercrush (alias: crush)"
+
+# Disable IPv6 — consistent with clusterclaw; avoids SLAAC churn and reduces attack surface
+ETH_IF=$(ip -o link show | awk -F': ' '/^[0-9]+: (eth|en)[0-9]/{print $2; exit}')
+ETH_IF=${ETH_IF:-eth0}
+cat > /etc/sysctl.d/60-disable-ipv6.conf <<EOF
+net.ipv6.conf.all.disable_ipv6=1
+net.ipv6.conf.default.disable_ipv6=1
+net.ipv6.conf.${ETH_IF}.disable_ipv6=1
+EOF
+sysctl -p /etc/sysctl.d/60-disable-ipv6.conf 2>/dev/null || true
 
 # ============================================================
 # 0. Resize filesystem if needed
