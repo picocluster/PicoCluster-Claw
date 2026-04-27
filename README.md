@@ -61,7 +61,7 @@ Installs Docker containers (ThreadWeaver, OpenClaw, Portal, Caddy), generates lo
 
 ### 4. Install the CA cert on your devices (one-time)
 
-Open **`http://clusterclaw.local/ca.crt`** in a browser on each device you'll use to access the cluster. Install the downloaded certificate as a trusted CA:
+Open **`http://control.local/ca.crt`** in a browser on each device you'll use to access the cluster. Install the downloaded certificate as a trusted CA:
 
 | Platform | Steps |
 |----------|-------|
@@ -71,7 +71,7 @@ Open **`http://clusterclaw.local/ca.crt`** in a browser on each device you'll us
 | **Android** | Settings → Security → Install certificate → CA certificate |
 | **Linux** | `sudo cp picocluster-ca.crt /usr/local/share/ca-certificates/ && sudo update-ca-certificates` |
 
-The portal page at `http://clusterclaw.local` has full platform-specific instructions.
+The portal page at `http://control.local` has full platform-specific instructions.
 
 ### 5. Access your AI
 
@@ -231,7 +231,7 @@ See [docs/mcp-tools.md](docs/mcp-tools.md) for the full tool reference and HTTP 
 
 | Service | Node | Port | Access |
 |---------|------|------|--------|
-| Portal (nginx) | clusterclaw | 80 | `http://clusterclaw.local` |
+| Portal (nginx) | clusterclaw | 80 | `http://control.local` |
 | Caddy HTTPS proxy | clusterclaw | 443 | host network |
 | OpenClaw | clusterclaw | 18789 (localhost) | `https://claw.local` via Caddy |
 | ThreadWeaver UI | clusterclaw | 5173 (localhost) | `https://threadweaver.local` via Caddy |

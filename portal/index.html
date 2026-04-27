@@ -514,12 +514,12 @@
           </tr>
           <tr>
             <td>This portal</td>
-            <td><code>http://clusterclaw.local</code></td>
+            <td><code>http://control.local</code></td>
             <td>Always available over plain HTTP — no cert needed</td>
           </tr>
           <tr>
             <td>CA cert download</td>
-            <td><code>http://clusterclaw.local/ca.crt</code></td>
+            <td><code>http://control.local/ca.crt</code></td>
             <td>HTTP so it's reachable before cert is installed</td>
           </tr>
           <tr>
@@ -706,7 +706,7 @@
       <details class="faq">
         <summary>How do I open ThreadWeaver or OpenClaw?</summary>
         <div class="answer">
-          <p><strong>Step 1 (once per device):</strong> Download and install the PicoClaw CA cert from <code>http://clusterclaw.local/ca.crt</code>. See the First-Time Setup section at the top of this page for platform-specific instructions.</p>
+          <p><strong>Step 1 (once per device):</strong> Download and install the PicoClaw CA cert from <code>http://control.local/ca.crt</code>. See the First-Time Setup section at the top of this page for platform-specific instructions.</p>
           <p><strong>Step 2:</strong> After installing and restarting your browser:</p>
           <ul>
             <li><a href="https://threadweaver.local" style="color: var(--accent);">https://threadweaver.local</a> — ThreadWeaver chat</li>
@@ -733,7 +733,7 @@
             <li><strong>By IP:</strong> Use the cluster IP directly — <code>https://10.1.10.220</code> — but the TLS cert won't match the IP (browser warning). You'll need to add the CA cert and either use the hostname or get a cert with the IP SAN.</li>
             <li><strong>SSH tunnel:</strong> <code>ssh -L 5174:localhost:5174 -L 18790:localhost:18790 picocluster@clusterclaw</code> then <code>https://localhost:5174</code> and <code>https://localhost:18790</code>.</li>
             <li><strong>Tailscale:</strong> Install Tailscale on clusterclaw and your devices. Get a stable hostname that works anywhere without mDNS.</li>
-            <li><strong>Add to your hosts file:</strong> On your computer add <code>10.1.10.220 claw.local threadweaver.local clusterclaw.local</code> to <code>/etc/hosts</code> (macOS/Linux) or <code>C:\Windows\System32\drivers\etc\hosts</code> (Windows).</li>
+            <li><strong>Add to your hosts file:</strong> On your computer add <code>10.1.10.220 claw.local threadweaver.local control.local clusterclaw.local</code> to <code>/etc/hosts</code> (macOS/Linux) or <code>C:\Windows\System32\drivers\etc\hosts</code> (Windows).</li>
           </ul>
         </div>
       </details>
