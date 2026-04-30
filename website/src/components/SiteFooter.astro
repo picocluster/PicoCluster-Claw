@@ -1,37 +1,31 @@
 ---
-/**
- * Footer for landing + use-case + license pages. Starlight generates
- * its own footer for docs pages, so this is only used on the Astro
- * landing pages under src/pages/.
- */
 const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
 	<div class="container footer-grid">
 		<div class="col-brand">
-			<div class="wordmark">CTXone</div>
-			<p class="tag">Memory that survives the session.</p>
+			<div class="wordmark">PicoCluster Claw</div>
+			<p class="tag">Private AI on your desk.</p>
 		</div>
 
 		<div class="col-links">
 			<h4>Docs</h4>
 			<ul>
-				<li><a href="/getting-started/quickstart/">Quickstart</a></li>
-				<li><a href="/how-it-works/architecture/">Architecture</a></li>
-				<li><a href="/reference/cli/">CLI reference</a></li>
-				<li><a href="/reference/http-api/">HTTP API</a></li>
-				<li><a href="/operating/troubleshooting/">Troubleshooting</a></li>
+				<li><a href="/docs/quickstart/">Quickstart</a></li>
+				<li><a href="/docs/architecture/">Architecture</a></li>
+				<li><a href="/docs/mcp-tools/">MCP tools</a></li>
+				<li><a href="/docs/troubleshooting/">Troubleshooting</a></li>
 			</ul>
 		</div>
 
 		<div class="col-links">
-			<h4>Integrations</h4>
+			<h4>Platforms</h4>
 			<ul>
-				<li><a href="/integrations/ai-coding-tools/">AI coding tools</a></li>
-				<li><a href="/integrations/open-webui/">Open WebUI</a></li>
-				<li><a href="/use-cases/ai-coding/">For AI coding</a></li>
-				<li><a href="/use-cases/self-hosted-chat/">For self-hosted chat</a></li>
+				<li><a href="/#platforms">Hardware appliance</a></li>
+				<li><a href="/docs/quickstart/">macOS</a></li>
+				<li><a href="/docs/quickstart/">Linux</a></li>
+				<li><a href="/docs/quickstart/">Windows</a></li>
 			</ul>
 		</div>
 
@@ -39,27 +33,16 @@ const year = new Date().getFullYear();
 			<h4>Project</h4>
 			<ul>
 				<li>
-					<a href="https://github.com/ctxone/ctxone" rel="noopener">GitHub</a>
+					<a href="https://picocluster.com" rel="noopener">PicoCluster store</a>
 				</li>
 				<li>
-					<a href="https://pypi.org/project/ctxone/" rel="noopener">PyPI</a>
+					<a href="https://github.com/picocluster/picocluster-claw" rel="noopener">GitHub</a>
 				</li>
 				<li>
-					<a
-						href="https://github.com/ctxone/ctxone/releases"
-						rel="noopener"
-					>
-						Releases
-					</a>
+					<a href="https://github.com/picocluster/picocluster-claw/releases" rel="noopener">Releases</a>
 				</li>
-				<li><a href="/license/">License (BSL-1.1)</a></li>
 				<li>
-					<a
-						href="https://github.com/ctxone/ctxone/issues"
-						rel="noopener"
-					>
-						Report an issue
-					</a>
+					<a href="https://github.com/picocluster/picocluster-claw/issues" rel="noopener">Report an issue</a>
 				</li>
 			</ul>
 		</div>
@@ -67,16 +50,11 @@ const year = new Date().getFullYear();
 
 	<div class="container footer-base">
 		<div class="copyright">
-			© {year} CTXone. Source-available (BSL-1.1 → Apache-2.0 after 4 years).
+			© {year} PicoCluster. Open source — see LICENSE.
 		</div>
 		<div class="built-on">
 			Built on
-			<a
-				href="https://github.com/nosqltips/AgentStateGraph"
-				rel="noopener"
-			>
-				AgentStateGraph
-			</a>
+			<a href="https://github.com/picocluster/asg" rel="noopener">AgentStateGraph</a>
 		</div>
 	</div>
 </footer>
@@ -99,10 +77,10 @@ const year = new Date().getFullYear();
 	}
 
 	.col-brand .wordmark {
-		color: var(--ctx-accent);
+		color: var(--claw-blue-text);
 		font-family: var(--ctx-font-mono);
 		font-weight: 800;
-		font-size: 1.15rem;
+		font-size: 1.05rem;
 		margin-bottom: 0.35rem;
 	}
 

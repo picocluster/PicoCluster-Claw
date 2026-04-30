@@ -1,13 +1,4 @@
 ---
-/**
- * Landing-page hero. Three beats:
- *
- *   1. Name the human pain (context anxiety — keeps the v1 emotional bridge)
- *   2. Name the architectural cause (model-centric AI / context debt / reasoning tax)
- *   3. State what CTXone gives back: external context, structured execution,
- *      control over tokens and model choice
- */
-import InstallOneliner from './InstallOneliner.astro';
 ---
 
 <section class="hero">
@@ -15,54 +6,43 @@ import InstallOneliner from './InstallOneliner.astro';
 	<div class="container">
 		<div class="eyebrow">
 			<span class="dot"></span>
-			<span class="eyebrow-text">CTXONE // system-centric AI</span>
+			<span class="eyebrow-text">PICOCLUSTER CLAW // private AI appliance</span>
 		</div>
 
 		<h1>
-			Stop paying a reasoning tax
-			<span class="glow">for context you already have.</span>
+			Your AI. Your hardware.
+			<span class="glow">No cloud required.</span>
 		</h1>
 
 		<p class="lede">
-			Every session you start from scratch, the model burns tokens
-			reconstructing what it should already know. That's not
-			intelligence — that's
-			<strong class="anxiety">context compensation</strong>.
-			Your model isn't thinking. It's catching up.
+			PicoCluster Claw is a self-contained AI appliance that runs
+			<strong class="hl-blue">OpenClaw agents</strong> and
+			<strong class="hl-blue">local LLMs</strong> on your desk —
+			no API keys, no subscriptions, no data leaving your network.
 		</p>
 
 		<p class="lede">
-			CTXone is the external context layer that ends it.
-			Persistent memory, structured plans, and full provenance —
-			so the model
-			<strong class="pillar pillar-stateful">executes</strong>
-			within context instead of
-			<strong class="pillar pillar-burn">reasoning</strong>
-			its way back to it. Smaller models work better.
-			Token costs drop. You stay in control.
+			Idle at <strong class="hl-white">14W</strong>.
+			Private by default. Under
+			<strong class="hl-white">$2/month</strong> to run.
+			Starts in seconds and stays on 24/7 so your agents are always ready.
 		</p>
 
-		<InstallOneliner />
-
 		<div class="cta-row">
-			<a class="btn btn-primary" href="/getting-started/quickstart/">
-				Get started →
+			<a class="btn btn-primary" href="https://picocluster.com" rel="noopener">
+				Order yours →
 			</a>
-			<a
-				class="btn btn-secondary"
-				href="https://github.com/ctxone/ctxone"
-				rel="noopener"
-			>
-				View on GitHub
+			<a class="btn btn-secondary" href="/docs/quickstart/">
+				Read the docs
 			</a>
 		</div>
 
 		<p class="badges">
-			<span class="badge">System-Centric</span>
-			<span class="badge">Model-Agnostic</span>
-			<span class="badge">Self-hosted</span>
-			<span class="badge">Zero telemetry</span>
-			<span class="badge">BSL-1.1 → Apache 2.0</span>
+			<span class="badge">OpenClaw built-in</span>
+			<span class="badge">Local LLM inference</span>
+			<span class="badge badge-red">No API keys</span>
+			<span class="badge">Always-on</span>
+			<span class="badge">Open source</span>
 		</p>
 	</div>
 </section>
@@ -74,17 +54,12 @@ import InstallOneliner from './InstallOneliner.astro';
 		background:
 			radial-gradient(
 				ellipse 60% 80% at 50% 0%,
-				rgba(34, 197, 94, 0.12),
+				rgba(27, 117, 186, 0.14),
 				transparent 60%
 			),
 			radial-gradient(
-				ellipse 80% 60% at 30% 20%,
-				rgba(59, 130, 246, 0.18),
-				transparent 55%
-			),
-			radial-gradient(
-				ellipse 60% 60% at 80% 10%,
-				rgba(252, 211, 77, 0.06),
+				ellipse 50% 40% at 85% 30%,
+				rgba(230, 57, 70, 0.08),
 				transparent 55%
 			),
 			var(--ctx-bg);
@@ -92,9 +67,6 @@ import InstallOneliner from './InstallOneliner.astro';
 		overflow: hidden;
 	}
 
-	/* CRT scanline texture — repeating horizontal stripes at very
-	 * low opacity. Gives the hero a subtle terminal-phosphor feel
-	 * without being a retro gimmick. */
 	.scanlines {
 		position: absolute;
 		inset: 0;
@@ -103,8 +75,8 @@ import InstallOneliner from './InstallOneliner.astro';
 			to bottom,
 			transparent 0,
 			transparent 2px,
-			rgba(255, 255, 255, 0.018) 2px,
-			rgba(255, 255, 255, 0.018) 3px
+			rgba(255, 255, 255, 0.015) 2px,
+			rgba(255, 255, 255, 0.015) 3px
 		);
 		mix-blend-mode: screen;
 	}
@@ -119,13 +91,13 @@ import InstallOneliner from './InstallOneliner.astro';
 		align-items: center;
 		gap: 0.55rem;
 		padding: 0.35rem 0.85rem;
-		background: rgba(34, 197, 94, 0.08);
-		border: 1px solid rgba(34, 197, 94, 0.28);
+		background: rgba(27, 117, 186, 0.1);
+		border: 1px solid rgba(27, 117, 186, 0.35);
 		border-radius: 999px;
 		font-family: var(--ctx-font-mono);
 		font-size: 0.7rem;
 		letter-spacing: 0.12em;
-		color: var(--ctx-success);
+		color: var(--claw-blue-text);
 		margin-bottom: 1.75rem;
 	}
 
@@ -133,18 +105,14 @@ import InstallOneliner from './InstallOneliner.astro';
 		width: 8px;
 		height: 8px;
 		border-radius: 50%;
-		background: var(--ctx-success);
-		box-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
+		background: var(--claw-blue);
+		box-shadow: 0 0 10px rgba(27, 117, 186, 0.8);
 		animation: pulse 2s ease-in-out infinite;
 	}
 
 	@keyframes pulse {
-		0%, 100% {
-			opacity: 1;
-		}
-		50% {
-			opacity: 0.4;
-		}
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0.4; }
 	}
 
 	.eyebrow-text {
@@ -158,21 +126,21 @@ import InstallOneliner from './InstallOneliner.astro';
 		margin: 0 0 1.5rem 0;
 		color: #ffffff;
 		letter-spacing: -0.025em;
-		max-width: 20ch;
+		max-width: 18ch;
 	}
 
 	h1 .glow {
-		color: var(--ctx-success);
+		color: var(--claw-blue-text);
 		text-shadow:
-			0 0 30px rgba(34, 197, 94, 0.4),
-			0 0 60px rgba(34, 197, 94, 0.2);
+			0 0 30px rgba(27, 117, 186, 0.5),
+			0 0 60px rgba(27, 117, 186, 0.25);
 	}
 
 	.lede {
 		font-size: 1.1rem;
 		color: var(--ctx-text-dim);
 		margin: 0 0 1.1rem 0;
-		max-width: 38rem;
+		max-width: 40rem;
 		line-height: 1.65;
 	}
 
@@ -180,28 +148,20 @@ import InstallOneliner from './InstallOneliner.astro';
 		margin-bottom: 2.25rem;
 	}
 
-	.anxiety {
-		color: var(--ctx-warn);
-		font-weight: 600;
-		text-shadow: 0 0 16px rgba(252, 211, 77, 0.25);
-	}
-
-	.pillar {
+	.hl-blue {
+		color: var(--claw-blue-text);
 		font-weight: 600;
 	}
 
-	.pillar-stateful {
-		color: var(--ctx-accent);
-	}
-
-	.pillar-burn {
-		color: var(--ctx-error, #ef4444);
+	.hl-white {
+		color: #ffffff;
+		font-weight: 600;
 	}
 
 	.cta-row {
 		display: flex;
 		gap: 0.75rem;
-		margin: 1.75rem 0 2.5rem 0;
+		margin: 0 0 2rem 0;
 		flex-wrap: wrap;
 	}
 
@@ -223,6 +183,11 @@ import InstallOneliner from './InstallOneliner.astro';
 		color: var(--ctx-text-dim);
 		font-family: var(--ctx-font-mono);
 		letter-spacing: 0.04em;
+	}
+
+	.badge-red {
+		border-color: rgba(230, 57, 70, 0.35);
+		color: var(--claw-red-text);
 	}
 
 	@media (max-width: 640px) {

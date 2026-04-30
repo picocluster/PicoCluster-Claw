@@ -22,8 +22,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const WEBSITE_ROOT = resolve(__dirname, '..');
-const MONOREPO_ROOT = resolve(WEBSITE_ROOT, '..');
-const DOCS_SRC = join(MONOREPO_ROOT, 'docs');
+const REPO_ROOT = resolve(WEBSITE_ROOT, '..');
+const DOCS_SRC = join(REPO_ROOT, 'docs');
 const DOCS_DEST = join(WEBSITE_ROOT, 'src', 'content', 'docs');
 
 /**
@@ -42,140 +42,64 @@ const MAPPING = [
 		title: '5-Minute Quickstart',
 	},
 	{
-		src: 'WINDOWS.md',
+		src: 'faq.md',
 		section: 'getting-started',
-		slug: 'windows',
+		slug: 'faq',
 		order: 2,
-		title: 'Windows',
-	},
-
-	// How it works
-	{
-		src: 'ARCHITECTURE.md',
-		section: 'how-it-works',
-		slug: 'architecture',
-		order: 1,
-		title: 'Architecture',
+		title: 'FAQ',
 	},
 	{
-		src: 'TOKEN_SAVINGS.md',
-		section: 'how-it-works',
-		slug: 'token-savings',
-		order: 2,
-		title: 'Token savings',
-	},
-	{
-		src: 'MEMORY_MCP_DESIGN.md',
-		section: 'how-it-works',
-		slug: 'memory-mcp-design',
+		src: 'access-guide.md',
+		section: 'getting-started',
+		slug: 'access',
 		order: 3,
-		title: 'Memory MCP design',
-	},
-	{
-		src: 'AGENTS.md',
-		section: 'how-it-works',
-		slug: 'agents',
-		order: 4,
-		title: 'Multi-agent systems',
-	},
-	{
-		src: 'MEMORY_BRANCH_SCOPING.md',
-		section: 'how-it-works',
-		slug: 'memory-branch-scoping',
-		order: 5,
-		title: 'Memory branch scoping',
+		title: 'Access guide',
 	},
 
 	// Reference
 	{
-		src: 'CLI_REFERENCE.md',
-		section: 'reference',
-		slug: 'cli',
-		order: 1,
-		title: 'CLI reference',
-	},
-	{
-		src: 'MCP_TOOLS.md',
+		src: 'mcp-tools.md',
 		section: 'reference',
 		slug: 'mcp-tools',
-		order: 2,
+		order: 1,
 		title: 'MCP tools',
 	},
 	{
-		src: 'HTTP_API.md',
+		src: 'benchmark-report.md',
 		section: 'reference',
-		slug: 'http-api',
-		order: 3,
-		title: 'HTTP API',
-	},
-
-	// Integrations
-	{
-		src: 'INTEGRATIONS.md',
-		section: 'integrations',
-		slug: 'ai-coding-tools',
-		order: 1,
-		title: 'AI coding tools',
-	},
-	{
-		src: 'OPENWEBUI.md',
-		section: 'integrations',
-		slug: 'open-webui',
+		slug: 'benchmarks',
 		order: 2,
-		title: 'Open WebUI',
+		title: 'Benchmarks',
+	},
+	{
+		src: 'storage-options.md',
+		section: 'reference',
+		slug: 'storage',
+		order: 3,
+		title: 'Storage options',
 	},
 
 	// Operating
 	{
-		src: 'COOKBOOK.md',
+		src: 'examples.md',
 		section: 'operating',
-		slug: 'cookbook',
+		slug: 'examples',
 		order: 1,
-		title: 'Cookbook',
+		title: 'Examples',
 	},
 	{
-		src: 'TROUBLESHOOTING.md',
+		src: 'clusterclaw-deployment-plan.md',
 		section: 'operating',
-		slug: 'troubleshooting',
+		slug: 'deployment',
 		order: 2,
-		title: 'Troubleshooting',
+		title: 'Deployment',
 	},
 	{
-		src: 'DATA_SAFETY.md',
+		src: 'roadmap.md',
 		section: 'operating',
-		slug: 'data-safety',
+		slug: 'roadmap',
 		order: 3,
-		title: 'Data safety',
-	},
-
-	// Why CtxOne (strategy)
-	{
-		src: 'VISION.md',
-		section: 'why-ctxone',
-		slug: 'vision',
-		order: 1,
-		title: 'Vision',
-	},
-	{
-		src: 'CONTEXT_ANXIETY.md',
-		section: 'why-ctxone',
-		slug: 'context-anxiety',
-		order: 2,
-		title: 'Context anxiety',
-	},
-	{
-		src: 'TOKEN_ECONOMICS.md',
-		section: 'why-ctxone',
-		slug: 'token-economics',
-		order: 3,
-		title: 'Token economics',
-	},
-	{
-		src: 'USE_CASES.md',
-		section: 'why-ctxone',
-		slug: 'use-cases',
-		order: 4,
-		title: 'Use cases',
+		title: 'Roadmap',
 	},
 ];
 
@@ -285,18 +209,18 @@ async function clean() {
 async function writeIndex() {
 	const indexPath = join(DOCS_DEST, 'index.mdx');
 	const body = `---
-title: CtxOne docs
-description: Persistent, searchable, accountable memory for AI agents.
+title: PicoCluster Claw docs
+description: Private AI appliance — OpenClaw agents, local LLM inference, ThreadWeaver chat.
 template: splash
 hero:
-  tagline: Memory that survives the session.
+  tagline: Private AI on your desk.
   actions:
     - text: Quickstart
       link: /getting-started/quickstart/
       icon: right-arrow
       variant: primary
     - text: View on GitHub
-      link: https://github.com/ctxone/ctxone
+      link: https://github.com/picocluster/picocluster-claw
       icon: external
 ---
 
@@ -304,28 +228,23 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 
 <CardGrid>
   <Card title="New here?" icon="rocket">
-    Start with the [Quickstart](/getting-started/quickstart/) — it gets you
-    from zero to a running Hub and an AI tool that remembers things in
-    under five minutes.
+    Start with the [Quickstart](/getting-started/quickstart/) — plug in
+    your cluster, connect, and run your first agent in under five minutes.
   </Card>
 
-  <Card title="How it works" icon="puzzle">
-    Read [Architecture](/how-it-works/architecture/) for the mental model,
-    [Multi-agent systems](/how-it-works/agents/) for the system-centric
-    architecture guide, and [Token savings](/how-it-works/token-savings/)
-    for the context compensation argument.
+  <Card title="MCP tools" icon="puzzle">
+    All 28 built-in [MCP tools](/reference/mcp-tools/) documented —
+    LEDs, system, LLM bridge, time, and file access across five servers.
   </Card>
 
-  <Card title="Integrate" icon="setting">
-    Wire CTXone into [AI coding tools](/integrations/ai-coding-tools/) with
-    \`ctx init\`, or drop the [Open WebUI plugin](/integrations/open-webui/)
-    into a self-hosted chat install.
+  <Card title="Examples" icon="setting">
+    See [example prompts](/operating/examples/) for OpenClaw agents —
+    cluster control, LED patterns, and AI-assisted workflows.
   </Card>
 
-  <Card title="Reference" icon="open-book">
-    Full [CLI](/reference/cli/), [MCP tool](/reference/mcp-tools/), and
-    [HTTP API](/reference/http-api/) references — every command, flag,
-    endpoint, and response shape.
+  <Card title="Benchmarks" icon="open-book">
+    Real [benchmark numbers](/reference/benchmarks/) from the Jetson Orin
+    Nano Super — inference speed, power draw, and model comparisons.
   </Card>
 </CardGrid>
 `;

@@ -1,0 +1,259 @@
+---
+---
+
+<section class="section platform-section" id="platforms">
+	<div class="container">
+		<div class="eyebrow">PLATFORMS //</div>
+		<h2 class="section-title">Hardware appliance or software install — your call.</h2>
+		<p class="section-lede">
+			PicoCluster Claw hardware is the flagship: plug in, power on, agents running
+			in minutes. But the full OpenClaw + ThreadWeaver stack installs on Mac,
+			Linux, and Windows too — same experience, your existing machine.
+		</p>
+
+		<div class="platform-grid">
+			<div class="platform platform-featured">
+				<div class="platform-badge">FLAGSHIP</div>
+				<div class="platform-icon">🖥</div>
+				<h3>PicoCluster Claw</h3>
+				<p class="platform-desc">
+					The two-node cluster appliance. ClusterClaw runs OpenClaw agents.
+					ClusterCrush handles local LLM inference via Ollama + CUDA.
+					Ships pre-installed and pre-configured — no assembly required.
+				</p>
+				<ul class="check-list">
+					<li>OpenClaw pre-installed</li>
+					<li>ThreadWeaver chat interface</li>
+					<li>28 MCP tools built-in</li>
+					<li>LED strip feedback</li>
+					<li>Dedicated inference silicon</li>
+					<li>Always-on, 14W idle</li>
+				</ul>
+				<a class="btn btn-primary" href="https://picocluster.com" rel="noopener">
+					Order now →
+				</a>
+			</div>
+
+			<div class="platform-software">
+				<div class="sw-card">
+					<div class="sw-icon">🍎</div>
+					<div class="sw-body">
+						<h3>macOS</h3>
+						<p>
+							Docker Compose overlay for Apple Silicon and Intel Macs.
+							ThreadWeaver + OpenClaw on your laptop.
+							Install with one command.
+						</p>
+						<a class="sw-link" href="/docs/quickstart/">macOS install →</a>
+					</div>
+				</div>
+
+				<div class="sw-card">
+					<div class="sw-icon">🐧</div>
+					<div class="sw-body">
+						<h3>Linux</h3>
+						<p>
+							Native install or Docker Compose. Full MCP tool support,
+							Ollama integration, ThreadWeaver chat — identical to
+							the hardware experience.
+						</p>
+						<a class="sw-link" href="/docs/quickstart/">Linux install →</a>
+					</div>
+				</div>
+
+				<div class="sw-card">
+					<div class="sw-icon">🪟</div>
+					<div class="sw-body">
+						<h3>Windows</h3>
+						<p>
+							WSL2 + Docker Compose overlay. Run OpenClaw and
+							ThreadWeaver from Windows Terminal — same stack,
+							same agents.
+						</p>
+						<a class="sw-link" href="/docs/quickstart/">Windows install →</a>
+					</div>
+				</div>
+
+				<div class="sw-note">
+					Software paths use the same Docker Compose base with
+					platform-specific overlays — one codebase, three targets.
+					Upgrade with a single <code>git pull</code>.
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.platform-section {
+		background:
+			radial-gradient(
+				ellipse 50% 50% at 0% 50%,
+				rgba(27, 117, 186, 0.05),
+				transparent 60%
+			),
+			var(--ctx-bg);
+	}
+
+	.eyebrow {
+		display: inline-block;
+		padding: 0.3rem 0.8rem;
+		background: rgba(27, 117, 186, 0.08);
+		border: 1px solid rgba(27, 117, 186, 0.28);
+		border-radius: 999px;
+		font-family: var(--ctx-font-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.1em;
+		color: var(--claw-blue-text);
+		font-weight: 700;
+		margin-bottom: 1rem;
+	}
+
+	.platform-grid {
+		display: grid;
+		grid-template-columns: 1fr 1.4fr;
+		gap: 1.5rem;
+		margin-top: 0.5rem;
+		align-items: start;
+	}
+
+	.platform-featured {
+		background: var(--ctx-panel);
+		border: 1px solid rgba(27, 117, 186, 0.4);
+		border-radius: var(--ctx-radius-lg);
+		padding: 2rem;
+		position: relative;
+	}
+
+	.platform-badge {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		padding: 0.2rem 0.6rem;
+		background: rgba(27, 117, 186, 0.15);
+		border: 1px solid rgba(27, 117, 186, 0.4);
+		border-radius: 999px;
+		font-family: var(--ctx-font-mono);
+		font-size: 0.62rem;
+		letter-spacing: 0.1em;
+		color: var(--claw-blue-text);
+		font-weight: 700;
+	}
+
+	.platform-icon {
+		font-size: 2rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.platform-featured h3 {
+		font-size: 1.3rem;
+		font-weight: 800;
+		color: #ffffff;
+		margin: 0 0 0.75rem 0;
+	}
+
+	.platform-desc {
+		font-size: 0.9rem;
+		color: var(--ctx-text-dim);
+		margin: 0 0 1.25rem 0;
+		line-height: 1.55;
+	}
+
+	.check-list {
+		list-style: none;
+		padding: 0;
+		margin: 0 0 1.5rem 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.45rem;
+	}
+
+	.check-list li {
+		font-size: 0.88rem;
+		color: var(--ctx-text-dim);
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.check-list li::before {
+		content: '✓';
+		color: var(--claw-blue-text);
+		font-weight: 700;
+		font-size: 0.9rem;
+		flex-shrink: 0;
+	}
+
+	.platform-software {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.sw-card {
+		display: flex;
+		gap: 1rem;
+		background: var(--ctx-panel);
+		border: 1px solid var(--ctx-border);
+		border-radius: var(--ctx-radius-lg);
+		padding: 1.25rem;
+		align-items: flex-start;
+	}
+
+	.sw-icon {
+		font-size: 1.5rem;
+		flex-shrink: 0;
+		width: 2.25rem;
+		text-align: center;
+	}
+
+	.sw-body h3 {
+		font-size: 0.95rem;
+		font-weight: 700;
+		color: #ffffff;
+		margin: 0 0 0.35rem 0;
+	}
+
+	.sw-body p {
+		font-size: 0.85rem;
+		color: var(--ctx-text-dim);
+		margin: 0 0 0.5rem 0;
+		line-height: 1.5;
+	}
+
+	.sw-link {
+		font-size: 0.82rem;
+		color: var(--claw-blue-text);
+		font-weight: 600;
+	}
+
+	.sw-link:hover {
+		color: #ffffff;
+	}
+
+	.sw-note {
+		font-size: 0.82rem;
+		color: var(--ctx-text-faint);
+		padding: 0.75rem 1rem;
+		background: var(--ctx-panel);
+		border: 1px dashed var(--ctx-border);
+		border-radius: var(--ctx-radius-md);
+		line-height: 1.5;
+	}
+
+	.sw-note code {
+		background: var(--ctx-panel-hi);
+		border: 1px solid var(--ctx-border-hi);
+		padding: 0.1rem 0.35rem;
+		border-radius: var(--ctx-radius-sm);
+		font-family: var(--ctx-font-mono);
+		font-size: 0.9em;
+		color: var(--claw-blue-text);
+	}
+
+	@media (max-width: 800px) {
+		.platform-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

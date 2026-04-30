@@ -1,0 +1,239 @@
+---
+---
+
+<section class="section specs-section">
+	<div class="container">
+		<div class="eyebrow">SPECS //</div>
+		<h2 class="section-title">Numbers worth knowing.</h2>
+		<p class="section-lede">
+			Real figures — not marketing estimates.
+		</p>
+
+		<div class="stats-grid">
+			<div class="stat stat-blue">
+				<div class="stat-value">14W</div>
+				<div class="stat-label">idle power draw</div>
+				<div class="stat-note">Both nodes, typical idle</div>
+			</div>
+			<div class="stat">
+				<div class="stat-value">20W</div>
+				<div class="stat-label">typical active</div>
+				<div class="stat-note">Agent running, model idle</div>
+			</div>
+			<div class="stat">
+				<div class="stat-value">35W</div>
+				<div class="stat-label">peak inference</div>
+				<div class="stat-note">Full CUDA load on Crush</div>
+			</div>
+			<div class="stat stat-blue">
+				<div class="stat-value">$2<span class="stat-unit">/mo</span></div>
+				<div class="stat-label">electricity cost</div>
+				<div class="stat-note">At US average $0.13/kWh</div>
+			</div>
+			<div class="stat">
+				<div class="stat-value">18<span class="stat-unit">tok/s</span></div>
+				<div class="stat-label">inference speed</div>
+				<div class="stat-note">3B model on Crush</div>
+			</div>
+			<div class="stat">
+				<div class="stat-value">28</div>
+				<div class="stat-label">MCP tools</div>
+				<div class="stat-note">Across 5 servers, built-in</div>
+			</div>
+		</div>
+
+		<div class="hardware-table">
+			<div class="hw-header">Full hardware spec</div>
+			<div class="table-wrap">
+				<table>
+					<thead>
+						<tr>
+							<th>Component</th>
+							<th>Node</th>
+							<th>Detail</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>ClusterClaw</td>
+							<td class="td-blue">Raspberry Pi 5</td>
+							<td>8 GB LPDDR4X, BCM2712 quad-core A76</td>
+						</tr>
+						<tr>
+							<td>ClusterCrush</td>
+							<td class="td-blue">Jetson Orin Nano Super</td>
+							<td>8 GB unified memory, 1024-core Ampere GPU</td>
+						</tr>
+						<tr>
+							<td>Storage</td>
+							<td>Both nodes</td>
+							<td>NVMe SSD (size configurable)</td>
+						</tr>
+						<tr>
+							<td>Network</td>
+							<td>Both nodes</td>
+							<td>Gigabit Ethernet + Wi-Fi 5</td>
+						</tr>
+						<tr>
+							<td>OS</td>
+							<td>ClusterClaw</td>
+							<td>Raspberry Pi OS (64-bit)</td>
+						</tr>
+						<tr>
+							<td>OS</td>
+							<td>ClusterCrush</td>
+							<td>JetPack 6 (Ubuntu 22.04 + CUDA)</td>
+						</tr>
+						<tr>
+							<td>LED strip</td>
+							<td>ClusterClaw</td>
+							<td>Pimoroni Blinkt! (8× APA102)</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.specs-section {
+		background: var(--ctx-bg);
+	}
+
+	.eyebrow {
+		display: inline-block;
+		padding: 0.3rem 0.8rem;
+		background: rgba(27, 117, 186, 0.08);
+		border: 1px solid rgba(27, 117, 186, 0.28);
+		border-radius: 999px;
+		font-family: var(--ctx-font-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.1em;
+		color: var(--claw-blue-text);
+		font-weight: 700;
+		margin-bottom: 1rem;
+	}
+
+	.stats-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1rem;
+		margin-bottom: 2rem;
+	}
+
+	.stat {
+		background: var(--ctx-panel);
+		border: 1px solid var(--ctx-border);
+		border-radius: var(--ctx-radius-lg);
+		padding: 1.25rem 1.5rem;
+	}
+
+	.stat-blue {
+		border-color: rgba(27, 117, 186, 0.3);
+		background: linear-gradient(135deg, var(--ctx-panel), var(--claw-blue-dim));
+	}
+
+	.stat-value {
+		font-size: 2.25rem;
+		font-weight: 800;
+		color: #ffffff;
+		font-family: var(--ctx-font-mono);
+		line-height: 1;
+		margin-bottom: 0.25rem;
+	}
+
+	.stat-unit {
+		font-size: 1.1rem;
+		font-weight: 600;
+		color: var(--claw-blue-text);
+	}
+
+	.stat-label {
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: var(--ctx-text-dim);
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		margin-bottom: 0.25rem;
+	}
+
+	.stat-note {
+		font-size: 0.75rem;
+		color: var(--ctx-text-faint);
+	}
+
+	.hardware-table {
+		background: var(--ctx-panel);
+		border: 1px solid var(--ctx-border);
+		border-radius: var(--ctx-radius-lg);
+		overflow: hidden;
+	}
+
+	.hw-header {
+		padding: 0.75rem 1.25rem;
+		background: var(--ctx-panel-hi);
+		border-bottom: 1px solid var(--ctx-border);
+		font-family: var(--ctx-font-mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.1em;
+		color: var(--ctx-text-faint);
+		text-transform: uppercase;
+	}
+
+	.table-wrap {
+		overflow-x: auto;
+	}
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.88rem;
+	}
+
+	thead th {
+		text-align: left;
+		padding: 0.65rem 1.25rem;
+		color: var(--ctx-text-faint);
+		font-family: var(--ctx-font-mono);
+		font-size: 0.72rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		border-bottom: 1px solid var(--ctx-border);
+		font-weight: 600;
+	}
+
+	tbody tr {
+		border-bottom: 1px solid var(--ctx-border-lo);
+	}
+
+	tbody tr:last-child {
+		border-bottom: none;
+	}
+
+	tbody td {
+		padding: 0.7rem 1.25rem;
+		color: var(--ctx-text-dim);
+	}
+
+	tbody td:first-child {
+		color: #ffffff;
+		font-weight: 600;
+	}
+
+	.td-blue {
+		color: var(--claw-blue-text) !important;
+	}
+
+	@media (max-width: 700px) {
+		.stats-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 480px) {
+		.stats-grid {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+</style>

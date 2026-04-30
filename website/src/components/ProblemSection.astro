@@ -1,168 +1,84 @@
 ---
-/**
- * Problem-framing section. Four vignettes mapping to four symptoms
- * of Model-Centric AI. Each names a pain, then reframes it through
- * the system-centric lens.
- *
- *   Context Debt    → yesterday's context is gone (stateful)
- *   Reasoning Tax   → your teammate is flying blind (sharable)
- *   Context Debt    → who told the model that? (inspectable)
- *   Economic Opacity → the bill arrives (token control)
- */
 ---
 
-<section class="section problem">
+<section class="section problems">
 	<div class="container">
-		<div class="eyebrow">
-			<span class="dot"></span>
-			<span class="eyebrow-text">MODEL_CENTRIC.liability</span>
-		</div>
-		<h2 class="section-title">Model-Centric AI has a tax.</h2>
+		<div class="eyebrow">THE PROBLEM //</div>
+		<h2 class="section-title">Local AI is powerful. Getting there isn't.</h2>
 		<p class="section-lede">
-			When the model is expected to infer state, intent, plan, and
-			memory from raw context, it compensates with reasoning. You
-			pay for that compensation — in tokens, in drift, and in bills
-			that only make sense in retrospect.
+			Running AI locally solves every cloud problem — but building and
+			maintaining the stack is a project in itself.
 		</p>
 
-		<div class="vignettes">
-			<article class="vignette v-stateful">
-				<div class="v-label">01 // CONTEXT DEBT</div>
-				<h3>Every session starts in debt.</h3>
-				<p class="scene">
-					You told the model on Tuesday that you're using
-					SQLite, not Postgres, and why. Wednesday morning
-					you open a new session and it's asking about your
-					"Postgres schema" again. You paste the same
-					paragraph. You budget tokens for memory the model
-					should already have. That's not a memory problem —
-					that's accumulated context debt, paid in reasoning
-					every single session.
+		<div class="grid">
+			<div class="vignette">
+				<div class="icon icon-red">$</div>
+				<h3>Cloud costs compound</h3>
+				<p>
+					GPT-4 runs you $15–60/M tokens. A busy coding agent burns
+					through millions a week. The bill grows faster than the value.
+					And every token you send is training data you didn't consent to.
 				</p>
-				<p class="fix">
-					<strong>CTXone eliminates the debt.</strong> Every
-					fact survives sessions, branches, and tool switches
-					because it lives in a local graph — not in the
-					model's context window. The model executes within
-					context. It doesn't reconstruct it.
-				</p>
-			</article>
+			</div>
 
-			<article class="vignette v-sharable">
-				<div class="v-label">02 // REASONING TAX</div>
-				<h3>Your teammate is paying twice.</h3>
-				<p class="scene">
-					You primed your Cursor install with the team's
-					architectural decisions. Priya didn't. Now she's
-					arguing with the model about whether to use Redis
-					for the job queue — a question you settled three
-					months ago. The model isn't wrong; it just doesn't
-					have the context. So it reasons. So does Priya.
-					So does the next engineer. The same reasoning tax,
-					paid over and over.
+			<div class="vignette">
+				<div class="icon icon-amber">⚠</div>
+				<h3>DIY stacks are fragile</h3>
+				<p>
+					Ollama + Open WebUI + LiteLLM + custom scripts —
+					any update can break the chain. You spend more time maintaining
+					the plumbing than using the agents.
 				</p>
-				<p class="fix">
-					<strong>CTXone is shared.</strong> The graph is a
-					file. Commit it, sync it, mount it across the team.
-					Whatever you primed is what everyone sees — one
-					reasoning cost, paid once.
-				</p>
-			</article>
+			</div>
 
-			<article class="vignette v-inspectable">
-				<div class="v-label">03 // CONTEXT COMPENSATION</div>
-				<h3>The model filled in a gap you didn't know existed.</h3>
-				<p class="scene">
-					You open a file the model edited last week and
-					there's a reference to "the new API versioning
-					policy." You don't remember a policy. Nobody
-					does. The model wasn't hallucinating — it was
-					compensating. It had no structured context, so
-					it inferred. The decision is now orphaned in
-					a file no one can audit.
+			<div class="vignette">
+				<div class="icon icon-red">🔒</div>
+				<h3>Privacy is binary</h3>
+				<p>
+					The moment a request leaves your network, your code, your
+					designs, your customer data are someone else's problem.
+					Consumer hardware can't change that equation.
 				</p>
-				<p class="fix">
-					<strong>CTXone makes compensation visible.</strong>
-					Every write carries an agent ID, a timestamp, an
-					intent, and reasoning. <code>ctx blame</code> traces
-					it back to the session, the tool, and the fact that
-					prompted it. No orphaned decisions.
-				</p>
-			</article>
+			</div>
 
-			<article class="vignette v-economic">
-				<div class="v-label">04 // ECONOMIC OPACITY</div>
-				<h3>The bill arrives. You have no idea why.</h3>
-				<p class="scene">
-					Token pricing is published on the docs page.
-					It is completely opaque at the moment of use.
-					You run a session, you ship a feature, you move on.
-					Then the invoice lands and you're reverse-engineering
-					which prompts cost what. The expensive ones are
-					almost always the same: large context, reasoning
-					model, agent that lost its place and started over.
+			<div class="vignette">
+				<div class="icon icon-amber">⚡</div>
+				<h3>Consumer hardware taps out</h3>
+				<p>
+					Your laptop's GPU is busy rendering your IDE.
+					Phone-class SoCs throttle under sustained inference.
+					You need dedicated silicon — not a background process fighting
+					for resources.
 				</p>
-				<p class="fix">
-					<strong>CTXone shifts control back to you.</strong>
-					Structured context means smaller models work.
-					Plans mean agents don't lose their place.
-					Recall means you send what's relevant —
-					not everything you've ever said.
-					The reasoning tax becomes a flat cost you understand.
-				</p>
-			</article>
+			</div>
 		</div>
-
-		<p class="read-more">
-			<a href="/why-ctxone/context-anxiety/">
-				Read the full context compensation argument →
-			</a>
-		</p>
 	</div>
 </section>
 
 <style>
-	.problem {
-		background:
-			radial-gradient(
-				ellipse 50% 40% at 20% 0%,
-				rgba(59, 130, 246, 0.05),
-				transparent 60%
-			),
-			var(--ctx-bg);
+	.problems {
+		background: var(--ctx-bg);
 	}
 
 	.eyebrow {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.55rem;
+		display: inline-block;
 		padding: 0.3rem 0.8rem;
-		background: rgba(252, 211, 77, 0.06);
-		border: 1px solid rgba(252, 211, 77, 0.25);
+		background: rgba(230, 57, 70, 0.08);
+		border: 1px solid rgba(230, 57, 70, 0.28);
 		border-radius: 999px;
 		font-family: var(--ctx-font-mono);
 		font-size: 0.68rem;
 		letter-spacing: 0.1em;
-		color: var(--ctx-warn);
+		color: var(--claw-red-text);
+		font-weight: 700;
 		margin-bottom: 1rem;
 	}
 
-	.eyebrow .dot {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: var(--ctx-warn);
-	}
-
-	.eyebrow-text {
-		font-weight: 700;
-	}
-
-	.vignettes {
+	.grid {
 		display: grid;
 		grid-template-columns: repeat(2, 1fr);
-		gap: 1.25rem;
-		margin-top: 2rem;
+		gap: 1.5rem;
+		margin-top: 0.5rem;
 	}
 
 	.vignette {
@@ -170,107 +86,49 @@
 		border: 1px solid var(--ctx-border);
 		border-radius: var(--ctx-radius-lg);
 		padding: 1.5rem;
-		position: relative;
-		overflow: hidden;
 	}
 
-	.vignette::before {
-		content: '';
-		position: absolute;
-		left: 0;
-		top: 0;
-		bottom: 0;
-		width: 3px;
-	}
-
-	.v-stateful::before {
-		background: var(--ctx-accent);
-		box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
-	}
-
-	.v-sharable::before {
-		background: var(--ctx-success);
-		box-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
-	}
-
-	.v-inspectable::before {
-		background: var(--ctx-warn);
-		box-shadow: 0 0 12px rgba(252, 211, 77, 0.5);
-	}
-
-	.v-economic::before {
-		background: #ef4444;
-		box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
-	}
-
-	.v-label {
+	.icon {
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: var(--ctx-radius-md);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1rem;
 		font-family: var(--ctx-font-mono);
-		font-size: 0.68rem;
-		letter-spacing: 0.12em;
-		color: var(--ctx-text-faint);
-		margin-bottom: 0.5rem;
+		font-weight: 700;
+		margin-bottom: 0.85rem;
 	}
 
-	.v-stateful .v-label {
-		color: var(--ctx-accent);
+	.icon-red {
+		background: var(--claw-red-dim);
+		color: var(--claw-red-text);
+		border: 1px solid rgba(230, 57, 70, 0.25);
 	}
 
-	.v-sharable .v-label {
-		color: var(--ctx-success);
-	}
-
-	.v-inspectable .v-label {
+	.icon-amber {
+		background: rgba(252, 211, 77, 0.08);
 		color: var(--ctx-warn);
-	}
-
-	.v-economic .v-label {
-		color: #ef4444;
+		border: 1px solid rgba(252, 211, 77, 0.2);
 	}
 
 	.vignette h3 {
-		font-size: 1.1rem;
+		font-size: 1rem;
+		font-weight: 700;
 		color: #ffffff;
-		margin: 0 0 0.85rem 0;
-		line-height: 1.25;
+		margin: 0 0 0.5rem 0;
 	}
 
-	.scene {
-		color: var(--ctx-text);
+	.vignette p {
 		font-size: 0.9rem;
-		line-height: 1.6;
-		margin: 0 0 0.85rem 0;
-	}
-
-	.fix {
 		color: var(--ctx-text-dim);
-		font-size: 0.88rem;
-		line-height: 1.55;
 		margin: 0;
-		padding-top: 0.85rem;
-		border-top: 1px dashed var(--ctx-border);
+		line-height: 1.55;
 	}
 
-	.fix strong {
-		color: #ffffff;
-	}
-
-	.fix code {
-		background: #050505;
-		border: 1px solid var(--ctx-border-lo);
-		padding: 0.1rem 0.4rem;
-		border-radius: var(--ctx-radius-sm);
-		font-size: 0.9em;
-		color: var(--ctx-warn);
-		font-family: var(--ctx-font-mono);
-	}
-
-	.read-more {
-		margin: 2rem 0 0 0;
-		font-size: 0.9rem;
-	}
-
-	@media (max-width: 720px) {
-		.vignettes {
+	@media (max-width: 640px) {
+		.grid {
 			grid-template-columns: 1fr;
 		}
 	}

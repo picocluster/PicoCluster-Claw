@@ -1,0 +1,215 @@
+---
+---
+
+<section class="section tw-section">
+	<div class="container">
+		<div class="eyebrow">CHAT INTERFACE //</div>
+		<h2 class="section-title">ThreadWeaver — multi-provider chat, built for local AI.</h2>
+		<p class="section-lede">
+			ThreadWeaver is the chat interface that ships with PicoCluster Claw.
+			It runs on top of the AgentStateGraph (ASG) substrate and connects
+			to local models on Crush, cloud APIs, or both — your choice every session.
+		</p>
+
+		<div class="features-row">
+			<div class="feature">
+				<div class="feature-icon icon-blue">⚡</div>
+				<div class="feature-body">
+					<h3>5+ model providers</h3>
+					<p>
+						Switch between Ollama (local), OpenAI, Anthropic, Mistral,
+						and Groq from the same interface. No separate installs —
+						credentials live in one config, models are one click away.
+					</p>
+				</div>
+			</div>
+
+			<div class="feature">
+				<div class="feature-icon icon-blue">🧠</div>
+				<div class="feature-body">
+					<h3>ASG substrate</h3>
+					<p>
+						Threads are backed by the
+						<a href="https://github.com/picocluster/asg" rel="noopener">AgentStateGraph</a>
+						— not a flat JSON log. Conversations are stateful, resumable,
+						and searchable without any extra setup.
+					</p>
+				</div>
+			</div>
+
+			<div class="feature">
+				<div class="feature-icon icon-blue">🔧</div>
+				<div class="feature-body">
+					<h3>Native Python hooks + filter</h3>
+					<p>
+						Drop a Python function into the hook directory and it runs
+						on every message — pre-send, post-receive, or both.
+						ThreadWeaver's MCP + ASG + filter pipeline means you
+						control what the model sees.
+					</p>
+				</div>
+			</div>
+
+			<div class="feature">
+				<div class="feature-icon icon-red">🔒</div>
+				<div class="feature-body">
+					<h3>Encryption at rest</h3>
+					<p>
+						All conversation history is encrypted on disk.
+						Local models never leave the cluster. Cloud calls
+						are opt-in — you decide per-thread, not system-wide.
+					</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="pipeline-box">
+			<div class="pipeline-label">ThreadWeaver pipeline</div>
+			<div class="pipeline">
+				<div class="stage">MCP tools</div>
+				<div class="arrow">→</div>
+				<div class="stage stage-blue">ASG state</div>
+				<div class="arrow">→</div>
+				<div class="stage">filter hooks</div>
+				<div class="arrow">→</div>
+				<div class="stage stage-model">model</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	.tw-section {
+		background:
+			radial-gradient(
+				ellipse 60% 40% at 80% 50%,
+				rgba(27, 117, 186, 0.05),
+				transparent 60%
+			),
+			var(--ctx-bg);
+	}
+
+	.eyebrow {
+		display: inline-block;
+		padding: 0.3rem 0.8rem;
+		background: rgba(27, 117, 186, 0.08);
+		border: 1px solid rgba(27, 117, 186, 0.28);
+		border-radius: 999px;
+		font-family: var(--ctx-font-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.1em;
+		color: var(--claw-blue-text);
+		font-weight: 700;
+		margin-bottom: 1rem;
+	}
+
+	.features-row {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.25rem;
+		margin-top: 2rem;
+	}
+
+	.feature {
+		display: flex;
+		gap: 1rem;
+		background: var(--ctx-panel);
+		border: 1px solid var(--ctx-border);
+		border-radius: var(--ctx-radius-lg);
+		padding: 1.25rem;
+	}
+
+	.feature-icon {
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: var(--ctx-radius-md);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1rem;
+		flex-shrink: 0;
+	}
+
+	.icon-blue {
+		background: var(--claw-blue-dim);
+		border: 1px solid rgba(27, 117, 186, 0.3);
+	}
+
+	.icon-red {
+		background: var(--claw-red-dim);
+		border: 1px solid rgba(230, 57, 70, 0.25);
+	}
+
+	.feature-body h3 {
+		font-size: 0.95rem;
+		font-weight: 700;
+		color: #ffffff;
+		margin: 0 0 0.4rem 0;
+	}
+
+	.feature-body p {
+		font-size: 0.88rem;
+		color: var(--ctx-text-dim);
+		margin: 0;
+		line-height: 1.55;
+	}
+
+	.pipeline-box {
+		margin-top: 2rem;
+		background: var(--ctx-panel);
+		border: 1px solid var(--ctx-border-hi);
+		border-radius: var(--ctx-radius-lg);
+		padding: 1.25rem 1.5rem;
+	}
+
+	.pipeline-label {
+		font-family: var(--ctx-font-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.1em;
+		color: var(--ctx-text-faint);
+		text-transform: uppercase;
+		margin-bottom: 0.85rem;
+	}
+
+	.pipeline {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.stage {
+		padding: 0.4rem 0.85rem;
+		background: var(--ctx-panel-hi);
+		border: 1px solid var(--ctx-border-hi);
+		border-radius: var(--ctx-radius-md);
+		font-family: var(--ctx-font-mono);
+		font-size: 0.8rem;
+		color: var(--ctx-text-dim);
+	}
+
+	.stage-blue {
+		border-color: rgba(27, 117, 186, 0.4);
+		color: var(--claw-blue-text);
+	}
+
+	.stage-model {
+		border-color: var(--ctx-border-hi);
+		color: #ffffff;
+		font-weight: 600;
+	}
+
+	.arrow {
+		color: var(--ctx-text-faint);
+		font-family: var(--ctx-font-mono);
+	}
+
+	@media (max-width: 640px) {
+		.features-row {
+			grid-template-columns: 1fr;
+		}
+		.feature {
+			flex-direction: column;
+		}
+	}
+</style>

@@ -1,85 +1,78 @@
 ---
-/**
- * Three-layer platform overview. Each card covers one layer of the
- * system-centric architecture:
- *
- *   Memory layer     → stateful context, searchable, survives sessions
- *   Plans layer      → structured execution, no agent drift
- *   Governance layer → provenance, taint, branches, audit trail
- *
- * Each card pairs a CLI snippet with the MCP tool equivalent.
- */
 ---
 
-<section class="section features">
+<section class="section features" id="hardware">
 	<div class="container">
-		<div class="eyebrow">
-			<span class="eyebrow-text">ARCHITECTURE //</span>
-		</div>
-		<h2 class="section-title">Three layers. One system.</h2>
+		<div class="eyebrow">HARDWARE //</div>
+		<h2 class="section-title">Two nodes. One private AI cluster.</h2>
 		<p class="section-lede">
-			CTXone is external context and structure for models to work
-			within — not another memory plugin, not a prompt wrapper.
-			Three layers compose the full system-centric architecture.
+			Claw runs OpenClaw agents. Crush runs local LLMs via Ollama with CUDA.
+			Together they form a complete, always-on inference system that fits
+			on your desk.
 		</p>
 
 		<div class="grid">
 			<article class="card card-blue">
-				<div class="card-label">01 // MEMORY LAYER</div>
-				<h3>Persistent, searchable context</h3>
+				<div class="card-label">01 // CLUSTERCLAW</div>
+				<h3>OpenClaw node</h3>
 				<p>
-					Write a fact once. It survives sessions, branches, and
-					tool switches — stored in a local graph, not the
-					model's context window. Topic-matched recall sends
-					only what's relevant, eliminating context debt before
-					the session starts.
+					Raspberry Pi 5 (8 GB) running OpenClaw — the agent runtime.
+					Handles planning, memory, tool dispatch, and MCP server
+					coordination. 28 built-in MCP tools across five servers:
+					LEDs, system, clustercrush bridge, time, and files.
 				</p>
-				<pre><code><span class="prompt">$</span> ctx remember "SQLite only — no Postgres" \
-    --importance high --context architecture
-
-<span class="comment"># model recalls on topic, not everything:</span>
-recall(topic="architecture", budget=1200)
-<span class="dim">→ 3 facts matched / 847 tokens sent</span></code></pre>
+				<div class="spec-row">
+					<div class="spec"><span class="spec-label">SoC</span>RPi 5 BCM2712</div>
+					<div class="spec"><span class="spec-label">RAM</span>8 GB LPDDR4X</div>
+					<div class="spec"><span class="spec-label">Role</span>Agents / MCP</div>
+				</div>
 			</article>
 
-			<article class="card card-green">
-				<div class="card-label">02 // PLANS LAYER</div>
-				<h3>Agents that stay on task</h3>
+			<article class="card card-red">
+				<div class="card-label">02 // CLUSTERCRUSH</div>
+				<h3>Local LLM inference node</h3>
 				<p>
-					Plans give agents a structured task list to execute
-					within — no plan drift, no focus drift, no execution
-					hallucination. When an agent knows exactly what's next,
-					it doesn't re-reason its position. Token usage drops
-					because the work is the work.
+					Jetson Orin Nano Super (8 GB) with dedicated CUDA cores
+					running Ollama. Serves models to Claw and to ThreadWeaver
+					chat — no GPU sharing with your workstation.
 				</p>
-				<pre><code><span class="prompt">$</span> ctx plan new auth-refactor
-<span class="prompt">$</span> ctx plan add auth-refactor "Replace JWT middleware"
-<span class="prompt">$</span> ctx plan next
-
-<span class="comment"># model picks up exactly where work left off:</span>
-plan_next(assigned_to="claude-code")
-<span class="dim">→ task: Replace JWT middleware [in_progress]</span></code></pre>
+				<div class="spec-row">
+					<div class="spec"><span class="spec-label">SoC</span>Orin Nano Super</div>
+					<div class="spec"><span class="spec-label">RAM</span>8 GB unified</div>
+					<div class="spec"><span class="spec-label">Role</span>Ollama / CUDA</div>
+				</div>
 			</article>
 
 			<article class="card card-amber">
-				<div class="card-label">03 // GOVERNANCE LAYER</div>
-				<h3>Provenance, taint, and audit trail</h3>
+				<div class="card-label">03 // LED FEEDBACK</div>
+				<h3>Physical AI status strip</h3>
 				<p>
-					Every memory commit carries an agent ID, a timestamp,
-					an intent, and reasoning. Taint guards sensitive paths
-					with warn or block policies. Branches let you stage
-					memory changes before they land on main — git-style,
-					for your context graph.
+					Pimoroni Blinkt! LED strip driven by an MCP server — the first
+					MCP server for physical AI feedback. Claw's agents light the
+					strip to reflect model state, inference activity, and alerts.
+					Your AI is visible, not just running.
 				</p>
-				<pre><code><span class="prompt">$</span> ctx blame /memory/architecture/db-choice
+				<div class="spec-row">
+					<div class="spec"><span class="spec-label">Type</span>Blinkt! RGB</div>
+					<div class="spec"><span class="spec-label">MCP</span>8 tools</div>
+					<div class="spec"><span class="spec-label">First</span>Physical MCP</div>
+				</div>
+			</article>
 
-<span class="comment"># full audit trail:</span>
-agent:  claude-code
-when:   2026-04-01T11:42:07Z
-intent: Observe
-reason: user confirmed SQLite decision
-
-<span class="prompt">$</span> ctx taint apply "secrets/**" --policy block</code></pre>
+			<article class="card card-dim">
+				<div class="card-label">04 // 28 MCP TOOLS</div>
+				<h3>Agents that control the hardware</h3>
+				<p>
+					Five MCP servers expose every cluster capability to OpenClaw:
+					LED strip animation, system metrics, LLM bridge to Crush,
+					time/scheduling, and local file access. Agents use tools, not
+					config files.
+				</p>
+				<div class="spec-row">
+					<div class="spec"><span class="spec-label">Servers</span>5</div>
+					<div class="spec"><span class="spec-label">Tools</span>28</div>
+					<div class="spec"><span class="spec-label">Proto</span>MCP / stdio</div>
+				</div>
 			</article>
 		</div>
 	</div>
@@ -90,7 +83,7 @@ reason: user confirmed SQLite decision
 		background:
 			radial-gradient(
 				ellipse 70% 40% at 50% 100%,
-				rgba(59, 130, 246, 0.04),
+				rgba(27, 117, 186, 0.04),
 				transparent 60%
 			),
 			var(--ctx-bg);
@@ -99,23 +92,20 @@ reason: user confirmed SQLite decision
 	.eyebrow {
 		display: inline-block;
 		padding: 0.3rem 0.8rem;
-		background: rgba(59, 130, 246, 0.08);
-		border: 1px solid rgba(59, 130, 246, 0.28);
+		background: rgba(27, 117, 186, 0.08);
+		border: 1px solid rgba(27, 117, 186, 0.28);
 		border-radius: 999px;
 		font-family: var(--ctx-font-mono);
 		font-size: 0.68rem;
 		letter-spacing: 0.1em;
-		color: var(--ctx-accent);
-		margin-bottom: 1rem;
-	}
-
-	.eyebrow-text {
+		color: var(--claw-blue-text);
 		font-weight: 700;
+		margin-bottom: 1rem;
 	}
 
 	.grid {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: repeat(2, 1fr);
 		gap: 1.25rem;
 		margin-top: 0.5rem;
 	}
@@ -140,18 +130,22 @@ reason: user confirmed SQLite decision
 	}
 
 	.card-blue::before {
-		background: var(--ctx-accent);
-		box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+		background: var(--claw-blue);
+		box-shadow: 0 0 12px rgba(27, 117, 186, 0.5);
 	}
 
-	.card-green::before {
-		background: var(--ctx-success);
-		box-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
+	.card-red::before {
+		background: var(--claw-red);
+		box-shadow: 0 0 12px rgba(230, 57, 70, 0.5);
 	}
 
 	.card-amber::before {
 		background: var(--ctx-warn);
-		box-shadow: 0 0 12px rgba(252, 211, 77, 0.5);
+		box-shadow: 0 0 12px rgba(252, 211, 77, 0.4);
+	}
+
+	.card-dim::before {
+		background: var(--ctx-border-hi);
 	}
 
 	.card:hover {
@@ -163,26 +157,19 @@ reason: user confirmed SQLite decision
 		font-family: var(--ctx-font-mono);
 		font-size: 0.68rem;
 		letter-spacing: 0.12em;
-		color: var(--ctx-text-faint);
 		margin-bottom: 0.5rem;
 	}
 
-	.card-blue .card-label {
-		color: var(--ctx-accent);
-	}
-
-	.card-green .card-label {
-		color: var(--ctx-success);
-	}
-
-	.card-amber .card-label {
-		color: var(--ctx-warn);
-	}
+	.card-blue .card-label { color: var(--claw-blue-text); }
+	.card-red .card-label { color: var(--claw-red-text); }
+	.card-amber .card-label { color: var(--ctx-warn); }
+	.card-dim .card-label { color: var(--ctx-text-faint); }
 
 	.card h3 {
-		margin: 0 0 0.85rem 0;
-		font-size: 1.2rem;
+		margin: 0 0 0.75rem 0;
+		font-size: 1.15rem;
 		color: #ffffff;
+		font-weight: 700;
 	}
 
 	.card p {
@@ -192,48 +179,29 @@ reason: user confirmed SQLite decision
 		line-height: 1.55;
 	}
 
-	.card p code {
-		background: #0a0a0a;
-		padding: 0.1rem 0.35rem;
-		border-radius: var(--ctx-radius-sm);
-		font-size: 0.85em;
-		color: var(--ctx-warn);
+	.spec-row {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+
+	.spec {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+		font-size: 0.8rem;
+		color: #ffffff;
 		font-family: var(--ctx-font-mono);
 	}
 
-	.card pre {
-		background: #050505;
-		border: 1px solid var(--ctx-border-lo);
-		border-radius: var(--ctx-radius-md);
-		padding: 0.85rem 1rem;
-		font-size: 0.75rem;
-		overflow-x: auto;
-		color: var(--ctx-text);
-		margin: 0;
-		line-height: 1.55;
-	}
-
-	.card pre code {
-		background: transparent;
-		padding: 0;
-		color: inherit;
-	}
-
-	.prompt {
-		color: var(--ctx-success);
-		user-select: none;
-	}
-
-	.comment {
+	.spec-label {
+		font-size: 0.65rem;
 		color: var(--ctx-text-faint);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
 	}
 
-	.dim {
-		color: var(--ctx-text-faint);
-		opacity: 0.7;
-	}
-
-	@media (max-width: 900px) {
+	@media (max-width: 700px) {
 		.grid {
 			grid-template-columns: 1fr;
 		}
