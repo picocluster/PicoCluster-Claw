@@ -190,7 +190,7 @@ chmod +x /usr/local/bin/picocluster-mdns-aliases
 
 cat > /etc/systemd/system/picocluster-mdns-aliases.service <<'UNIT'
 [Unit]
-Description=PicoClaw mDNS CNAME aliases (claw.local, threadweaver.local, control.local)
+Description=PicoCluster Claw mDNS CNAME aliases (claw.local, threadweaver.local, control.local)
 After=avahi-daemon.service
 Requires=avahi-daemon.service
 
@@ -275,8 +275,8 @@ fi
 # ============================================================
 log "--- Firewall ---"
 ufw allow 5353/udp comment "mDNS (Avahi)"                          2>/dev/null || true
-ufw allow 80/tcp   comment "PicoClaw portal + CA cert download"  2>/dev/null || true
-ufw allow 443/tcp  comment "PicoClaw HTTPS (claw.local, threadweaver.local)" 2>/dev/null || true
+ufw allow 80/tcp   comment "PicoCluster Claw portal + CA cert download"  2>/dev/null || true
+ufw allow 443/tcp  comment "PicoCluster Claw HTTPS (claw.local, threadweaver.local)" 2>/dev/null || true
 ufw allow 7777/tcp comment "LED API"                              2>/dev/null || true
 ufw allow 8888/tcp comment "Shutdown API"                         2>/dev/null || true
 

@@ -1,0 +1,23 @@
+---
+import LandingLayout from '../layouts/LandingLayout.astro';
+import Hero from '../components/Hero.astro';
+import ProblemSection from '../components/ProblemSection.astro';
+import FeatureGrid from '../components/FeatureGrid.astro';
+import SpecsSection from '../components/SpecsSection.astro';
+import ThreadWeaverSection from '../components/ThreadWeaverSection.astro';
+import PlatformSection from '../components/PlatformSection.astro';
+import CallToAction from '../components/CallToAction.astro';
+---
+
+<LandingLayout
+	title="PicoCluster Claw — Private AI Appliance"
+	description="A self-contained AI appliance with local LLM inference, OpenClaw agents, and ThreadWeaver chat. Private, always-on, under $2/month to run."
+>
+	<Hero />
+	<ProblemSection />
+	<FeatureGrid />
+	<ThreadWeaverSection />
+	<SpecsSection />
+	<PlatformSection />
+	<CallToAction />
+</LandingLayout>

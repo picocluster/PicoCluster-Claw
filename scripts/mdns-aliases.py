@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Publish mDNS CNAME aliases for PicoClaw via Avahi D-Bus.
+Publish mDNS CNAME aliases for PicoCluster Claw via Avahi D-Bus.
 
 CNAME records point alias.local → <this machine's hostname>.local so macOS
 Bonjour resolves them correctly without any client-side /etc/hosts edits.

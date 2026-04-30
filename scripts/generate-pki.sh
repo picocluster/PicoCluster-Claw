@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Generate PicoClaw Local CA and server certs for claw.local + threadweaver.local.
+# Generate PicoCluster Claw Local CA and server certs for claw.local + threadweaver.local.
 # Run once during initial setup. Idempotent — skips anything that already exists.
 # Certs are installed at /opt/picocluster/pki/ and mounted into the Caddy container.
 #
@@ -33,7 +33,7 @@ else
         -sha256 \
         -days "$CA_DAYS" \
         -out "$PKI_DIR/ca.crt" \
-        -subj "/CN=PicoClaw Local CA/O=PicoClaw"
+        -subj "/CN=PicoCluster Claw Local CA/O=PicoCluster Claw"
     chmod 644 "$PKI_DIR/ca.crt"
 
     log "CA cert: $PKI_DIR/ca.crt"
@@ -62,7 +62,7 @@ for domain in "${DOMAINS[@]}"; do
     openssl req -new \
         -key "$key" \
         -out "$csr" \
-        -subj "/CN=${domain}/O=PicoClaw"
+        -subj "/CN=${domain}/O=PicoCluster Claw"
 
     cat > "$ext" <<EOF
 authorityKeyIdentifier=keyid,issuer

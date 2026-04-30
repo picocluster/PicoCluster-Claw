@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# setup-tailscale.sh — Install Tailscale on PicoClaw for remote/cross-network access.
+# setup-tailscale.sh — Install Tailscale on PicoCluster Claw for remote/cross-network access.
 # Run on clusterclaw (RPi5) as root.
 #
 # Tailscale gives the cluster a stable hostname and IP accessible from anywhere —
@@ -53,7 +53,7 @@ done
 log()   { echo "[$(date '+%H:%M:%S')] $*"; }
 apply() { $DRY_RUN && echo "  [dry-run] $*" || eval "$*"; }
 
-echo "=== PicoClaw Tailscale Setup ==="
+echo "=== PicoCluster Claw Tailscale Setup ==="
 $DRY_RUN && echo "  (dry-run — no changes applied)"
 echo ""
 

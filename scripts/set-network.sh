@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# set-network.sh — Switch PicoClaw network interface between static IP and DHCP.
+# set-network.sh — Switch PicoCluster Claw network interface between static IP and DHCP.
 # Run on the target node (clusterclaw or clustercrush) as root.
 #
 # Works with Raspberry Pi OS (dhcpcd), Ubuntu/Debian (NetworkManager or netplan).
@@ -72,7 +72,7 @@ apply() {
     fi
 }
 
-echo "=== PicoClaw Network: $MODE ==="
+echo "=== PicoCluster Claw Network: $MODE ==="
 echo "  Interface: $IFACE"
 [ "$MODE" = "static" ] && echo "  IP:        $STATIC_IP"
 [ "$MODE" = "static" ] && echo "  Gateway:   $GATEWAY"

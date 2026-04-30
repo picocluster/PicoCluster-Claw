@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# network-config.sh — Reconfigure PicoClaw network settings across the full stack.
+# network-config.sh — Reconfigure PicoCluster Claw network settings across the full stack.
 # Run on the RPi5 (clusterclaw) as root after changing IPs.
 #
 # Updates: .env, /etc/hosts (claw), /etc/avahi/hosts, Docker services,
@@ -78,7 +78,7 @@ apply() {
     fi
 }
 
-echo "=== PicoClaw Network Config ==="
+echo "=== PicoCluster Claw Network Config ==="
 echo "  claw IP   = ${CLAW_IP:-(unchanged)}"
 echo "  crush IP  = $CRUSH_IP"
 echo "  domain    = $DOMAIN"
