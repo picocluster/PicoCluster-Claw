@@ -6,14 +6,17 @@
 #   model: default Ollama model (default: llama3.2:3b)
 set -euo pipefail
 
-DEFAULT_MODEL="${1:-llama3.2:3b}"
+DEFAULT_MODEL="${1:-granite4.1:8b}"
 INSTALL_DIR="${HOME}/picocluster-claw"
 OPENCLAW_TOKEN="picocluster-token"
 
 # Models to pull (same set as the cluster, minus duplicates the user can add later)
 MODELS=(
+  "granite4.1:8b"
   "llama3.2:3b"
   "llama3.1:8b"
+  "mistral:7b"
+  "qwen2.5-coder:7b"
   "gemma3:4b"
   "deepseek-r1:7b"
   "qwen2.5:3b"

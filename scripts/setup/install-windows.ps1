@@ -6,10 +6,10 @@
 #   Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 #   .\install-windows.ps1 [model]
 #
-#   model: default Ollama model (default: llama3.2:3b)
+#   model: default Ollama model (default: granite4.1:8b)
 
 param(
-    [string]$DefaultModel = "llama3.2:3b"
+    [string]$DefaultModel = "granite4.1:8b"
 )
 
 $ErrorActionPreference = "Stop"
@@ -18,8 +18,11 @@ $INSTALL_DIR   = "$env:USERPROFILE\picocluster-claw"
 $OPENCLAW_TOKEN = "picocluster-token"
 
 $MODELS = @(
+    "granite4.1:8b"
     "llama3.2:3b"
     "llama3.1:8b"
+    "mistral:7b"
+    "qwen2.5-coder:7b"
     "gemma3:4b"
     "deepseek-r1:7b"
     "qwen2.5:3b"

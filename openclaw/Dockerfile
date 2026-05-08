@@ -1,6 +1,10 @@
 FROM node:24-slim
 
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    git curl ca-certificates \
+    python3 python3-pip \
+    bash coreutils findutils grep sed jq \
+    && rm -rf /var/lib/apt/lists/*
 RUN npm install -g openclaw
 # Install missing bundled channel plugin dependencies
 # OpenClaw bundles channel plugins but doesn't ship all their SDK deps.

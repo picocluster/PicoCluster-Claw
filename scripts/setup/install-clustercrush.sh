@@ -9,7 +9,7 @@
 set -euo pipefail
 
 CLAW_IP="${1:-10.1.10.220}"
-DEFAULT_MODEL="${2:-llama3.1:8b}"
+DEFAULT_MODEL="${2:-granite4.1:8b}"
 OLLAMA_PORT="11434"
 USER="picocluster"
 INSTALL_DIR="/opt/clusterclaw"
@@ -20,11 +20,15 @@ INSTALL_DIR="/opt/clusterclaw"
 MODELS=(
   "$DEFAULT_MODEL"
   "llama3.2:3b"
+  "llama3.1:8b"
   "phi3.5:3.8b"
   "qwen2.5:3b"
+  "qwen2.5:7b"
+  "qwen2.5-coder:7b"
+  "mistral:7b"
   "deepseek-r1:7b"
+  "nemotron-mini:4b"
   "gemma3:4b"
-  "starcoder2:3b"
   "llava:7b"
   "moondream:1.8b"
 )

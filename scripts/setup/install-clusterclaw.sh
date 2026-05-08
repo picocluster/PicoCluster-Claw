@@ -13,7 +13,7 @@ CRUSH_IP="${1:-10.1.10.221}"
 # llama3.1:8b is recommended; llama3.2:3b works for simple tasks.
 # Other tool-capable models: phi3.5:3.8b, qwen2.5:3b, deepseek-r1:7b.
 # Gemma3 and vision models do NOT support tool calling.
-DEFAULT_MODEL="${2:-llama3.1:8b}"
+DEFAULT_MODEL="${2:-granite4.1:8b}"
 OPENCLAW_TOKEN="${3:-picocluster-token}"
 INSTALL_DIR="/opt/clusterclaw"
 LED_DIR="$INSTALL_DIR/leds"

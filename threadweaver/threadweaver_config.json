@@ -31,7 +31,7 @@
     "local": {
       "enabled": true,
       "api_key": "",
-      "model": "llama3.1:8b",
+      "model": "granite4.1:8b",
       "base_url": "http://clustercrush:11434/v1",
       "label": "Local (Ollama)"
     }
