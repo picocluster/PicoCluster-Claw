@@ -627,7 +627,7 @@
     <div class="section">
       <h2>Example Prompts</h2>
       <p style="color: var(--dim); font-size: 0.9rem; margin-bottom: 1rem;">
-        Copy any prompt and paste it into ThreadWeaver. For tool-heavy workflows, use <code>llama3.1:8b</code> (the default) or switch to an external model like Claude or GPT-4.
+        Copy any prompt and paste it into ThreadWeaver. For tool-heavy workflows, use <code>granite4.1:8b</code> (the default) or switch to an external model like Claude or GPT-4.
       </p>
 
       <div class="example-group">
@@ -770,7 +770,7 @@
         <div class="answer">
           <p>Small models (3B parameters) handle 1–2 tool calls cleanly but after the third or fourth they start <strong>hallucinating tool calls as plain text</strong> instead of making real ones. You'll see a <code>```json</code> block in the message body with a fabricated result that didn't actually happen.</p>
           <p><strong>How to spot it:</strong> real tool calls show up as <strong>🔧 Tool call:</strong> markers. Plain-text JSON without that marker is the model faking it.</p>
-          <p><strong>Fix:</strong> switch to <code>llama3.1:8b</code> in Settings → Local → Model. This is why it's the default.</p>
+          <p><strong>Fix:</strong> switch to <code>granite4.1:8b</code> (the default) or <code>llama3.1:8b</code> in Settings → Local → Model.</p>
         </div>
       </details>
 
