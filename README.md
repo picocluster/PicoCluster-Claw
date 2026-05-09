@@ -7,7 +7,7 @@ A self-hosted AI agent appliance built on [PicoCluster](https://picocluster.com)
 ```
 clusterclaw (RPi5 8GB)                    clustercrush (Orin Nano Super 8GB)
 ├── Portal (nginx :80)                    ├── Ollama :11434  (CUDA)
-│   └── CA cert download                 ├── 9 LLM models (GPU-accelerated)
+│   └── CA cert download                 ├── 13 LLM models (GPU-accelerated)
 ├── Caddy HTTPS proxy (:443)             ├── OpenAI-compatible API (/v1)
 │   ├── claw.local → OpenClaw           └── CUDA / cuDNN / TensorRT
 │   └── threadweaver.local → TW
@@ -45,16 +45,16 @@ Flash the PicoCluster Claw images to both nodes using `dd` or your preferred ima
 
 ```bash
 # Usage: sudo bash install-clustercrush.sh [clusterclaw-ip] [default-model]
-sudo bash install-clustercrush.sh 10.1.10.220 llama3.1:8b
+sudo bash install-clustercrush.sh 10.1.10.220 granite4.1:8b
 ```
 
-Installs Ollama with CUDA, pulls 9 default models, sets MAXN power mode, configures GPU model pre-warming on boot, firewall (Ollama only reachable from clusterclaw).
+Installs Ollama with CUDA, pulls 13 default models, sets MAXN power mode, configures GPU model pre-warming on boot, firewall (Ollama only reachable from clusterclaw).
 
 ### 3. Install clusterclaw (RPi5)
 
 ```bash
 # Usage: sudo bash install-clusterclaw.sh [clustercrush-ip] [default-model] [openclaw-token]
-sudo bash install-clusterclaw.sh 10.1.10.221 llama3.1:8b picocluster-token
+sudo bash install-clusterclaw.sh 10.1.10.221 granite4.1:8b picocluster-token
 ```
 
 Installs Docker containers (ThreadWeaver, OpenClaw, Portal, Caddy), generates local CA + TLS certs, configures Avahi mDNS, Blinkt! LED daemon, firewall.
@@ -98,7 +98,7 @@ Don't have the hardware yet? PicoCluster Claw runs as a single-machine stack on 
 
 ```bash
 bash scripts/setup/install-mac.sh [model]
-# Default model: llama3.2:3b
+# Default model: granite4.1:8b
 ```
 
 Requires Docker Desktop and Ollama (auto-installed via Homebrew if missing).
@@ -196,21 +196,25 @@ After connecting, install [Tailscale](https://tailscale.com/download) on your de
 
 ## Models
 
-9 models installed by default (~27GB on NVMe). `llama3.1:8b` is the default — pre-warmed into GPU memory on every boot for instant first response. Ollama manages loading/unloading automatically.
+13 models installed by default (~48GB on NVMe). `granite4.1:8b` is the default — pre-warmed into GPU memory on every boot for instant first response. Ollama manages loading/unloading automatically.
 
 | Model | Size | Type | Notes |
 |-------|-----:|------|-------|
-| **llama3.1:8b** | 4.9 GB | General | **Default** — pre-warmed on boot, tool-calling |
+| **granite4.1:8b** | 5.0 GB | General | **Default** — pre-warmed on boot, best tool calling |
 | llama3.2:3b | 2.0 GB | General | Fast, tool-calling |
-| gemma3:4b | 3.3 GB | General | Multilingual |
+| llama3.1:8b | 4.9 GB | General | Tool-calling, proven reliability |
 | phi3.5:3.8b | 2.2 GB | Reasoning | Tool-calling |
+| qwen2.5:3b | 1.9 GB | General | Tool-calling, structured output |
+| qwen2.5:7b | 4.7 GB | General | Strong reasoning + tool-calling |
+| qwen2.5-coder:7b | 4.7 GB | Code | Best code quality, tool-calling |
+| mistral:7b | 4.1 GB | General | Fast inference, tool-calling |
 | deepseek-r1:7b | 4.7 GB | Reasoning | Chain-of-thought |
-| qwen2.5:3b | 1.9 GB | Code | Structured output, tool-calling |
-| starcoder2:3b | 1.7 GB | Code | Code generation |
+| nemotron-mini:4b | 2.7 GB | General | NVIDIA-optimized for Jetson |
+| gemma3:4b | 3.3 GB | General | Multilingual, no tool calling |
 | llava:7b | 4.7 GB | Vision | Image understanding |
 | moondream:1.8b | 1.7 GB | Vision | Lightweight |
 
-> **Tool calling:** ThreadWeaver MCP tools require a tool-capable model. Gemma3 and vision models fall back to chat-only. Recommended: `llama3.1:8b`.
+> **Tool calling:** ThreadWeaver MCP tools require a tool-capable model. Gemma3 and vision models fall back to chat-only. Recommended: `granite4.1:8b`.
 
 **GPU pre-warming:** When you change the active model in ThreadWeaver, a background request pre-loads it into GPU memory so the next message is instant.
 
