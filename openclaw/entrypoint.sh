@@ -42,15 +42,12 @@ cat > "$CONFIG" <<EOF
           {"id": "llama3.2:3b", "name": "Llama 3.2 3B"},
           {"id": "llama3.1:8b", "name": "Llama 3.1 8B"},
           {"id": "phi3.5:3.8b", "name": "Phi 3.5 Mini"},
-          {"id": "qwen2.5:3b", "name": "Qwen 2.5 3B"},
-          {"id": "qwen2.5:7b", "name": "Qwen 2.5 7B"},
-          {"id": "qwen2.5-coder:7b", "name": "Qwen 2.5 Coder 7B"},
-          {"id": "mistral:7b", "name": "Mistral 7B"},
+          {"id": "qwen3.5:4b", "name": "Qwen 3.5 4B"},
+          {"id": "qwen3.5:9b", "name": "Qwen 3.5 9B"},
+          {"id": "ministral-3:8b", "name": "Ministral 3 8B"},
           {"id": "deepseek-r1:7b", "name": "DeepSeek R1 7B"},
-          {"id": "nemotron-mini:4b", "name": "Nemotron Mini 4B"},
-          {"id": "gemma3:4b", "name": "Gemma 3 4B"},
-          {"id": "llava:7b", "name": "LLaVA 7B (Vision)"},
-          {"id": "moondream:1.8b", "name": "Moondream 1.8B (Vision)"}
+          {"id": "nemotron-3-nano:4b", "name": "Nemotron 3 Nano 4B"},
+          {"id": "gemma4:e4b", "name": "Gemma 4 E4B"}
         ]
       }
     }

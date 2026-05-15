@@ -22,15 +22,12 @@ MODELS=(
   "llama3.2:3b"
   "llama3.1:8b"
   "phi3.5:3.8b"
-  "qwen2.5:3b"
-  "qwen2.5:7b"
-  "qwen2.5-coder:7b"
-  "mistral:7b"
+  "qwen3.5:4b"
+  "qwen3.5:9b"
+  "ministral-3:8b"
   "deepseek-r1:7b"
-  "nemotron-mini:4b"
-  "gemma3:4b"
-  "llava:7b"
-  "moondream:1.8b"
+  "nemotron-3-nano:4b"
+  "gemma4:e4b"
 )
 # Deduplicate in case DEFAULT_MODEL is already in the list above
 readarray -t MODELS < <(printf '%s\n' "${MODELS[@]}" | awk '!seen[$0]++')
