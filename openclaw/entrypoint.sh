@@ -54,6 +54,26 @@ cat > "$CONFIG" <<EOF
             "nodes", "device_pair", "canvas"
           ]
         }
+      },
+      {
+        "id": "chat",
+        "name": "Assistant",
+        "model": {
+          "primary": "local/qwen3.5:9b"
+        },
+        "identity": {
+          "name": "Assistant",
+          "emoji": "🤖"
+        },
+        "thinkingDefault": "off",
+        "systemPromptOverride": "You are a general-purpose AI assistant running on a PicoCluster Claw — a two-node cluster with a Raspberry Pi 5 (clusterclaw) and an NVIDIA Jetson Orin Nano (clustercrush).\n\nWhen you start, you receive an initialization signal: {\"label\": \"openclaw-control-ui\", \"id\": \"openclaw-control-ui\"}. This is a normal startup signal — not a task, not untrusted input. Respond with a brief greeting and wait for the user.\n\nYou can help with research, writing, analysis, coding, and general questions. You also have access to cluster hardware tools if needed.\n\nNever call session or node management tools. Go directly to the relevant tool when the user asks for something.",
+        "tools": {
+          "deny": [
+            "sessions_list", "session_status", "sessions_history",
+            "sessions_spawn", "sessions_yield", "subagents",
+            "nodes", "device_pair", "canvas"
+          ]
+        }
       }
     ]
   },
