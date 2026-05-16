@@ -401,7 +401,7 @@
     <div class="cards">
       <div class="card">
         <h3>ThreadWeaver <span class="tag primary">LAN</span></h3>
-        <div class="desc">Chat with your local LLMs. Branching conversations, search, notebooks. Switch between 13 models on the fly.</div>
+        <div class="desc">Chat with your local LLMs. Branching conversations, search, notebooks. Switch between 10 models on the fly.</div>
         <div class="btn-row">
           <a href="https://threadweaver.local">Open Chat</a>
           <a href="https://localhost:5174" class="secondary" title="Fallback: requires SSH tunnel">SSH tunnel</a>
@@ -417,7 +417,7 @@
       </div>
       <div class="card">
         <h3>Ollama (clustercrush)</h3>
-        <div class="desc">OpenAI-compatible inference endpoint. 13 models, GPU-accelerated. Default model pre-warmed into GPU on boot.</div>
+        <div class="desc">OpenAI-compatible inference endpoint. 10 models, GPU-accelerated. Default model pre-warmed into GPU on boot.</div>
         <a href="#" onclick="navigator.clipboard.writeText('http://clustercrush:11434/v1'); this.textContent='Copied!'; setTimeout(()=>this.textContent='Copy API URL',1500); return false;" class="secondary">Copy API URL</a>
       </div>
     </div>
@@ -461,19 +461,16 @@
       <table>
         <thead><tr><th>Model</th><th>Type</th><th>Size</th><th>Notes</th></tr></thead>
         <tbody>
-          <tr><td><strong>granite4.1:8b</strong></td><td>General</td><td>5.0 GB</td><td>Default — pre-warmed on boot, best tool calling</td></tr>
+          <tr><td>granite4.1:8b</td><td>General</td><td>5.0 GB</td><td>Best tool calling, agentic workflows</td></tr>
           <tr><td>llama3.2:3b</td><td>General</td><td>2.0 GB</td><td>Fast, tool calling</td></tr>
           <tr><td>llama3.1:8b</td><td>General</td><td>4.9 GB</td><td>Tool calling, proven reliability</td></tr>
           <tr><td>phi3.5:3.8b</td><td>Reasoning</td><td>2.2 GB</td><td>Tool calling supported</td></tr>
-          <tr><td>qwen2.5:3b</td><td>General</td><td>1.9 GB</td><td>Tool calling, structured output</td></tr>
-          <tr><td>qwen2.5:7b</td><td>General</td><td>4.7 GB</td><td>Strong reasoning + tool calling</td></tr>
-          <tr><td>qwen2.5-coder:7b</td><td>Code</td><td>4.7 GB</td><td>Best code quality, tool calling</td></tr>
-          <tr><td>mistral:7b</td><td>General</td><td>4.1 GB</td><td>Fast inference, tool calling</td></tr>
+          <tr><td>qwen3.5:4b</td><td>General</td><td>2.6 GB</td><td>Tool calling, vision, structured output</td></tr>
+          <tr><td><strong>qwen3.5:9b</strong></td><td>General</td><td>5.8 GB</td><td>Default — pre-warmed on boot, strong reasoning + tool calling</td></tr>
+          <tr><td>ministral-3:8b</td><td>General</td><td>4.9 GB</td><td>Edge-optimized, vision + tool calling</td></tr>
           <tr><td>deepseek-r1:7b</td><td>Reasoning</td><td>4.7 GB</td><td>Shows reasoning steps</td></tr>
-          <tr><td>nemotron-mini:4b</td><td>General</td><td>2.7 GB</td><td>NVIDIA-optimized for Jetson</td></tr>
-          <tr><td>gemma3:4b</td><td>General</td><td>3.3 GB</td><td>Multilingual, no tool calling</td></tr>
-          <tr><td>llava:7b</td><td>Vision</td><td>4.7 GB</td><td>Image understanding, no tool calling</td></tr>
-          <tr><td>moondream:1.8b</td><td>Vision</td><td>1.7 GB</td><td>Lightweight vision, no tool calling</td></tr>
+          <tr><td>nemotron-3-nano:4b</td><td>General</td><td>2.7 GB</td><td>NVIDIA agentic, tool calling + thinking</td></tr>
+          <tr><td>gemma4:e4b</td><td>General</td><td>3.3 GB</td><td>Multilingual, vision, tool calling</td></tr>
         </tbody>
       </table>
       <p style="color: var(--dim); font-size: 0.82rem; margin-top: 0.6rem;">
@@ -627,7 +624,7 @@
     <div class="section">
       <h2>Example Prompts</h2>
       <p style="color: var(--dim); font-size: 0.9rem; margin-bottom: 1rem;">
-        Copy any prompt and paste it into ThreadWeaver. For tool-heavy workflows, use <code>granite4.1:8b</code> (the default) or switch to an external model like Claude or GPT-4.
+        Copy any prompt and paste it into ThreadWeaver. For tool-heavy workflows, use <code>qwen3.5:9b</code> (the default) or switch to an external model like Claude or GPT-4.
       </p>
 
       <div class="example-group">
@@ -676,7 +673,7 @@
 
       <div class="example-group">
         <h3>🎯 Multi-Tool Workflows</h3>
-        <div class="group-hint">These chain several tools. Use <code>granite4.1:8b</code> (default) or an external provider for best results.</div>
+        <div class="group-hint">These chain several tools. Use <code>qwen3.5:9b</code> (default) or an external provider for best results.</div>
         <div class="example"><div class="prompt">Check the CPU temperature. If it's above 60°C, flash the LEDs red. If it's below 50°C, do a green success pulse. Otherwise set the LEDs to amber.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
         <div class="example"><div class="prompt">Write a status report to status.txt containing the current CPU temperature, memory usage, uptime, and installed models on clustercrush.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
         <div class="example"><div class="prompt">Tell me the current time, the uptime, the 5-minute load average, and the disk usage. Format it as a markdown table.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
@@ -685,17 +682,10 @@
 
       <div class="example-group">
         <h3>💻 Code &amp; Reasoning</h3>
-        <div class="group-hint">Switch to <code>qwen2.5-coder:7b</code> for code, <code>deepseek-r1:7b</code> for reasoning.</div>
+        <div class="group-hint">Switch to <code>qwen3.5:9b</code> for code, <code>deepseek-r1:7b</code> for reasoning.</div>
         <div class="example"><div class="prompt">Write a Python function that takes a list of numbers and returns the two largest without using sort() or max().</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
         <div class="example"><div class="prompt">A farmer has chickens and cows. There are 30 heads and 74 legs total. How many of each? Show your reasoning.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
         <div class="example"><div class="prompt">If a bat and a ball cost $1.10 total, and the bat costs $1 more than the ball, how much does the ball cost? Explain your reasoning.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
-      </div>
-
-      <div class="example-group">
-        <h3>🖼️ Vision (with <code>llava:7b</code> or <code>moondream:1.8b</code>)</h3>
-        <div class="group-hint">Attach an image via ThreadWeaver's upload button before sending these.</div>
-        <div class="example"><div class="prompt">Describe what you see in this image in two sentences.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
-        <div class="example"><div class="prompt">What text is visible in this image? Just the text, no commentary.</div><button class="copy-btn" onclick="copyPrompt(this)">Copy</button></div>
       </div>
 
       <a class="docs-link" href="https://github.com/picocluster/PicoCluster-Claw/blob/main/docs/examples.md" target="_blank">More examples in docs/examples.md →</a>
@@ -755,12 +745,10 @@
       <details class="faq">
         <summary>Which model should I use for what?</summary>
         <div class="answer">
-          <p><strong>General chat + tools (default):</strong> <code>granite4.1:8b</code> — purpose-built for tool calling, pre-warmed on boot<br>
+          <p><strong>General chat + tools (default):</strong> <code>qwen3.5:9b</code> — strong reasoning, code, tool calling, pre-warmed on boot<br>
           <strong>Fast one-shots:</strong> <code>llama3.2:3b</code> — quickest responses, degrades on long tool chains<br>
-          <strong>Best all-round chat:</strong> <code>qwen2.5:7b</code> — strong reasoning and tool use<br>
-          <strong>Reasoning/math:</strong> <code>deepseek-r1:7b</code> — shows its work<br>
-          <strong>Code:</strong> <code>qwen2.5-coder:7b</code><br>
-          <strong>Images:</strong> <code>llava:7b</code> or <code>moondream:1.8b</code></p>
+          <strong>Best all-round chat + code:</strong> <code>qwen3.5:9b</code> — strong reasoning, tool use, and coding<br>
+          <strong>Reasoning/math:</strong> <code>deepseek-r1:7b</code> — shows its work</p>
           <p>Switch models from the ThreadWeaver settings panel. Only one model fits in GPU memory at a time — switching takes 30–60 seconds while the new model loads.</p>
         </div>
       </details>
@@ -770,7 +758,7 @@
         <div class="answer">
           <p>Small models (3B parameters) handle 1–2 tool calls cleanly but after the third or fourth they start <strong>hallucinating tool calls as plain text</strong> instead of making real ones. You'll see a <code>```json</code> block in the message body with a fabricated result that didn't actually happen.</p>
           <p><strong>How to spot it:</strong> real tool calls show up as <strong>🔧 Tool call:</strong> markers. Plain-text JSON without that marker is the model faking it.</p>
-          <p><strong>Fix:</strong> switch to <code>granite4.1:8b</code> (the default) or <code>llama3.1:8b</code> in Settings → Local → Model.</p>
+          <p><strong>Fix:</strong> switch to <code>qwen3.5:9b</code> (the default) or <code>llama3.1:8b</code> in Settings → Local → Model.</p>
         </div>
       </details>
 
@@ -812,7 +800,7 @@
           <p>SSH to clustercrush and use <code>pc-pull</code>:</p>
           <p><code>ssh picocluster@clustercrush</code><br>
           <code>pc-pull llama3.3:70b-instruct-q4_K_M</code></p>
-          <p>Browse <a href="https://ollama.com/library" style="color: var(--accent);" target="_blank">ollama.com/library</a> for model tags. You can also ask the LLM to do it: "Pull the moondream model from the Ollama library."</p>
+          <p>Browse <a href="https://ollama.com/library" style="color: var(--accent);" target="_blank">ollama.com/library</a> for model tags. You can also ask the LLM to do it: "Pull the qwen3.5:14b model from the Ollama library."</p>
         </div>
       </details>
 
@@ -820,8 +808,7 @@
         <summary>Which models support MCP tool calling?</summary>
         <div class="answer">
           <p>ThreadWeaver auto-detects tool support. If a model doesn't support it, TW shows a notice and falls back to chat-only.</p>
-          <p><strong>Tool calling:</strong> <code>granite4.1:8b</code>, <code>llama3.1:8b</code>, <code>llama3.2:3b</code>, <code>phi3.5:3.8b</code>, <code>qwen2.5:3b</code>, <code>qwen2.5:7b</code>, <code>qwen2.5-coder:7b</code>, <code>mistral:7b</code>, <code>deepseek-r1:7b</code>, <code>nemotron-mini:4b</code></p>
-          <p><strong>Chat-only:</strong> <code>gemma3:4b</code>, <code>llava:7b</code>, <code>moondream:1.8b</code></p>
+          <p><strong>Tool calling:</strong> <code>granite4.1:8b</code>, <code>llama3.1:8b</code>, <code>llama3.2:3b</code>, <code>phi3.5:3.8b</code>, <code>qwen3.5:4b</code>, <code>qwen3.5:9b</code>, <code>ministral-3:8b</code>, <code>deepseek-r1:7b</code>, <code>nemotron-3-nano:4b</code>, <code>gemma4:e4b</code></p>
         </div>
       </details>
 

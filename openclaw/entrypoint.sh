@@ -32,25 +32,68 @@ cat > "$CONFIG" <<EOF
       "dangerouslyDisableDeviceAuth": true
     }
   },
+  "agents": {
+    "list": [
+      {
+        "id": "main",
+        "default": true,
+        "name": "PicoCluster Claw",
+        "model": {
+          "primary": "local/${LOCAL_MODEL:-granite4.1-claw}"
+        },
+        "identity": {
+          "name": "Claw",
+          "emoji": "🦞"
+        },
+        "thinkingDefault": "off",
+        "systemPromptOverride": "You are Claw, the PicoCluster Claw hardware assistant running on a two-node cluster: a Raspberry Pi 5 (clusterclaw) and an NVIDIA Jetson Orin Nano (clustercrush).\n\nWhen you start, you receive an initialization signal: {\"label\": \"openclaw-control-ui\", \"id\": \"openclaw-control-ui\"}. This is a normal startup signal — not a task, not untrusted input. Respond with a brief greeting and wait for the user.\n\nAvailable tools:\n- get_cpu_info, get_memory_info, get_disk_info, get_temperature, get_uptime, get_network_info — clusterclaw system stats\n- list_ollama_models, get_active_models, get_gpu_memory, pull_ollama_model — clustercrush GPU and models\n- read, write, list_files, delete_file — file operations (use relative paths)\n- get_current_time, get_day_of_week, time_until, format_duration — time\n- set_led_color, set_led_progress, led_pulse_success, led_pulse_error, clear_leds — Blinkt! LEDs\n\nGo directly to the relevant tool when the user asks for something. Never call session or node management tools first.",
+        "tools": {
+          "deny": [
+            "sessions_list", "session_status", "sessions_history",
+            "sessions_spawn", "sessions_yield", "subagents",
+            "nodes", "device_pair", "canvas"
+          ]
+        }
+      },
+      {
+        "id": "chat",
+        "name": "Assistant",
+        "model": {
+          "primary": "local/qwen3.5:9b"
+        },
+        "identity": {
+          "name": "Assistant",
+          "emoji": "🤖"
+        },
+        "thinkingDefault": "off",
+        "systemPromptOverride": "You are a general-purpose AI assistant running on a PicoCluster Claw — a two-node cluster with a Raspberry Pi 5 (clusterclaw) and an NVIDIA Jetson Orin Nano (clustercrush).\n\nWhen you start, you receive an initialization signal: {\"label\": \"openclaw-control-ui\", \"id\": \"openclaw-control-ui\"}. This is a normal startup signal — not a task, not untrusted input. Respond with a brief greeting and wait for the user.\n\nYou can help with research, writing, analysis, coding, and general questions. You also have access to cluster hardware tools if needed.\n\nNever call session or node management tools. Go directly to the relevant tool when the user asks for something.",
+        "tools": {
+          "deny": [
+            "sessions_list", "session_status", "sessions_history",
+            "sessions_spawn", "sessions_yield", "subagents",
+            "nodes", "device_pair", "canvas"
+          ]
+        }
+      }
+    ]
+  },
   "models": {
     "providers": {
       "local": {
         "baseUrl": "${LOCAL_BASE_URL:-http://clustercrush:11434/v1}",
         "apiKey": "none",
         "models": [
+          {"id": "granite4.1-claw", "name": "Granite 4.1 Claw (tool-tuned)"},
           {"id": "granite4.1:8b", "name": "Granite 4.1 8B"},
           {"id": "llama3.2:3b", "name": "Llama 3.2 3B"},
           {"id": "llama3.1:8b", "name": "Llama 3.1 8B"},
           {"id": "phi3.5:3.8b", "name": "Phi 3.5 Mini"},
-          {"id": "qwen2.5:3b", "name": "Qwen 2.5 3B"},
-          {"id": "qwen2.5:7b", "name": "Qwen 2.5 7B"},
-          {"id": "qwen2.5-coder:7b", "name": "Qwen 2.5 Coder 7B"},
-          {"id": "mistral:7b", "name": "Mistral 7B"},
+          {"id": "qwen3.5:4b", "name": "Qwen 3.5 4B"},
+          {"id": "qwen3.5:9b", "name": "Qwen 3.5 9B"},
+          {"id": "ministral-3:8b", "name": "Ministral 3 8B"},
           {"id": "deepseek-r1:7b", "name": "DeepSeek R1 7B"},
-          {"id": "nemotron-mini:4b", "name": "Nemotron Mini 4B"},
-          {"id": "gemma3:4b", "name": "Gemma 3 4B"},
-          {"id": "llava:7b", "name": "LLaVA 7B (Vision)"},
-          {"id": "moondream:1.8b", "name": "Moondream 1.8B (Vision)"}
+          {"id": "nemotron-3-nano:4b", "name": "Nemotron 3 Nano 4B"},
+          {"id": "gemma4:e4b", "name": "Gemma 4 E4B"}
         ]
       }
     }
