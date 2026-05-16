@@ -9,11 +9,12 @@
 set -euo pipefail
 
 CRUSH_IP="${1:-10.1.10.221}"
-# Ollama model tag — must support tool calling for ThreadWeaver MCP.
-# llama3.1:8b is recommended; llama3.2:3b works for simple tasks.
-# Other tool-capable models: phi3.5:3.8b, qwen2.5:3b, deepseek-r1:7b.
-# Gemma3 and vision models do NOT support tool calling.
-DEFAULT_MODEL="${2:-granite4.1:8b}"
+# Ollama model tag for ThreadWeaver (must support tool calling).
+# ThreadWeaver default: qwen3.5:9b (best general chat + tool calling)
+# OpenClaw default: granite4.1:8b (via OPENCLAW_MODEL in .env)
+# Other tool-capable models: llama3.1:8b, ministral-3:8b, phi3.5:3.8b, deepseek-r1:7b
+# gemma4:e4b also supports tool calling. Gemma3 does NOT.
+DEFAULT_MODEL="${2:-qwen3.5:9b}"
 OPENCLAW_TOKEN="${3:-picocluster-token}"
 INSTALL_DIR="/opt/clusterclaw"
 LED_DIR="$INSTALL_DIR/leds"
@@ -224,6 +225,7 @@ cd "$INSTALL_DIR"
 cat > "$INSTALL_DIR/.env" <<EOF
 CRUSH_IP=${CRUSH_IP}
 DEFAULT_MODEL=${DEFAULT_MODEL}
+OPENCLAW_MODEL=granite4.1:8b
 OPENCLAW_TOKEN=${OPENCLAW_TOKEN}
 EOF
 

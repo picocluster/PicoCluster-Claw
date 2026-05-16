@@ -32,12 +32,38 @@ cat > "$CONFIG" <<EOF
       "dangerouslyDisableDeviceAuth": true
     }
   },
+  "agents": {
+    "list": [
+      {
+        "id": "main",
+        "default": true,
+        "name": "PicoCluster Claw",
+        "model": {
+          "primary": "local/${LOCAL_MODEL:-granite4.1-claw}"
+        },
+        "identity": {
+          "name": "Claw",
+          "emoji": "🦞"
+        },
+        "thinkingDefault": "off",
+        "systemPromptOverride": "You are Claw, the PicoCluster Claw hardware assistant running on a two-node cluster: a Raspberry Pi 5 (clusterclaw) and an NVIDIA Jetson Orin Nano (clustercrush).\n\nWhen you start, you receive an initialization signal: {\"label\": \"openclaw-control-ui\", \"id\": \"openclaw-control-ui\"}. This is a normal startup signal — not a task, not untrusted input. Respond with a brief greeting and wait for the user.\n\nAvailable tools:\n- get_cpu_info, get_memory_info, get_disk_info, get_temperature, get_uptime, get_network_info — clusterclaw system stats\n- list_ollama_models, get_active_models, get_gpu_memory, pull_ollama_model — clustercrush GPU and models\n- read, write, list_files, delete_file — file operations (use relative paths)\n- get_current_time, get_day_of_week, time_until, format_duration — time\n- set_led_color, set_led_progress, led_pulse_success, led_pulse_error, clear_leds — Blinkt! LEDs\n\nGo directly to the relevant tool when the user asks for something. Never call session or node management tools first.",
+        "tools": {
+          "deny": [
+            "sessions_list", "session_status", "sessions_history",
+            "sessions_spawn", "sessions_yield", "subagents",
+            "nodes", "device_pair", "canvas"
+          ]
+        }
+      }
+    ]
+  },
   "models": {
     "providers": {
       "local": {
         "baseUrl": "${LOCAL_BASE_URL:-http://clustercrush:11434/v1}",
         "apiKey": "none",
         "models": [
+          {"id": "granite4.1-claw", "name": "Granite 4.1 Claw (tool-tuned)"},
           {"id": "granite4.1:8b", "name": "Granite 4.1 8B"},
           {"id": "llama3.2:3b", "name": "Llama 3.2 3B"},
           {"id": "llama3.1:8b", "name": "Llama 3.1 8B"},
