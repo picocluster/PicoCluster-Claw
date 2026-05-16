@@ -17,8 +17,11 @@ INSTALL_DIR="/opt/clusterclaw"
 # Models to pull — DEFAULT_MODEL is pulled first so it's ready fastest.
 # Models must support tool calling for ThreadWeaver MCP.
 # Gemma3 and vision models do NOT support tool calling (TW falls back to chat-only).
+# granite4.1:8b is always pulled — it is the base for the granite4.1-claw Modelfile
+# used as OpenClaw's default agent model.
 MODELS=(
   "$DEFAULT_MODEL"
+  "granite4.1:8b"
   "llama3.2:3b"
   "llama3.1:8b"
   "phi3.5:3.8b"
@@ -216,6 +219,16 @@ for model in "${MODELS[@]}"; do
 done
 log "Available models:"
 ollama list 2>&1 | head -20
+
+# Build the granite4.1-claw Modelfile — granite4.1:8b tuned for OpenClaw tool calling.
+# This is OpenClaw's default agent model (temperature 0.15, tool-call SYSTEM block).
+if [[ -f "$INSTALL_DIR/models/Modelfile.granite4.1-claw" ]]; then
+  log "  Building granite4.1-claw from Modelfile..."
+  ollama create granite4.1-claw -f "$INSTALL_DIR/models/Modelfile.granite4.1-claw" 2>&1 | tail -3
+  log "  granite4.1-claw built"
+else
+  log "  WARNING: Modelfile.granite4.1-claw not found — skipping build"
+fi
 
 # ============================================================
 # 4. Startup warm-up service
